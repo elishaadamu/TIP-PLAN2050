@@ -1,0 +1,93 @@
+.form-select, .form-multiselect {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #495057;
+  font-size: 1em;
+  line-height: 1.5;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  -webkit-appearance: none; /* Remove default browser styling for select */
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.2-5.4H18.2c-5%200-9.3%201.8-13.2%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013.2l128%20127.9c3.9%203.9%208.7%205.8%2013.2%205.8s9.3-1.8%2013.2-5.8L287%2095.4a17.6%2017.6%200%200%200%205.4-13.2c0-5-1.8-9.3-5.4-13.2z%22%2F%3E%3C%2Fsvg%3E"); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.65em auto;
+}
+
+.form-select:focus, .form-multiselect:focus-within {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Specific styling for react-multi-select-component */
+.form-multiselect .dropdown-container {
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background-color: #ffffff;
+  min-height: 38px; /* Match height of single select */
+}
+
+.form-multiselect .dropdown-container:focus-within {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-multiselect .selected-item {
+  background-color: #e9ecef;
+  border-color: #e9ecef;
+  color: #495057;
+  border-radius: 4px;
+  padding: 0.25em 0.5em;
+  margin: 2px;
+}
+
+.form-multiselect .search {
+  padding: 0;
+}
+
+.form-multiselect .search input {
+  border: none;
+  padding: 10px 12px;
+  font-size: 1em;
+  color: #495057;
+}
+
+.form-multiselect .search input:focus {
+  outline: none;
+}
+
+.form-multiselect .dropdown-heading {
+  padding: 0;
+}
+
+.form-multiselect .dropdown-heading-value {
+  padding: 10px 12px;
+}
+
+.form-multiselect .clear-selected-button {
+  color: #dc3545;
+}
+
+.form-multiselect .dropdown-content {
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.form-multiselect .select-item {
+  padding: 8px 12px;
+}
+
+.form-multiselect .select-item.selected {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.form-multiselect .select-item:hover {
+  background-color: #e9ecef;
+  color: #495057;
+}
