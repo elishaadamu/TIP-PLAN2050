@@ -453,7 +453,7 @@ function App() {
                         color: "#555",
                       }}
                     >
-                      UPC
+                      Scope
                     </label>
                     <select
                       style={{
@@ -532,7 +532,7 @@ function App() {
                         color: "#555",
                       }}
                     >
-                      Scope
+                      UPC
                     </label>
                     <input
                       type="text"
