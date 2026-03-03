@@ -20,9 +20,22 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 const projectTypeColors = {
-  Roadway: "#FF6B6B", // Coral Red
-  Transit: "#4ECDC4", // Teal
-  "Bike/Ped": "#ccd145ff", // Sky Blue
+  Roadway: "#FF6B6B", 
+  Transit: "#4ECDC4", 
+  "Bike/Ped": "#ccd145ff",
+  Bridge: "#A8E6CF",
+  Safety: "#FFD3B6",
+  Other: "#808080"
+};
+
+const getProjectColor = (scope) => {
+  const s = String(scope || "").toLowerCase();
+  if (s.includes("pedestrian") || s.includes("bike") || s.includes("bicycle") || s.includes("trail") || s.includes("sidewalk")) return projectTypeColors["Bike/Ped"];
+  if (s.includes("roadway") || s.includes("highway") || s.includes("reconstruction") || s.includes("widening") || s.includes("resurfacing")) return projectTypeColors.Roadway;
+  if (s.includes("transit") || s.includes("bus") || s.includes("train")) return projectTypeColors.Transit;
+  if (s.includes("bridge")) return projectTypeColors.Bridge;
+  if (s.includes("safety") || s.includes("intersection") || s.includes("signal")) return projectTypeColors.Safety;
+  return projectTypeColors.Other;
 };
 
 const createCustomIcon = (color) => {
@@ -44,6 +57,14 @@ function MapView({
   selectedScope,
   selectedCounty,
   selectedUPC,
+  isAdmin,
+  propertyKeys = {
+    scope: "Scope",
+    county: "County",
+    type: "Type",
+    upc: "UPC",
+    description: "Description"
+  }
 }) {
   const [filteredData, setFilteredData] = useState(null);
   const [openPopupId, setOpenPopupId] = useState(null);
@@ -59,26 +80,23 @@ function MapView({
         features: geoData.features.filter((feature) => {
           const matchesScope =
             selectedScope === "All" ||
-            feature.properties.Scope === selectedScope;
-          const isLayerActive = activeProjectLayers.includes(
-            feature.properties.project_type
-          );
+            feature.properties[propertyKeys.scope] === selectedScope;
+          
           const matchesFundingLayer =
             selectedFundingLayer === "All" ||
-            feature.properties.Type === selectedFundingLayer;
+            feature.properties[propertyKeys.type] === selectedFundingLayer;
           const matchesCounty =
             selectedCounty === "All" ||
-            feature.properties.County === selectedCounty;
+            feature.properties[propertyKeys.county] === selectedCounty;
           const matchesUPC =
             !selectedUPC ||
-            String(feature.properties.UPC).includes(selectedUPC);
+            String(feature.properties[propertyKeys.upc]).includes(selectedUPC);
 
           return (
             matchesScope &&
             matchesCounty &&
             matchesUPC &&
-            (selectedFundingLayer === "All" ||
-              feature.properties.Type === selectedFundingLayer)
+            matchesFundingLayer
           );
         }),
       };
@@ -87,35 +105,39 @@ function MapView({
 
       // Calculate bounds including both points and paths
       if (filtered.features.length > 0) {
-        const points = filtered.features.map((f) => [
-          f.geometry.coordinates[1],
-          f.geometry.coordinates[0],
-        ]);
+        const points = filtered.features
+          .filter(f => f.geometry && f.geometry.coordinates)
+          .map((f) => [
+            f.geometry.coordinates[1],
+            f.geometry.coordinates[0],
+          ]);
 
-        // Calculate the center of all points
-        const center = points.reduce(
-          (acc, curr) => [
-            acc[0] + curr[0] / points.length,
-            acc[1] + curr[1] / points.length,
-          ],
-          [0, 0]
-        );
+        if (points.length > 0) {
+          // Calculate the center of all points
+          const center = points.reduce(
+            (acc, curr) => [
+              acc[0] + curr[0] / points.length,
+              acc[1] + curr[1] / points.length,
+            ],
+            [0, 0]
+          );
 
-        // Calculate the spread to add padding
-        const spread = points.reduce(
-          (acc, curr) => [
-            Math.max(acc[0], Math.abs(curr[0] - center[0])),
-            Math.max(acc[1], Math.abs(curr[1] - center[1])),
-          ],
-          [0, 0]
-        );
+          // Calculate the spread to add padding
+          const spread = points.reduce(
+            (acc, curr) => [
+              Math.max(acc[0], Math.abs(curr[0] - center[0])),
+              Math.max(acc[1], Math.abs(curr[1] - center[1])),
+            ],
+            [0, 0]
+          );
 
-        // Add padding to the bounds
-        const padding = 0.02; // Adjust this value to increase/decrease padding
-        setBounds([
-          [center[0] - spread[0] - padding, center[1] - spread[1] - padding],
-          [center[0] + spread[0] + padding, center[1] + spread[1] + padding],
-        ]);
+          // Add padding to the bounds
+          const padding = 0.02; // Adjust this value to increase/decrease padding
+          setBounds([
+            [center[0] - spread[0] - padding, center[1] - spread[1] - padding],
+            [center[0] + spread[0] + padding, center[1] + spread[1] + padding],
+          ]);
+        }
       }
     }
   }, [
@@ -125,9 +147,10 @@ function MapView({
     selectedScope,
     selectedCounty,
     selectedUPC,
+    propertyKeys
   ]);
 
-  if (!bounds) {
+  if (!bounds || !filteredData) {
     // Set default bounds if no data is available to prevent crashing
     return (
       <MapContainer
@@ -171,18 +194,18 @@ function MapView({
               zIndexOffset={1000} // Keep pointer on top
               eventHandlers={{
                 click: () => {
-                  setOpenPopupId(feature.properties.UPC);
+                  setOpenPopupId(feature.properties[propertyKeys.upc]);
                 },
               }}
             >
-              <Tooltip>{feature.properties.Description}</Tooltip>
+              <Tooltip>{feature.properties[propertyKeys.description] || feature.properties[propertyKeys.upc]}</Tooltip>
               <Popup onClose={onClosePopup}>
                 <ProjectPopup
-                  project={feature.properties}
+                  project={feature}
                   addComment={addComment}
                   comments={comments.filter(
                     (c) =>
-                      String(c.projectId) === String(feature.properties.UPC)
+                      String(c.projectId) === String(feature.properties[propertyKeys.upc])
                   )}
                   onClosePopup={onClosePopup}
                 />
@@ -196,7 +219,7 @@ function MapView({
                 feature.geometry.coordinates[0],
               ]}
               icon={createCustomIcon(
-                projectTypeColors[feature.properties.Scope] || "#808080" // Default to gray if scope not in colors
+                getProjectColor(feature.properties[propertyKeys.scope])
               )}
               zIndexOffset={900} // Keep circle below pointer
             />

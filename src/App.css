@@ -305,6 +305,7 @@ button:hover {
 @media screen and (min-width: 769px) {
   .asidebar {
     width: 450px;
+    padding: 20px;
   }
 }
 @media screen and (max-width: 769px) {
@@ -331,4 +332,92 @@ button:hover {
   align-items: baseline;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+/* Responsive Classes to replace problematic inline styles */
+.sidebar-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar-toggle {
+    display: block;
+    position: absolute;
+    top: 10px;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    cursor: pointer;
+    transition: left 0.3s;
+  }
+
+  .asidebar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    padding: 15px;
+    z-index: 999;
+    transition: left 0.3s ease;
+    background: white;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  }
+
+  .asidebar.closed {
+    left: -100%;
+    box-shadow: none;
+  }
+
+  .asidebar.open {
+    left: 0;
+    width: 300px !important;
+  }
+
+  .mobile-collapsible-header {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .desktop-only-header {
+    display: none;
+  }
+
+  .mobile-collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+  }
+
+  .mobile-collapsible-content.open {
+    max-height: 1000px;
+  }
+
+  .filters-container.mobile.open {
+    max-height: 1000px !important;
+  }
+
+  .filters-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+  }
+
+  .filter-item-wrapper {
+    width: 100% !important;
+    margin-bottom: 15px !important;
+  }
+
+  .main-content-wrapper {
+    z-index: 0;
+    transition: margin-left 0.3s ease, width 0.3s ease;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-collapsible-header {
+    display: none !important;
+  }
 }

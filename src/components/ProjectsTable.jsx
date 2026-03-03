@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { Download, FileSpreadsheet, Eye, ChevronLeft, ChevronRight, X } from "lucide-react";
 
-const ProjectsTable = ({ geoData }) => {
+const ProjectsTable = ({ geoData, headers: explicitHeaders }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -41,6 +43,10 @@ const ProjectsTable = ({ geoData }) => {
     }
   };
 
+  const handleExportRow = (feature) => {
+    exportToCsv([feature], `project_${feature.properties.UPC || 'export'}.csv`);
+  };
+
   const projects = geoData ? geoData.features : [];
   const totalPages = Math.ceil(projects.length / itemsPerPage);
 
@@ -48,182 +54,174 @@ const ProjectsTable = ({ geoData }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProjects = projects.slice(indexOfFirstItem, indexOfLastItem);
 
+  const headers = projects.length > 0 
+    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Geometry"] 
+    : [];
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div
-      style={{
-        padding: "20px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-      }}
-    >
-      <div
-        style={{
-          padding: "0px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <h2>{geoData?.name || "Projects"}</h2>
-        <button
-          onClick={handleExportAllProjects}
-          style={{
-            padding: "10px 15px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Export All Projects
-        </button>
-      </div>
-      <div style={{ overflowX: "auto" }}>
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            fontSize: "14px",
-          }}
-        >
-          <thead>
-            <tr style={{ backgroundColor: "#f2f2f2" }}>
-              <th
-                style={{
-                  border: "1px solid #ddd",
-                  padding: "8px",
-                  textAlign: "left",
-                  minWidth: "100px", // Added minWidth for better mobile display
-                }}
-              >
-                UPC
-              </th>
-              <th
-                style={{
-                  border: "1px solid #ddd",
-                  padding: "8px",
-                  textAlign: "left",
-                  minWidth: "200px",
-                }}
-              >
-                Description
-              </th>
-              <th
-                style={{
-                  border: "1px solid #ddd",
-                  padding: "8px",
-                  textAlign: "left",
-                  minWidth: "150px",
-                }}
-              >
-                Scope
-              </th>
-              <th
-                style={{
-                  border: "1px solid #ddd",
-                  padding: "8px",
-                  textAlign: "left",
-                  minWidth: "80px",
-                }}
-              >
-                Type
-              </th>
-              <th
-                style={{
-                  border: "1px solid #ddd",
-                  padding: "8px",
-                  textAlign: "left",
-                  minWidth: "120px",
-                }}
-              >
-                County
-              </th>
-              {/* Add more headers as needed based on your geoData properties */}
-            </tr>
-          </thead>
-          <tbody>
-            {currentProjects.map((feature, index) => (
-              <tr key={feature.properties.UPC + "-" + index}>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {feature.properties.UPC}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {feature.properties.Description}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {feature.properties.Scope}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {feature.properties.Type}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  {feature.properties.County}
-                </td>
-                {/* Add more data cells as needed */}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: "20px",
-        }}
-      >
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          style={{
-            padding: "8px 15px",
-            margin: "0 5px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Previous
-        </button>
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index}
-            onClick={() => paginate(index + 1)}
-            style={{
-              padding: "8px 15px",
-              margin: "0 5px",
-              backgroundColor:
-                currentPage === index + 1 ? "#0056b3" : "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
+    <div className="admin-inventory-view animate-slide-up" style={{ 
+      padding: 'clamp(1rem, 5vw, 3rem)', 
+      maxWidth: '100%', 
+      width: '1400px', 
+      margin: '0 auto', 
+      position: 'relative',
+      boxSizing: 'border-box'
+    }}>
+      <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1 style={{ fontSize: '2.50rem', fontWeight: 800 }}>Project Inventory</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem' }}>Manage and audit all regional infrastructure projects.</p>
+        </div>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+           <button className="btn-outline" onClick={handleExportAllProjects} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+             <Download size={16} />
+             Export Registry
+           </button>
+           <Link 
+            to="/" 
+            className="btn-ghost" 
+            style={{ 
+              width: '40px', 
+              height: '40px', 
+              borderRadius: '50%', 
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'var(--transition)'
             }}
+            title="Close and return to Map"
           >
-            {index + 1}
-          </button>
-        ))}
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          style={{
-            padding: "8px 15px",
-            margin: "0 5px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Next
-        </button>
+            <X size={24} />
+          </Link>
+        </div>
+      </header>
+
+      <div className="card glass-panel" style={{ padding: '0', overflow: 'hidden' }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: '0.875rem' }}>
+            <thead>
+              <tr style={{ background: 'rgba(0,0,0,0.02)', borderBottom: '2px solid var(--border-light)' }}>
+                {headers.map((header) => (
+                  <th
+                    key={header}
+                    style={{
+                      padding: "1.25rem 1rem",
+                      textAlign: "left",
+                      color: "var(--text-muted)",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      fontSize: "0.75rem",
+                      minWidth: '150px'
+                    }}
+                  >
+                    {header}
+                  </th>
+                ))}
+                <th style={{ padding: "1.25rem 1rem", textAlign: "right", color: "var(--text-muted)", fontSize: '0.75rem' }}>
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentProjects.length > 0 ? (
+                currentProjects.map((feature, index) => (
+                  <tr 
+                    key={feature.properties.UPC || feature.properties.ID || index}
+                    style={{ borderBottom: '1px solid var(--border-light)', transition: 'var(--transition)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-hover)'}
+                    onLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
+                    {headers.map((header) => (
+                      <td
+                        key={header}
+                        style={{ padding: "1.25rem 1rem", color: "var(--text-main)" }}
+                      >
+                        {header === "Geometry"
+                          ? (
+                            <span style={{ 
+                              background: 'rgba(79, 70, 229, 0.1)', 
+                              color: 'var(--primary)', 
+                              padding: '0.3rem 0.6rem', 
+                              borderRadius: '6px',
+                              fontSize: '0.75rem',
+                              fontWeight: '600'
+                            }}>
+                              MAP DATA
+                            </span>
+                          )
+                          : (
+                            <div style={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {String(feature.properties[header] || "—")}
+                            </div>
+                          )
+                        }
+                      </td>
+                    ))}
+                    <td style={{ padding: "1rem", textAlign: "right" }}>
+                      <button 
+                         className="btn-outline" 
+                         onClick={() => handleExportRow(feature)}
+                         style={{ padding: '0.5rem', borderRadius: '6px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                         title="Export Details"
+                       >
+                         <Eye size={16} />
+                       </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={headers.length + 1} style={{ padding: '5rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                    No infrastructure data found in the current dataset.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Improved Pagination */}
+        {totalPages > 1 && (
+          <div style={{ 
+            padding: '1.5rem', 
+            borderTop: '1px solid var(--border-light)', 
+            display: 'flex', 
+            justifyContent: 'center', 
+            gap: '0.5rem',
+            background: 'var(--surface)' 
+          }}>
+            <button
+              className="btn-outline"
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem' }}
+            >
+              <ChevronLeft size={20} />
+            </button>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                className={currentPage === i+1 ? "btn-primary" : "btn-outline"}
+                onClick={() => paginate(i + 1)}
+                style={{ minWidth: '40px', fontWeight: '600' }}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              className="btn-outline"
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem' }}
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

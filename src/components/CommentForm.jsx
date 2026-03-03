@@ -31,69 +31,50 @@ function CommentForm({ projectId, addComment, onClosePopup }) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        marginTop: "20px",
-        padding: "15px",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        backgroundColor: "#f9f9f9",
-        boxSizing: "border-box",
-      }}
-    >
-      <div style={{ marginBottom: "10px" }}>
-        <input
-          type="text"
-          placeholder="Your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
+    <form onSubmit={handleSubmit} className="premium-form">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="filter-control">
+          <label style={{ fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Affiliation / Name</label>
+          <input
+            type="text"
+            placeholder="e.g. Petersburg Resident"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            disabled={loading}
+          />
+        </div>
+        
+        <div className="filter-control">
+          <label style={{ fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Public Testimony</label>
+          <textarea
+            placeholder="Provide your feedback on this infrastructure project..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            required
+            disabled={loading}
+            rows={4}
+            style={{ 
+              width: '100%', 
+              padding: '0.75rem', 
+              borderRadius: 'var(--radius-sm)', 
+              border: '1px solid var(--border-light)',
+              background: 'var(--surface)',
+              color: 'var(--text-main)',
+              fontSize: '0.875rem'
+            }}
+          />
+        </div>
+
+        <button
+          type="submit"
           disabled={loading}
-          style={{
-            width: "100%",
-            padding: "10px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            fontSize: "14px",
-            boxSizing: "border-box",
-          }}
-        />
+          className="btn-primary"
+          style={{ width: '100%', padding: '0.75rem' }}
+        >
+          {loading ? "Transmitting..." : "Submit to Registry"}
+        </button>
       </div>
-      <div style={{ marginBottom: "10px" }}>
-        <textarea
-          placeholder="Your comment"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          required
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "5px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            fontSize: "14px",
-            resize: "vertical",
-            boxSizing: "border-box",
-          }}
-        />
-      </div>
-      <button
-        type="submit"
-        disabled={loading}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          fontSize: "14px",
-          opacity: loading ? 0.7 : 1,
-        }}
-      >
-        {loading ? "Submitting..." : "Submit Comment"}
-      </button>
     </form>
   );
 }

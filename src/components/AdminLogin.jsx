@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 const AdminLogin = ({ setIsAdmin, navigate }) => {
   const [email, setEmail] = useState("");
@@ -45,122 +47,137 @@ const AdminLogin = ({ setIsAdmin, navigate }) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
-        background: "#f0f2f5",
+        flex: 1,
+        padding: "20px",
+        background: "var(--bg-main)"
       }}
     >
       <div
+        className="card glass-panel animate-slide-up"
         style={{
-          padding: "40px",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-          borderRadius: "8px",
-          background: "white",
-          width: "400px",
+          width: "100%",
+          maxWidth: "420px",
+          padding: "3rem",
+          display: "flex",
+          flexDirection: "column",
+          gap: "2rem"
         }}
       >
-        <h2
-          style={{
-            textAlign: "center",
-            marginBottom: "24px",
-            color: "#333",
-          }}
-        >
-          Admin Portal
-        </h2>
-        <form onSubmit={handleLogin}>
-          <div style={{ marginBottom: "16px" }}>
+        <div style={{ textAlign: "center" }}>
+           <div style={{ 
+             background: 'white', 
+             display: 'inline-flex', 
+             padding: '10px', 
+             borderRadius: '12px', 
+             boxShadow: 'var(--shadow-premium)',
+             marginBottom: '1.5rem'
+           }}>
+             <img src="/MPO_Logo.jpg" alt="Logo" style={{ height: "64px" }} />
+           </div>
+           <h2 style={{ fontSize: "1.75rem", fontWeight: 800 }}>Admin Portal</h2>
+           <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", marginTop: "0.5rem" }}>
+             Secure access for regional planning authorities.
+           </p>
+        </div>
+
+        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div>
             <label
               style={{
                 display: "block",
-                marginBottom: "8px",
-                color: "#555",
+                marginBottom: "0.5rem",
+                fontWeight: "600",
+                fontSize: "0.75rem",
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                color: 'var(--text-muted)'
               }}
             >
-              Email Address
+              Institutional Email
             </label>
             <input
               type="email"
+              placeholder="admin@mpo-tri-cities.gov"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              style={{
-                width: "100%",
-                padding: "10px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-              }}
             />
           </div>
-          <div style={{ marginBottom: "24px" }}>
+
+          <div>
             <label
               style={{
                 display: "block",
-                marginBottom: "8px",
-                color: "#555",
+                marginBottom: "0.5rem",
+                fontWeight: "600",
+                fontSize: "0.75rem",
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                color: 'var(--text-muted)'
               }}
             >
-              Password
+              Secured Password
             </label>
             <div style={{ position: "relative" }}>
               <input
                 type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                }}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
+                className="btn-ghost"
                 style={{
                   position: "absolute",
-                  right: "-8px",
+                  right: "0.5rem",
                   top: "50%",
                   transform: "translateY(-50%)",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "#555",
+                  padding: "0.5rem",
+                  width: "36px",
+                  height: "36px"
                 }}
               >
-                {showPassword ? "🙈" : "👁️"}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
+
           {errorMessage && (
             <div
+              className="animate-slide-up"
               style={{
-                color: "red",
-                marginBottom: "16px",
+                color: "#ef4444",
                 textAlign: "center",
+                fontSize: "0.813rem",
+                background: "rgba(239, 68, 68, 0.05)",
+                padding: "0.75rem",
+                borderRadius: "8px",
+                border: "1px solid rgba(239, 68, 68, 0.2)",
+                fontWeight: 500
               }}
             >
               {errorMessage}
             </div>
           )}
+
           <button
             type="submit"
+            className="btn-primary"
             disabled={loading}
-            style={{
-              width: "100%",
-              padding: "12px",
-              border: "none",
-              borderRadius: "4px",
-              background: "#007bff",
-              color: "white",
-              fontSize: "16px",
-              cursor: "pointer",
-              opacity: loading ? 0.7 : 1,
-            }}
+            style={{ width: "100%", padding: '1rem', marginTop: '0.5rem' }}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Authenticating..." : "Authorize Login"}
           </button>
         </form>
+
+        <div style={{ textAlign: 'center' }}>
+          <Link to="/" style={{ fontSize: '0.813rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+             ← Return to Explorer Map
+          </Link>
+        </div>
       </div>
     </div>
   );

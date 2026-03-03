@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const ProjectsTableIndex = ({ geoData }) => {
+const ProjectsTableIndex = ({ geoData, allHeaders }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -49,146 +49,152 @@ const ProjectsTableIndex = ({ geoData }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProjects = projects.slice(indexOfFirstItem, indexOfLastItem);
 
-  const headers =
-    projects.length > 0 ? Object.keys(projects[0].properties) : [];
+  const headers = projects.length > 0 
+    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Geometry"] 
+    : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div
-      style={{
-        padding: "0px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-      }}
-    >
+    <div className="sidebar-inventory animate-slide-up">
       <div
         style={{
-          padding: "0px",
+          padding: "0 0 1.5rem 0",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
         }}
       >
-        <h2>{geoData?.name || "Projects"}</h2>
+        <div>
+          <h2 style={{ fontSize: '1.25rem' }}>Inventory</h2>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{projects.length} Total Projects</p>
+        </div>
         <button
           onClick={handleExportAllProjects}
-          style={{
-            padding: "10px 15px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
+          className="btn-outline"
+          style={{ padding: '0.5rem 0.75rem', fontSize: '0.75rem' }}
         >
-          Export All Projects
+          Export CSV
         </button>
       </div>
-      <div style={{ overflowX: "auto" }}>
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            fontSize: "14px",
-          }}
-        >
-          <thead>
-            <tr style={{ backgroundColor: "#f2f2f2" }}>
-              {headers.map((header) => (
-                <th
-                  key={header}
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                    textAlign: "left",
-                    minWidth: "120px",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {currentProjects.map((feature, index) => (
-              <tr
-                key={
-                  (feature.properties.UPC || feature.properties.project_id) +
-                  "-" +
-                  index
-                }
-              >
-                {headers.map((header) => (
-                  <td
-                    key={header}
-                    style={{ border: "1px solid #ddd", padding: "8px" }}
-                  >
-                    {feature.properties[header]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          gap: "10px",
-          marginTop: "20px",
-        }}
-      >
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          style={{
-            padding: "8px 15px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Previous
-        </button>
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index}
-            onClick={() => paginate(index + 1)}
+
+      <div className="table-container card" style={{ padding: '0', overflow: 'hidden' }}>
+        <div style={{ overflowX: "auto" }}>
+          <table
             style={{
-              padding: "8px 15px",
-              backgroundColor:
-                currentPage === index + 1 ? "#0056b3" : "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
+              width: "100%",
+              borderCollapse: "collapse",
+              fontSize: "0.813rem",
             }}
           >
-            {index + 1}
-          </button>
-        ))}
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === totalPages}
+            <thead>
+              <tr style={{ background: 'var(--bg-main)', borderBottom: '1px solid var(--border-light)' }}>
+                {headers.map((header) => (
+                  <th
+                    key={header}
+                    style={{
+                      padding: "1rem",
+                      textAlign: "left",
+                      color: "var(--text-muted)",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      fontSize: "0.688rem",
+                      minWidth: "120px"
+                    }}
+                  >
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {currentProjects.map((feature, index) => (
+                <tr 
+                  key={(feature.properties.UPC || feature.properties.ID || feature.properties.id || index) + "-" + index}
+                  style={{ 
+                    borderBottom: '1px solid var(--border-light)',
+                    transition: 'var(--transition)',
+                    cursor: 'pointer'
+                  }}
+                  className="inventory-row"
+                >
+                  {headers.map((header) => (
+                    <td
+                      key={header}
+                      style={{ padding: "1rem" }}
+                    >
+                      {header === "Geometry"
+                        ? (
+                          <span style={{ 
+                            background: 'rgba(79, 70, 229, 0.1)', 
+                            color: 'var(--primary)', 
+                            padding: '0.25rem 0.5rem', 
+                            borderRadius: '4px',
+                            fontSize: '0.7rem',
+                            fontWeight: '600',
+                            fontFamily: 'monospace'
+                          }}>
+                            LOCATED
+                          </span>
+                        )
+                        : (
+                          <div style={{ 
+                            maxWidth: '180px', 
+                            overflow: 'hidden', 
+                            textOverflow: 'ellipsis', 
+                            whiteSpace: 'nowrap',
+                            color: 'var(--text-main)'
+                          }}>
+                            {String(feature.properties[header] || "—")}
+                          </div>
+                        )
+                      }
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {totalPages > 1 && (
+        <div
           style={{
-            padding: "8px 15px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: "1.5rem",
+            padding: "1rem",
+            background: "var(--surface)",
+            borderRadius: "var(--radius-md)",
+            border: "1px solid var(--border-light)"
           }}
         >
-          Next
-        </button>
-      </div>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+             {currentPage} of {totalPages}
+          </span>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="btn-outline"
+              style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}
+            >
+              Prev
+            </button>
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="btn-outline"
+              style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
