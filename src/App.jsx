@@ -10,7 +10,7 @@ import ProjectsTableIndex from "./components/ProjectsTableIndex";
 import Header from "./components/Header";
 import { MultiSelect } from "react-multi-select-component";
 import GeoJSONManager from "./components/GeoJSONManager";
-import { Layers, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Layers, Search, ChevronLeft, ChevronRight, X } from "lucide-react";
 import "./components/FormElements.css";
 
 function App() {
@@ -50,9 +50,9 @@ function App() {
           "https://ecointeractive.onrender.com/api/comments"
         );
         setComments(response.data);
-        console.log("Fetched comments:", response.data);
+       
       } catch (err) {
-        console.error("Failed to fetch comments:", err);
+       
       }
     };
     fetchComments();
@@ -122,17 +122,13 @@ function App() {
           processGeoData(data, "projects_new.geojson");
         }
       } catch (err) {
-        console.error(
-          "Failed to fetch GeoJSON data, falling back to local file.",
-          err
-        );
         fetch(`${window.location.origin}/projects_new.geojson`)
           .then((res) => res.json())
           .then((data) => {
             processGeoData(data, "projects_new.geojson");
           })
           .catch((fallbackErr) =>
-            console.error("Failed to fetch fallback GeoJSON data:", fallbackErr)
+            console.error("Failed to fetch fallback GeoJSON data:")
           );
       }
     };
@@ -181,7 +177,7 @@ function App() {
       <div className="app-container" style={{ background: 'var(--bg-main)' }}>
         <Header isAdmin={isAdmin} handleLogout={handleLogout} />
         <div className="loading-container animate-slide-up">
-          <div className="spinner"></div>
+          <div className="spinner shimmer"></div>
           <p style={{ color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.05em' }}>
             REGISTRY SYNCHRONIZING...
           </p>
@@ -216,8 +212,13 @@ function App() {
   return (
     <div
       className="app-container"
-      style={{ display: "flex", flexDirection: "column", height: "100vh" }}
+      style={{ display: "flex", flexDirection: "column", height: "100vh", position: 'relative' }}
     >
+      <div className="ambient-blobs">
+        <div className="blob blob-1"></div>
+        <div className="blob blob-2"></div>
+        <div className="blob blob-3"></div>
+      </div>
       <Header
         isAdmin={isAdmin}
         handleLogout={handleLogout}
@@ -278,54 +279,34 @@ function App() {
                 className="app-content_2"
                 style={{ display: "flex", flex: 1, position: "relative", overflow: 'hidden' }}
               >
+              {/* Backdrop overlay for mobile/tablet sidebar */}
+              <div 
+                className={`sidebar-backdrop ${!isSidebarOpen ? 'hidden' : ''}`}
+                onClick={() => setIsSidebarOpen(false)}
+              />
               <button 
                 className="sidebar-toggle-btn"
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 aria-label="Toggle Sidebar"
               >
-                {isSidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
+                {isSidebarOpen ? <ChevronLeft size={36} /> : <ChevronRight size={36} />}
               </button>
               <aside className={`asidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
-                {/* Visual Group: Layers */}
-                <div className="sidebar-group">
-                  <header className="explorer-section-title">
-                    <Layers size={14} style={{ marginRight: '6px' }} /> Project Categories
-                  </header>
-                  <div className="layer-radio-group">
-                    <label className={`layer-radio-item ${selectedFundingLayer === "All" ? "active" : ""}`}>
-                      <input
-                        type="radio"
-                        name="funding-source"
-                        value="All"
-                        checked={selectedFundingLayer === "All"}
-                        onChange={(e) => setSelectedFundingLayer(e.target.value)}
-                      />
-                      <span>All Frameworks</span>
-                    </label>
-                    {fundingSources
-                      .filter((source) => source !== "All")
-                      .map((source) => (
-                        <label 
-                          key={source} 
-                          className={`layer-radio-item ${selectedFundingLayer === source ? "active" : ""}`}
-                        >
-                          <input
-                            type="radio"
-                            name="funding-source"
-                            value={source}
-                            checked={selectedFundingLayer === source}
-                            onChange={(e) => setSelectedFundingLayer(e.target.value)}
-                          />
-                          <span>{source}</span>
-                        </label>
-                      ))}
-                  </div>
-                </div>
-
+                {/* Close button for mobile/tablet */}
+                <button 
+                  className="sidebar-close-btn"
+                  onClick={() => setIsSidebarOpen(false)}
+                  aria-label="Close Sidebar"
+                >
+                  <X size={24} />
+                </button>
                 {/* Visual Group: Filters */}
                 <div className="sidebar-group">
                   <header className="explorer-section-title">
-                    <Search size={14} style={{ marginRight: '6px' }} /> Geographic Audit
+                    <div style={{ background: 'rgba(14, 165, 233, 0.1)', padding: '6px', borderRadius: '6px', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Search size={14} />
+                    </div>
+                    Geographic Audit
                   </header>
                   <div className="filter-grid">
                     <div className="filter-control">
@@ -401,7 +382,7 @@ function App() {
                       selectedCounty={selectedCounty}
                       selectedUPC={selectedUPC}
                       selectedFundingLayer={selectedFundingLayer}
-                      isAdmin={isAdmin} // Pass isAdmin prop
+                      isAdmin={isAdmin}
                       propertyKeys={propertyKeys}
                       highlightedProject={highlightedProject}
                       setHighlightedProject={setHighlightedProject}

@@ -3,19 +3,13 @@ html,
 #root {
   height: 100%;
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
 }
 
 button {
-  padding: 3px 7px;
-  background: #0077cc;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #005fa3;
+  font-family: 'Inter', sans-serif;
 }
 
 .leaflet-popup-pane {
@@ -222,8 +216,8 @@ button:hover {
   flex: 1;
 }
 
-/* Media Queries for responsiveness */
-@media (max-width: 768px) {
+/* Media Queries for responsiveness — aligned to 991px breakpoint */
+@media (max-width: 991px) {
   .app-header {
     flex-direction: column;
     align-items: flex-start;
@@ -246,19 +240,19 @@ button:hover {
   }
 
   .menu-button {
-    display: block; /* Show hamburger menu on small screens */
+    display: block;
     position: absolute;
     right: 10px;
     top: 10px;
   }
 
   .main-content-area {
-    flex-direction: column; /* Stack sidebar and main content */
+    flex-direction: column;
   }
 
   .app-sidebar {
     width: 100%;
-    height: auto; /* Allow sidebar to take natural height */
+    height: auto;
     border-right: none;
     border-bottom: 1px solid #e7e7e7;
     max-height: 0;
@@ -267,7 +261,7 @@ button:hover {
   }
 
   .app-sidebar.open {
-    max-height: 500px; /* Adjust as needed to show content */
+    max-height: 500px;
     transition: max-height 0.3s ease-in;
   }
 
@@ -277,6 +271,18 @@ button:hover {
 
   .filter-group {
     width: 100%;
+  }
+
+  .filters-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .asidebar {
+    width: 450px;
+    padding: 20px;
   }
 }
 
@@ -302,29 +308,6 @@ button:hover {
     padding: 6px;
   }
 }
-@media screen and (min-width: 769px) {
-  .asidebar {
-    width: 450px;
-    padding: 20px;
-  }
-}
-@media screen and (max-width: 769px) {
-  .app-content_2 {
-    flex-direction: column !important;
-  }
-  .header-title {
-    display: none;
-  }
-  .asidebar {
-    max-height: 250px; /* Adjust as needed to show content */
-    width: auto;
-  }
-  .filters-container {
-    display: flex;
-
-    flex-wrap: wrap;
-  }
-}
 
 .funding-sources-container {
   display: flex;
@@ -334,12 +317,12 @@ button:hover {
   flex-wrap: wrap;
 }
 
-/* Responsive Classes to replace problematic inline styles */
+/* Responsive Classes */
 .sidebar-toggle {
   display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .sidebar-toggle {
     display: block;
     position: absolute;
@@ -351,27 +334,6 @@ button:hover {
     padding: 8px;
     cursor: pointer;
     transition: left 0.3s;
-  }
-
-  .asidebar {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    padding: 15px;
-    z-index: 999;
-    transition: left 0.3s ease;
-    background: white;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  }
-
-  .asidebar.closed {
-    left: -100%;
-    box-shadow: none;
-  }
-
-  .asidebar.open {
-    left: 0;
-    width: 300px !important;
   }
 
   .mobile-collapsible-header {
@@ -416,7 +378,7 @@ button:hover {
   }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 992px) {
   .mobile-collapsible-header {
     display: none !important;
   }

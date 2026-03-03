@@ -149,7 +149,7 @@ function GeoJSONManager({
     }}>
       <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{ textAlign: 'left' }}>
-          <h1 style={{ fontSize: '2.75rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.04em', lineHeight: 1 }}>Data Registry</h1>
+          <h1 className="gradient-text" style={{ fontSize: '2.75rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 }}>Data Registry</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', marginTop: '0.5rem', fontWeight: 500 }}>
             Upload, configure, and manage regional infrastructure datasets.
           </p>
@@ -176,6 +176,52 @@ function GeoJSONManager({
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
         
+        {/* Upload Interface */}
+        <div className="card">
+          <div style={{ marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+               <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: '8px', borderRadius: '8px', color: 'var(--primary)' }}>
+                 <Upload size={20} />
+               </div>
+               <h2 style={{ fontSize: '1.25rem' }}>1. Ingest Data</h2>
+            </div>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
+              Drag and drop GeoJSON files to enrich the regional database.
+            </p>
+          </div>
+
+          <div style={{ 
+            border: '2px dashed var(--border-light)', 
+            borderRadius: 'var(--radius-md)', 
+            padding: '2.5rem', 
+            textAlign: 'center',
+            marginBottom: '1.5rem',
+            background: 'var(--bg-main)',
+            transition: 'var(--transition)',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--primary)'}
+          onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-light)'}
+          >
+            <input
+              type="file"
+              id="geo-upload"
+              accept=".geojson"
+              onChange={handleFileChangeForUpload}
+              style={{ display: 'none' }}
+            />
+            <label htmlFor="geo-upload" style={{ cursor: 'pointer' }}>
+              <div style={{ marginBottom: '1rem', color: 'var(--primary)', opacity: 0.6 }}>
+                <FileJson size={48} style={{ margin: '0 auto' }} />
+              </div>
+              <div style={{ fontWeight: '700', color: 'var(--text-main)' }}>{fileToUpload ? fileToUpload.name : 'Select GeoJSON'}</div>
+              <div style={{ fontSize: '0.813rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Standard GeoJSON Specification only</div>
+            </label>
+          </div>
+
+          <button className="btn-outline" onClick={handleFileUpload} style={{ width: '100%', padding: '1rem' }} disabled={!fileToUpload}>
+            Initialize Upload
+          </button>
+        </div>
         {/* Dataset Selection */}
         <div className="card glass-panel" style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ marginBottom: '2rem' }}>
@@ -183,7 +229,7 @@ function GeoJSONManager({
                <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: '8px', borderRadius: '8px', color: 'var(--primary)' }}>
                  <Target size={20} />
                </div>
-               <h2 style={{ fontSize: '1.25rem' }}>Active Dataset</h2>
+               <h2 style={{ fontSize: '1.25rem' }}>2. Active Dataset</h2>
             </div>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
               Set the primary project data currently visible to all platform users.
@@ -232,54 +278,7 @@ function GeoJSONManager({
           )}
         </div>
 
-        {/* Upload Interface */}
-        <div className="card">
-          <div style={{ marginBottom: '2rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-               <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: '8px', borderRadius: '8px', color: 'var(--primary)' }}>
-                 <Upload size={20} />
-               </div>
-               <h2 style={{ fontSize: '1.25rem' }}>Ingest Data</h2>
-            </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-              Drag and drop GeoJSON files to enrich the regional database.
-            </p>
-          </div>
-
-          <div style={{ 
-            border: '2px dashed var(--border-light)', 
-            borderRadius: 'var(--radius-md)', 
-            padding: '2.5rem', 
-            textAlign: 'center',
-            marginBottom: '1.5rem',
-            background: 'var(--bg-main)',
-            transition: 'var(--transition)',
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--primary)'}
-          onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-light)'}
-          >
-            <input
-              type="file"
-              id="geo-upload"
-              accept=".geojson"
-              onChange={handleFileChangeForUpload}
-              style={{ display: 'none' }}
-            />
-            <label htmlFor="geo-upload" style={{ cursor: 'pointer' }}>
-              <div style={{ marginBottom: '1rem', color: 'var(--primary)', opacity: 0.6 }}>
-                <FileJson size={48} style={{ margin: '0 auto' }} />
-              </div>
-              <div style={{ fontWeight: '700', color: 'var(--text-main)' }}>{fileToUpload ? fileToUpload.name : 'Select GeoJSON'}</div>
-              <div style={{ fontSize: '0.813rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Standard GeoJSON Specification only</div>
-            </label>
-          </div>
-
-          <button className="btn-outline" onClick={handleFileUpload} style={{ width: '100%', padding: '1rem' }} disabled={!fileToUpload}>
-            Initialize Upload
-          </button>
-        </div>
-
-        {/* Stored Files Table */}
+        {/* Stored Files Table
         <div className="card" style={{ gridColumn: '1 / -1' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
             <div>
@@ -342,7 +341,7 @@ function GeoJSONManager({
               </tbody>
             </table>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

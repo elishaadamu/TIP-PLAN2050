@@ -42,12 +42,12 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 const projectTypeColors = {
-  Roadway: "#FF6B6B", 
-  Transit: "#4ECDC4", 
-  "Bike/Ped": "#ccd145ff",
-  Bridge: "#A8E6CF",
-  Safety: "#FFD3B6",
-  Other: "#808080"
+  Roadway: "#f43f5e", 
+  Transit: "#3b82f6", 
+  "Bike/Ped": "#10b981",
+  Bridge: "#f59e0b",
+  Safety: "#8b5cf6",
+  Other: "#64748b"
 };
 
 const getProjectColor = (scope) => {
@@ -61,14 +61,38 @@ const getProjectColor = (scope) => {
 };
 
 const createCustomIcon = (color, isHighlighted) => {
+  const size = isHighlighted ? 18 : 14;
+  const border = isHighlighted ? '3px solid #fff' : '2px solid #fff';
+  const glow = isHighlighted ? `box-shadow: 0 0 12px ${color}; z-index: 1000;` : 'box-shadow: 0 2px 4px rgba(0,0,0,0.3);';
+  
   return L.divIcon({
-    className: `custom-div-icon ${isHighlighted ? 'blink-marker' : ''}`,
-    html: `<div style=\"background-color: ${color}; width: 15px; height: 15px; border-radius: 50%; border: 2.5px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);\"></div>`,
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
-    popupAnchor: [0, -10],
+    className: 'custom-div-icon',
+    html: `<div style=\"
+      background: ${color}; 
+      width: ${size}px; 
+      height: ${size}px; 
+      border-radius: 50%; 
+      border: ${border}; 
+      ${glow} 
+      margin: auto;
+      transition: all 0.2s ease-out;
+    \"></div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -12],
   });
 };
+
+// Bounds adjustment component
+function ChangeView({ bounds }) {
+  const map = useMap();
+  useEffect(() => {
+    if (bounds && bounds.length > 0) {
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15, animate: true });
+    }
+  }, [bounds, map]);
+  return null;
+}
 
 function MapView({
   addComment,
@@ -90,7 +114,6 @@ function MapView({
     description: "Description"
   }
 }) {
-  const [filteredData, setFilteredData] = useState(null);
   const [openPopupId, setOpenPopupId] = useState(null);
   const [bounds, setBounds] = useState(null);
   const onClosePopup = () => {
@@ -98,83 +121,35 @@ function MapView({
   };
 
   useEffect(() => {
-    if (geoData && geoData.features) {
-      const filtered = {
-        ...geoData,
-        features: geoData.features.filter((feature) => {
-          const matchesScope =
-            selectedScope === "All" ||
-            feature.properties[propertyKeys.scope] === selectedScope;
-          
-          const matchesFundingLayer =
-            selectedFundingLayer === "All" ||
-            feature.properties[propertyKeys.type] === selectedFundingLayer;
-          const matchesCounty =
-            selectedCounty === "All" ||
-            feature.properties[propertyKeys.county] === selectedCounty;
-          const matchesUPC =
-            !selectedUPC ||
-            String(feature.properties[propertyKeys.upc]).includes(selectedUPC);
+    if (geoData && geoData.features && geoData.features.length > 0) {
+      const leafletBounds = L.latLngBounds([]);
+      let hasCoordinates = false;
 
-          return (
-            matchesScope &&
-            matchesCounty &&
-            matchesUPC &&
-            matchesFundingLayer
-          );
-        }),
-      };
-
-      setFilteredData(filtered);
-
-      // Calculate bounds including both points and paths
-      if (filtered.features.length > 0) {
-        const points = filtered.features
-          .filter(f => f.geometry && f.geometry.coordinates)
-          .map((f) => [
-            f.geometry.coordinates[1],
-            f.geometry.coordinates[0],
-          ]);
-
-        if (points.length > 0) {
-          // Calculate the center of all points
-          const center = points.reduce(
-            (acc, curr) => [
-              acc[0] + curr[0] / points.length,
-              acc[1] + curr[1] / points.length,
-            ],
-            [0, 0]
-          );
-
-          // Calculate the spread to add padding
-          const spread = points.reduce(
-            (acc, curr) => [
-              Math.max(acc[0], Math.abs(curr[0] - center[0])),
-              Math.max(acc[1], Math.abs(curr[1] - center[1])),
-            ],
-            [0, 0]
-          );
-
-          // Add padding to the bounds
-          const padding = 0.02; // Adjust this value to increase/decrease padding
-          setBounds([
-            [center[0] - spread[0] - padding, center[1] - spread[1] - padding],
-            [center[0] + spread[0] + padding, center[1] + spread[1] + padding],
-          ]);
+      geoData.features.forEach(feature => {
+        if (feature.geometry && feature.geometry.coordinates) {
+          const [lng, lat] = feature.geometry.coordinates;
+          if (!isNaN(lat) && !isNaN(lng)) {
+            leafletBounds.extend([lat, lng]);
+            hasCoordinates = true;
+          }
         }
-      }
-    }
-  }, [
-    geoData,
-    activeProjectLayers,
-    selectedFundingLayer,
-    selectedScope,
-    selectedCounty,
-    selectedUPC,
-    propertyKeys
-  ]);
+      });
 
-  if (!bounds || !filteredData) {
+      if (hasCoordinates) {
+        // Convert Leaflet bounds to simple array for state to trigger effect
+        const b = [
+          [leafletBounds.getSouthWest().lat, leafletBounds.getSouthWest().lng],
+          [leafletBounds.getNorthEast().lat, leafletBounds.getNorthEast().lng]
+        ];
+        setBounds(b);
+      }
+    } else {
+      // Default bounds if no data
+      setBounds([[37.0, -77.6], [37.4, -77.2]]);
+    }
+  }, [geoData]);
+
+  if (!bounds || !geoData) {
     // Set default bounds if no data is available to prevent crashing
     return (
       <MapContainer
@@ -204,6 +179,8 @@ function MapView({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
       />
 
+      <ChangeView bounds={bounds} />
+
       <MapHighlightEffect 
         project={highlightedProject} 
         setOpenPopupId={setOpenPopupId} 
@@ -211,8 +188,8 @@ function MapView({
       />
 
       {/* Render both pointer and colored circle markers */}
-      {filteredData &&
-        filteredData.features.map((feature, i) => {
+      {geoData &&
+        geoData.features.map((feature, i) => {
           const isHighlighted = highlightedProject && 
             feature.properties[propertyKeys.upc] === highlightedProject.properties[propertyKeys.upc];
             

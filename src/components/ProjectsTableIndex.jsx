@@ -86,8 +86,10 @@ const ProjectsTableIndex = ({ geoData, allHeaders, onProjectClick, comments, upc
         }}
       >
         <div>
-          <h2 style={{ fontSize: '1.25rem' }}>Inventory</h2>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{projects.length} Total Projects</p>
+          <h2 className="gradient-text" style={{ fontSize: '1.5rem', fontWeight: 800 }}>Inventory Registry</h2>
+          <p style={{ fontSize: '0.813rem', color: 'var(--secondary)', fontWeight: 700, letterSpacing: '0.05em' }}>
+            {projects.length} PROJECTS LOGGED
+          </p>
         </div>
         <button
           onClick={handleExportAllProjects}
@@ -115,8 +117,8 @@ const ProjectsTableIndex = ({ geoData, allHeaders, onProjectClick, comments, upc
                     style={{
                       padding: "1rem",
                       textAlign: "left",
-                      color: "var(--text-muted)",
-                      fontWeight: "600",
+                      color: "var(--primary)",
+                      fontWeight: "800",
                       textTransform: "uppercase",
                       letterSpacing: "0.05em",
                       fontSize: "0.688rem",

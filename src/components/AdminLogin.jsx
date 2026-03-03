@@ -74,7 +74,7 @@ const AdminLogin = ({ setIsAdmin, navigate }) => {
            }}>
              <img src="/MPO_Logo.jpg" alt="Logo" style={{ height: "64px" }} />
            </div>
-           <h2 style={{ fontSize: "1.75rem", fontWeight: 800 }}>Admin Portal</h2>
+           <h2 className="gradient-text" style={{ fontSize: "1.75rem", fontWeight: 800 }}>Admin Portal</h2>
            <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", marginTop: "0.5rem" }}>
              Secure access for regional planning authorities.
            </p>
