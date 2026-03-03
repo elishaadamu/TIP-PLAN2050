@@ -122,7 +122,6 @@ const CommentsTable = ({ comments, setComments }) => {
             <thead>
               <tr style={{ background: 'rgba(0,0,0,0.02)', borderBottom: '2px solid var(--border)' }}>
                 <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', color: 'var(--text-muted)' }}>Project ID</th>
-                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', color: 'var(--text-muted)' }}>User</th>
                 <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', color: 'var(--text-muted)' }}>Comment</th>
                 <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', color: 'var(--text-muted)' }}>Date</th>
                 <th style={{ padding: '1.25rem', textAlign: 'right', fontWeight: '600', color: 'var(--text-muted)' }}>Actions</th>
@@ -130,10 +129,11 @@ const CommentsTable = ({ comments, setComments }) => {
             </thead>
             <tbody>
               {currentComments.length > 0 ? (
-                currentComments.map((comment) => (
-                  <tr key={comment._id} style={{ borderBottom: '1px solid var(--border)', transition: 'background 0.2s' }}>
-                    <td style={{ padding: '1rem', fontWeight: '600', color: 'var(--primary)' }}>{comment.projectId}</td>
-                    <td style={{ padding: '1rem' }}>{comment.name}</td>
+                currentComments.map((comment, index) => (
+                  <tr key={comment._id || index} style={{ borderBottom: '1px solid var(--border)', transition: 'background 0.2s' }}>
+                    <td style={{ padding: '1rem', fontWeight: '600', color: 'var(--primary)' }}>
+                      {comment.projectId || (indexOfFirstItem + index + 1)}
+                    </td>
                     <td style={{ padding: '1rem', maxWidth: '300px' }}>
                       <div style={{ 
                         whiteSpace: 'nowrap', 
@@ -160,7 +160,7 @@ const CommentsTable = ({ comments, setComments }) => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <td colSpan="4" style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }}>
                     No comments found.
                   </td>
                 </tr>

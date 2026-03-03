@@ -458,7 +458,7 @@ input:focus, select:focus {
   .sidebar-toggle-btn {
     position: fixed;
     left: 16px;
-    bottom: 24px;
+    bottom: 0px;
     z-index: 1501;
     width: 56px;
     height: 56px;
@@ -710,7 +710,7 @@ input:focus, select:focus {
 .sidebar-toggle-btn {
   position: absolute;
   left: 20px;
-  bottom: 25px;
+  bottom: 150px;
   z-index: 1000;
   width: 56px;
   height: 56px;

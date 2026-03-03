@@ -63,8 +63,7 @@ function ProjectPopup({ project, addComment, comments, onClosePopup, isAdmin }) 
                   borderRadius: '8px', 
                   border: '1px solid var(--border-light)' 
                 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem', fontSize: '0.7rem' }}>
-                    <span style={{ fontWeight: 700, color: 'var(--primary)' }}>{c.name || 'Anonymous Voter'}</span>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.25rem', fontSize: '0.7rem' }}>
                     <span style={{ color: 'var(--text-muted)' }}>{new Date(c.createdAt || Date.now()).toLocaleDateString()}</span>
                   </div>
                   <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-main)', lineHeight: 1.5 }}>{c.comment || c.text}</p>

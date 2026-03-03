@@ -19,7 +19,7 @@ function Header({
             </div>
             <div className="title-container">
               <h1 className="header-title">Tri-Cities Area MPO</h1>
-              <p className="header-subtitle">TIP INTERACTIVE PUBLIC INPUT PORTAL</p>
+              <p className="header-subtitle">2027 - 2030 TIP INTERACTIVE PUBLIC INPUT PORTAL</p>
             </div>
           </Link>
         </div>

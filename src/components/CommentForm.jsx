@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import Swal from "sweetalert2";
 
 function CommentForm({ projectId, addComment, onClosePopup }) {
-  const [name, setName] = useState("");
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -12,14 +10,12 @@ function CommentForm({ projectId, addComment, onClosePopup }) {
 
     const newComment = {
       projectId,
-      name,
       comment,
       timestamp: new Date().toISOString(),
     };
 
     try {
       await addComment(newComment);
-      setName("");
       setComment("");
       
       onClosePopup(); // Close the popup after successful submission
@@ -32,18 +28,6 @@ function CommentForm({ projectId, addComment, onClosePopup }) {
   return (
     <form onSubmit={handleSubmit} className="premium-form">
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <div className="filter-control">
-          <label style={{ fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Affiliation / Name</label>
-          <input
-            type="text"
-            placeholder="e.g. Petersburg Resident"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            disabled={loading}
-          />
-        </div>
-        
         <div className="filter-control">
           <label style={{ fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Public Testimony</label>
           <textarea
