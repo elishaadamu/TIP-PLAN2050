@@ -298,7 +298,7 @@ function App() {
                   onClick={() => setIsSidebarOpen(false)}
                   aria-label="Close Sidebar"
                 >
-                  <X size={24} />
+                  <span className="sidebar-close-btn-text">X</span>
                 </button>
                 {/* Visual Group: Filters */}
                 <div className="sidebar-group">
