@@ -352,7 +352,7 @@ function App() {
                   </div>
                 </div>
 
-                {/* Projects Table Index */}
+                {/* Projects Table Indexcv */}
                 <div className="sidebar-group">
                    <ProjectsTableIndex 
                      geoData={filteredGeoData} 
