@@ -707,8 +707,41 @@ input:focus, select:focus {
   transform: scale(0.98);
 }
 
-/* Sidebar Toggle Enhancement — Desktop default (above 991px) */
 .sidebar-toggle-btn {
+  position: absolute;
+  left: 20px;
+  bottom: 25px;
+  z-index: 1000;
+  width: 56px;
+  height: 56px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: var(--grad-primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(79, 70, 229, 0.3);
+  transition: var(--transition);
+}
+
+.sidebar-toggle-btn:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.4);
+}
+
+/* Define closed state for desktop sidebar */
+.asidebar.closed {
+  width: 0;
+  padding: 0;
+  margin-right: 0;
+  border-right: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.asidebar.closed::before {
   display: none;
 }
 
