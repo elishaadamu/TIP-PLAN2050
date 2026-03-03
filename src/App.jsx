@@ -30,7 +30,7 @@ function App() {
   const [geoData, setGeoData] = useState(null);
   const [currentGeoDataFilename, setCurrentGeoDataFilename] = useState(null); // New state for active GeoJSON filename
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 991);
   const [isLayersOpen, setIsLayersOpen] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [activeProjectLayers, setActiveProjectLayers] = useState([]);
