@@ -306,7 +306,7 @@ function App() {
                     <div style={{ background: 'rgba(14, 165, 233, 0.1)', padding: '6px', borderRadius: '6px', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Search size={14} />
                     </div>
-                    Geographic Audit
+                    Project Filter
                   </header>
                   <div className="filter-grid">
                     <div className="filter-control">
