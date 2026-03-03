@@ -1,11 +1,33 @@
 import React, { useState, useEffect } from "react";
 import L from "leaflet";
-import { MapContainer, TileLayer, Marker, Popup, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap } from "react-leaflet";
 import ProjectPopup from "./ProjectPopup";
 import "leaflet/dist/leaflet.css";
+
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
+
+// Map focus and animation component
+function MapHighlightEffect({ project, setOpenPopupId, upcKey }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (project && project.geometry && project.geometry.coordinates) {
+      const [lng, lat] = project.geometry.coordinates;
+      map.flyTo([lat, lng], 14, {
+        duration: 1.5,
+        easeLinearity: 0.25
+      });
+      // Auto-open the popup after a short delay
+      setTimeout(() => {
+        setOpenPopupId(project.properties[upcKey]);
+      }, 1500);
+    }
+  }, [project, map, setOpenPopupId, upcKey]);
+
+  return null;
+}
 
 let DefaultIcon = L.icon({
   iconUrl: icon,
@@ -38,10 +60,10 @@ const getProjectColor = (scope) => {
   return projectTypeColors.Other;
 };
 
-const createCustomIcon = (color) => {
+const createCustomIcon = (color, isHighlighted) => {
   return L.divIcon({
-    className: "custom-div-icon",
-    html: `<div style=\"background-color: ${color}; width: 15px; height: 15px; border-radius: 50%; border: 1px solid #000;\"></div>`,
+    className: `custom-div-icon ${isHighlighted ? 'blink-marker' : ''}`,
+    html: `<div style=\"background-color: ${color}; width: 15px; height: 15px; border-radius: 50%; border: 2.5px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);\"></div>`,
     iconSize: [20, 20],
     iconAnchor: [10, 10],
     popupAnchor: [0, -10],
@@ -58,6 +80,8 @@ function MapView({
   selectedCounty,
   selectedUPC,
   isAdmin,
+  highlightedProject,
+  setHighlightedProject,
   propertyKeys = {
     scope: "Scope",
     county: "County",
@@ -173,58 +197,81 @@ function MapView({
       zoom={12}
       maxZoom={18}
       minZoom={10}
+      onMoveStart={() => setHighlightedProject && setHighlightedProject(null)}
     >
       <TileLayer
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
       />
 
+      <MapHighlightEffect 
+        project={highlightedProject} 
+        setOpenPopupId={setOpenPopupId} 
+        upcKey={propertyKeys.upc} 
+      />
+
       {/* Render both pointer and colored circle markers */}
       {filteredData &&
-        filteredData.features.map((feature, i) => (
-          <React.Fragment key={`marker-group-${i}`}>
-            {/* Pointer Marker */}
-            <Marker
-              key={`pointer-${i}`}
-              position={[
-                feature.geometry.coordinates[1],
-                feature.geometry.coordinates[0],
-              ]}
-              icon={DefaultIcon}
-              zIndexOffset={1000} // Keep pointer on top
-              eventHandlers={{
-                click: () => {
-                  setOpenPopupId(feature.properties[propertyKeys.upc]);
-                },
-              }}
-            >
-              <Tooltip>{feature.properties[propertyKeys.description] || feature.properties[propertyKeys.upc]}</Tooltip>
-              <Popup onClose={onClosePopup}>
-                <ProjectPopup
-                  project={feature}
-                  addComment={addComment}
-                  comments={comments.filter(
-                    (c) =>
-                      String(c.projectId) === String(feature.properties[propertyKeys.upc])
-                  )}
-                  onClosePopup={onClosePopup}
-                />
-              </Popup>
-            </Marker>
-            {/* Colored Circle Marker */}
-            <Marker
-              key={`circle-${i}`}
-              position={[
-                feature.geometry.coordinates[1],
-                feature.geometry.coordinates[0],
-              ]}
-              icon={createCustomIcon(
-                getProjectColor(feature.properties[propertyKeys.scope])
-              )}
-              zIndexOffset={900} // Keep circle below pointer
-            />
-          </React.Fragment>
-        ))}
+        filteredData.features.map((feature, i) => {
+          const isHighlighted = highlightedProject && 
+            feature.properties[propertyKeys.upc] === highlightedProject.properties[propertyKeys.upc];
+            
+          return (
+            <React.Fragment key={`marker-group-${i}`}>
+              {/* Pointer Marker */}
+              <Marker
+                key={`pointer-${i}`}
+                position={[
+                  feature.geometry.coordinates[1],
+                  feature.geometry.coordinates[0],
+                ]}
+                icon={DefaultIcon}
+                zIndexOffset={isHighlighted ? 3000 : 1000} // Keep highlighted pointer on top
+                ref={(ref) => {
+                  if (ref && openPopupId === feature.properties[propertyKeys.upc]) {
+                    ref.openPopup();
+                  }
+                }}
+                eventHandlers={{
+                  click: () => {
+                    setOpenPopupId(feature.properties[propertyKeys.upc]);
+                    if (setHighlightedProject) setHighlightedProject(null);
+                  },
+                }}
+              >
+                <Tooltip>{feature.properties[propertyKeys.description] || feature.properties[propertyKeys.upc]}</Tooltip>
+                <Popup onClose={() => {
+                  onClosePopup();
+                  if (setHighlightedProject) setHighlightedProject(null);
+                }}>
+                  <ProjectPopup
+                    project={feature}
+                    addComment={addComment}
+                    comments={comments.filter(
+                      (c) =>
+                        String(c.projectId) === String(feature.properties[propertyKeys.upc])
+                    )}
+                    onClosePopup={onClosePopup}
+                    isAdmin={isAdmin}
+                  />
+                </Popup>
+              </Marker>
+              {/* Colored Circle Marker */}
+              <Marker
+                key={`circle-${i}`}
+                position={[
+                  feature.geometry.coordinates[1],
+                  feature.geometry.coordinates[0],
+                ]}
+                icon={createCustomIcon(
+                  getProjectColor(feature.properties[propertyKeys.scope]),
+                  isHighlighted
+                )}
+                zIndexOffset={isHighlighted ? 2900 : 900} 
+              />
+            </React.Fragment>
+          );
+        })}
     </MapContainer>
   );
 }

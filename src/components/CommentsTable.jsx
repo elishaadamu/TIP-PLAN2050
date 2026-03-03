@@ -84,8 +84,8 @@ const CommentsTable = ({ comments, setComments }) => {
     }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
         <div>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 800 }}>Project Comments</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem' }}>Review and audit community feedback on regional infrastructure.</p>
+          <h1 style={{ fontSize: '2.75rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 }}>Project Comments</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', marginTop: '0.5rem', fontWeight: 500 }}>Review and audit community feedback on regional infrastructure.</p>
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <button className="btn-outline" onClick={handleExportAll} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

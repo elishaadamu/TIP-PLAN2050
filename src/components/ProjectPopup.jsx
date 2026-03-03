@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { MessageCircle, Info } from "lucide-react";
 import CommentForm from "./CommentForm";
 
-function ProjectPopup({ project, addComment, comments, onClosePopup }) {
+function ProjectPopup({ project, addComment, comments, onClosePopup, isAdmin }) {
   const [showForm, setShowForm] = useState(false);
 
   const props = project.properties || {};
@@ -47,27 +47,49 @@ function ProjectPopup({ project, addComment, comments, onClosePopup }) {
       <section style={{ marginBottom: '1.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
            <MessageCircle size={14} style={{ color: 'var(--text-muted)' }} />
-           <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Public Log</span>
+           <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+             {isAdmin ? 'Public Testimony' : 'Participation Count'}
+           </span>
            <div style={{ flex: 1, height: '1px', background: 'var(--border-light)' }}></div>
         </div>
         
         {comments.length > 0 ? (
-          <div className="comment-feed" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {comments.map((c) => (
-              <div key={c._id} className="comment-bubble" style={{ 
-                background: 'var(--bg-main)', 
-                padding: '0.75rem', 
-                borderRadius: '8px', 
-                border: '1px solid var(--border-light)' 
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem', fontSize: '0.7rem' }}>
-                  <span style={{ fontWeight: 700, color: 'var(--primary)' }}>{c.name || 'Anonymous Voter'}</span>
-                  <span style={{ color: 'var(--text-muted)' }}>{new Date(c.createdAt || Date.now()).toLocaleDateString()}</span>
+          isAdmin ? (
+            <div className="comment-feed" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {comments.map((c) => (
+                <div key={c._id} className="comment-bubble" style={{ 
+                  background: 'var(--bg-main)', 
+                  padding: '0.75rem', 
+                  borderRadius: '8px', 
+                  border: '1px solid var(--border-light)' 
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem', fontSize: '0.7rem' }}>
+                    <span style={{ fontWeight: 700, color: 'var(--primary)' }}>{c.name || 'Anonymous Voter'}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>{new Date(c.createdAt || Date.now()).toLocaleDateString()}</span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-main)', lineHeight: 1.5 }}>{c.comment || c.text}</p>
                 </div>
-                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-main)', lineHeight: 1.5 }}>{c.comment || c.text}</p>
+              ))}
+            </div>
+          ) : (
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: '0.75rem', 
+              padding: '1.5rem', 
+              background: 'var(--bg-main)', 
+              borderRadius: '12px', 
+              border: '1px solid var(--border-light)',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary)' }}>{comments.length}</div>
+              <div style={{ textAlign: 'left' }}>
+                <div style={{ fontSize: '0.813rem', fontWeight: 700, color: 'var(--text-main)' }}>Submissions Logged</div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Content restricted to Admin</div>
               </div>
-            ))}
-          </div>
+            </div>
+          )
         ) : (
           <div style={{ textAlign: 'center', padding: '1rem', background: 'var(--bg-main)', borderRadius: '8px', border: '1px dashed var(--border-light)' }}>
             <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)' }}>No public testimony found.</p>

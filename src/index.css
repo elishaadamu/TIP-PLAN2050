@@ -79,11 +79,21 @@ body {
   box-shadow: var(--shadow-premium);
 }
 
-/* Typography */
+/* Typography Refinement */
 h1, h2, h3, h4 {
   color: var(--text-main);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+h2, h3, h4 {
   font-weight: 700;
   letter-spacing: -0.02em;
+}
+
+p {
+  letter-spacing: -0.01em;
 }
 
 /* Luxury Buttons */
@@ -209,11 +219,12 @@ input:focus, select:focus {
 }
 
 .explorer-section-title {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.7rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  color: var(--primary);
+  opacity: 0.8;
   margin-bottom: 1.25rem;
   display: flex;
   align-items: center;
@@ -434,4 +445,16 @@ input:focus, select:focus {
   box-shadow: var(--shadow-md) !important;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+/* Map Highlight Effects */
+@keyframes blink {
+  0% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 0 rgba(79, 70, 229, 0.7)); }
+  50% { transform: scale(1.4); opacity: 0.8; filter: drop-shadow(0 0 10px rgba(79, 70, 229, 0.5)); }
+  100% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 0 rgba(79, 70, 229, 0)); }
+}
+
+.blink-marker {
+  animation: blink 1.5s infinite ease-in-out;
+  z-index: 2000 !important;
 }

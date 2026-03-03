@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Map, MessageSquare, Database, Settings, Lock, LogOut } from "lucide-react";
 import "./Header.css"; // import styles
 
 function Header({
@@ -34,18 +35,22 @@ function Header({
 
       <nav className={`nav ${isMobileMenuOpen ? "open" : ""}`}>
         <Link to="/" className="nav-link">
+          <Map size={18} />
           <span>Explore Map</span>
         </Link>
 
         {isAdmin && (
           <div className="admin-nav-group">
             <Link to="/comments" className="nav-link">
+              <MessageSquare size={18} />
               <span>Feedback</span>
             </Link>
             <Link to="/projects" className="nav-link">
+              <Database size={18} />
               <span>Inventory</span>
             </Link>
             <Link to="/geojson-manager" className="nav-link">
+              <Settings size={18} />
               <span>Data Manager</span>
             </Link>
           </div>
@@ -55,10 +60,12 @@ function Header({
 
         {isAdmin ? (
           <button onClick={handleLogout} className="btn-outline logout-btn">
+            <LogOut size={16} />
             Sign Out
           </button>
         ) : (
           <Link to="/login" className="btn-primary login-btn">
+            <Lock size={16} />
             Admin Access
           </Link>
         )}

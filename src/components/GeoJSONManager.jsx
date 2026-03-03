@@ -149,8 +149,8 @@ function GeoJSONManager({
     }}>
       <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{ textAlign: 'left' }}>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-main)' }}>Data Registry</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', marginTop: '0.5rem' }}>
+          <h1 style={{ fontSize: '2.75rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.04em', lineHeight: 1 }}>Data Registry</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', marginTop: '0.5rem', fontWeight: 500 }}>
             Upload, configure, and manage regional infrastructure datasets.
           </p>
         </div>

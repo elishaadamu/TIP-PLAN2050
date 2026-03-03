@@ -1,8 +1,28 @@
 import React, { useState } from "react";
 
-const ProjectsTableIndex = ({ geoData, allHeaders }) => {
+const ProjectsTableIndex = ({ geoData, allHeaders, onProjectClick, comments, upcKey }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  const getCommentCount = (projectId) => {
+    if (!comments) return 0;
+    return comments.filter(c => String(c.projectId) === String(projectId)).length;
+  };
+
+  const getGeometryLabel = (geometry) => {
+    if (!geometry) return "No Data";
+    if (geometry.type === 'Point') {
+      const [lng, lat] = geometry.coordinates;
+      return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+    if (geometry.type === 'LineString') {
+      return `Line (${geometry.coordinates.length} pts)`;
+    }
+    if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
+      return "Area Data";
+    }
+    return geometry.type;
+  };
 
   const exportToCsv = (data, filename) => {
     if (!data || data.length === 0) {
@@ -50,7 +70,7 @@ const ProjectsTableIndex = ({ geoData, allHeaders }) => {
   const currentProjects = projects.slice(indexOfFirstItem, indexOfLastItem);
 
   const headers = projects.length > 0 
-    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Geometry"] 
+    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback", "Geometry"] 
     : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -118,13 +138,27 @@ const ProjectsTableIndex = ({ geoData, allHeaders }) => {
                     cursor: 'pointer'
                   }}
                   className="inventory-row"
+                  onClick={() => onProjectClick && onProjectClick(feature)}
                 >
                   {headers.map((header) => (
                     <td
                       key={header}
                       style={{ padding: "1rem" }}
                     >
-                      {header === "Geometry"
+                      {header === "Feedback"
+                        ? (
+                           <span style={{ 
+                             background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(79, 70, 229, 0.1)' : 'rgba(0,0,0,0.05)',
+                             color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--primary)' : 'var(--text-muted)',
+                             padding: '0.2rem 0.4rem',
+                             borderRadius: '4px',
+                             fontSize: '0.7rem',
+                             fontWeight: '700'
+                           }}>
+                             {getCommentCount(feature.properties[upcKey])}
+                           </span>
+                        )
+                        : header === "Geometry"
                         ? (
                           <span style={{ 
                             background: 'rgba(79, 70, 229, 0.1)', 
@@ -135,7 +169,7 @@ const ProjectsTableIndex = ({ geoData, allHeaders }) => {
                             fontWeight: '600',
                             fontFamily: 'monospace'
                           }}>
-                            LOCATED
+                            {getGeometryLabel(feature.geometry)}
                           </span>
                         )
                         : (

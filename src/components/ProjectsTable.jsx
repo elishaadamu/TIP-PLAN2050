@@ -2,9 +2,24 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Download, FileSpreadsheet, Eye, ChevronLeft, ChevronRight, X } from "lucide-react";
 
-const ProjectsTable = ({ geoData, headers: explicitHeaders }) => {
+const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comments, upcKey }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+
+  const getGeometryLabel = (geometry) => {
+    if (!geometry) return "No Data";
+    if (geometry.type === 'Point') {
+      const [lng, lat] = geometry.coordinates;
+      return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+    if (geometry.type === 'LineString') {
+      return `Line (${geometry.coordinates.length} pts)`;
+    }
+    if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
+      return "Area Data";
+    }
+    return geometry.type;
+  };
 
   const exportToCsv = (data, filename) => {
     if (!data || data.length === 0) {
@@ -54,8 +69,13 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProjects = projects.slice(indexOfFirstItem, indexOfLastItem);
 
+  const getCommentCount = (projectId) => {
+    if (!comments) return 0;
+    return comments.filter(c => String(c.projectId) === String(projectId)).length;
+  };
+
   const headers = projects.length > 0 
-    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Geometry"] 
+    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback", "Geometry"] 
     : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -71,8 +91,8 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders }) => {
     }}>
       <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h1 style={{ fontSize: '2.50rem', fontWeight: 800 }}>Project Inventory</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem' }}>Manage and audit all regional infrastructure projects.</p>
+          <h1 style={{ fontSize: '2.75rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 }}>Project Inventory</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', marginTop: '0.5rem', fontWeight: 500 }}>Manage and audit all regional infrastructure projects.</p>
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
            <button className="btn-outline" onClick={handleExportAllProjects} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -131,16 +151,32 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders }) => {
                 currentProjects.map((feature, index) => (
                   <tr 
                     key={feature.properties.UPC || feature.properties.ID || index}
-                    style={{ borderBottom: '1px solid var(--border-light)', transition: 'var(--transition)' }}
+                    style={{ borderBottom: '1px solid var(--border-light)', transition: 'var(--transition)', cursor: 'pointer' }}
+                    onClick={() => onProjectClick && onProjectClick(feature)}
                     onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-hover)'}
-                    onLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                   >
                     {headers.map((header) => (
                       <td
                         key={header}
                         style={{ padding: "1.25rem 1rem", color: "var(--text-main)" }}
                       >
-                        {header === "Geometry"
+                        {header === "Feedback"
+                          ? (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)' }}>
+                              <span style={{ 
+                                background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(79, 70, 229, 0.1)' : 'rgba(0,0,0,0.05)',
+                                color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--primary)' : 'var(--text-muted)',
+                                padding: '0.25rem 0.5rem',
+                                borderRadius: '4px',
+                                fontSize: '0.75rem',
+                                fontWeight: '700'
+                              }}>
+                                {getCommentCount(feature.properties[upcKey])}
+                              </span>
+                            </div>
+                          )
+                          : header === "Geometry"
                           ? (
                             <span style={{ 
                               background: 'rgba(79, 70, 229, 0.1)', 
@@ -150,7 +186,7 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders }) => {
                               fontSize: '0.75rem',
                               fontWeight: '600'
                             }}>
-                              MAP DATA
+                              {getGeometryLabel(feature.geometry)}
                             </span>
                           )
                           : (
@@ -164,7 +200,7 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders }) => {
                     <td style={{ padding: "1rem", textAlign: "right" }}>
                       <button 
                          className="btn-outline" 
-                         onClick={() => handleExportRow(feature)}
+                         onClick={(e) => { e.stopPropagation(); handleExportRow(feature); }}
                          style={{ padding: '0.5rem', borderRadius: '6px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                          title="Export Details"
                        >

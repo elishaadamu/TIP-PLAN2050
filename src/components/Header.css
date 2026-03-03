@@ -49,14 +49,17 @@
   color: var(--text-main);
   line-height: 1.1;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
 }
 
 .header-subtitle {
   font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  margin-top: 2px;
+  font-weight: 600;
+  color: var(--primary);
+  opacity: 0.9;
+  margin-top: 1px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .nav {
@@ -71,14 +74,19 @@
 }
 
 .nav-link {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.813rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   color: var(--text-muted);
   text-decoration: none;
   padding: 0.625rem 1rem;
   border-radius: var(--radius-sm);
   transition: var(--transition);
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
 }
 
 .nav-link:hover {
@@ -86,9 +94,24 @@
   background: rgba(79, 70, 229, 0.05);
 }
 
+.nav-link svg {
+  opacity: 0.7;
+  transition: var(--transition);
+}
+
+.nav-link:hover svg {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
 .nav-link span {
   position: relative;
   z-index: 1;
+  transition: var(--transition);
+}
+
+.nav-link:hover span {
+  transform: translateX(2px);
 }
 
 .nav-divider {
@@ -101,6 +124,10 @@
 .login-btn, .logout-btn {
   font-size: 0.813rem;
   height: 40px;
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1.25rem;
 }
 
 /* Mobile Toggle - Improved */
@@ -155,9 +182,9 @@
 
   .nav-link {
     width: 100%;
-    text-align: center;
-    font-size: 1.25rem;
-    padding: 1.5rem;
+    justify-content: center;
+    font-size: 1.125rem;
+    padding: 1rem;
     color: var(--text-main);
   }
 }

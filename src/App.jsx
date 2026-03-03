@@ -34,6 +34,7 @@ function App() {
   const [isLayersOpen, setIsLayersOpen] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [activeProjectLayers, setActiveProjectLayers] = useState([]);
+  const [highlightedProject, setHighlightedProject] = useState(null);
   const [propertyKeys, setPropertyKeys] = useState({
     scope: "Scope",
     county: "County",
@@ -170,6 +171,11 @@ function App() {
     navigate("/");
   };
 
+  const handleProjectClick = (project) => {
+    setHighlightedProject(project);
+    navigate("/");
+  };
+
   if (!geoData) {
     return (
       <div className="app-container" style={{ background: 'var(--bg-main)' }}>
@@ -239,7 +245,13 @@ function App() {
             path="/projects"
             element={
               isAdmin ? (
-                <ProjectsTable geoData={geoData} headers={propertyKeys.allKeys} />
+                <ProjectsTable 
+                  geoData={geoData} 
+                  headers={propertyKeys.allKeys} 
+                  onProjectClick={handleProjectClick}
+                  comments={comments}
+                  upcKey={propertyKeys.upc}
+                />
               ) : (
                 <Navigate to="/login" replace />
               )
@@ -364,6 +376,9 @@ function App() {
                    <ProjectsTableIndex 
                      geoData={filteredGeoData} 
                      allHeaders={propertyKeys.allKeys} 
+                     onProjectClick={handleProjectClick}
+                     comments={comments}
+                     upcKey={propertyKeys.upc}
                    />
                 </div>
               </aside>
@@ -377,18 +392,20 @@ function App() {
                 }}
               >
                   <div style={{ flex: 1 }}>
-                  <MapView
-                    addComment={addComment}
-                    comments={comments}
-                    geoData={filteredGeoData}
-                    activeProjectLayers={activeProjectLayers}
-                    selectedScope={selectedScope}
-                    selectedCounty={selectedCounty}
-                    selectedUPC={selectedUPC}
-                    selectedFundingLayer={selectedFundingLayer}
-                    isAdmin={isAdmin} // Pass isAdmin prop
-                    propertyKeys={propertyKeys}
-                  />
+                    <MapView
+                      addComment={addComment}
+                      comments={comments}
+                      geoData={filteredGeoData}
+                      activeProjectLayers={activeProjectLayers}
+                      selectedScope={selectedScope}
+                      selectedCounty={selectedCounty}
+                      selectedUPC={selectedUPC}
+                      selectedFundingLayer={selectedFundingLayer}
+                      isAdmin={isAdmin} // Pass isAdmin prop
+                      propertyKeys={propertyKeys}
+                      highlightedProject={highlightedProject}
+                      setHighlightedProject={setHighlightedProject}
+                    />
                 </div>
               </main>
             </div>
