@@ -35,7 +35,17 @@ function GeoJSONManager({
         setCurrentGeoDataFilename(response.data.filename);
         setSelectedFile(response.data.filename);
       } catch (error) {
-        Swal.fire("Error", "Failed to load initial GeoJSON data.", "error");
+        console.error("Failed to load initial GeoJSON data:", error);
+        Swal.fire({
+          icon: "warning",
+          title: "No Active Dataset",
+          text: "Could not load the active GeoJSON data. You can upload a new file below.",
+          timer: 3000,
+        });
+        // Set empty data so the page can still render
+        setGeoData({ type: "FeatureCollection", features: [] });
+        setCurrentGeoDataFilename(null);
+        setSelectedFile("");
       }
     };
 
