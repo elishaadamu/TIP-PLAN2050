@@ -1,6 +1,6 @@
 import React, { useState, useMemo, memo } from "react";
 
-const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments, upcKey }) => {
+const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments, upcKey, isAdmin }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -104,13 +104,15 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
             {projects.length} PROJECTS LOGGED
           </p>
         </div>
-        <button
-          onClick={handleExportAllProjects}
-          className="btn-outline"
-          style={{ padding: '0.5rem 0.75rem', fontSize: '0.75rem' }}
-        >
-          Export CSV
-        </button>
+        {isAdmin && (
+          <button
+            onClick={handleExportAllProjects}
+            className="btn-outline"
+            style={{ padding: '0.5rem 0.75rem', fontSize: '0.75rem' }}
+          >
+            Export CSV
+          </button>
+        )}
       </div>
 
       <div className="table-container card" style={{ padding: '0', overflow: 'hidden' }}>

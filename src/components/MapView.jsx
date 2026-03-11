@@ -230,7 +230,7 @@ function MapView({
             icon={DefaultIcon}
             zIndexOffset={isHighlighted ? 3000 : 1000}
             ref={(ref) => {
-              if (ref && openPopupId === feature.properties[propertyKeys.upc]) {
+              if (ref && openPopupId !== null && openPopupId === feature.properties[propertyKeys.upc]) {
                 ref.openPopup();
               }
             }}

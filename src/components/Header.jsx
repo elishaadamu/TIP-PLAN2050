@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Map, MessageSquare, Database, Settings, Lock, LogOut } from "lucide-react";
+import { Map, MessageSquare, Database, Settings, Lock, LogOut, FileText } from "lucide-react";
 import "./Header.css"; // import styles
 
 function Header({
@@ -8,6 +8,7 @@ function Header({
   handleLogout,
   isMobileMenuOpen,
   setIsMobileMenuOpen,
+  onOpenFactSheet
 }) {
   return (
     <>
@@ -30,6 +31,22 @@ function Header({
             <Map size={18} />
             <span>Explore Map</span>
           </Link>
+
+          <button 
+            onClick={onOpenFactSheet} 
+            className="nav-link" 
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              textTransform: 'inherit',
+              letterSpacing: 'inherit'
+            }}
+          >
+            <FileText size={18} />
+            <span className="text-uppercase">FACT SHEET</span>
+          </button>
 
           {isAdmin && (
             <div className="admin-nav-group">
@@ -83,6 +100,24 @@ function Header({
           <Map size={18} />
           <span>Explore Map</span>
         </Link>
+
+        <button 
+          className="nav-link" 
+          onClick={() => { onOpenFactSheet(); setIsMobileMenuOpen(false); }}
+          style={{ 
+            background: 'none', 
+            border: 'none', 
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+            textTransform: 'inherit',
+            letterSpacing: 'inherit',
+            width: '100%',
+            justifyContent: 'center'
+          }}
+        >
+          <FileText size={18} />
+          <span>Fact Sheet</span>
+        </button>
 
         {isAdmin && (
           <div className="admin-nav-group">

@@ -13,6 +13,7 @@ const AdminLogin = lazy(() => import("./components/AdminLogin"));
 const CommentsTable = lazy(() => import("./components/CommentsTable"));
 const ProjectsTable = lazy(() => import("./components/ProjectsTable"));
 const GeoJSONManager = lazy(() => import("./components/GeoJSONManager"));
+const FactSheetModal = lazy(() => import("./components/FactSheetModal"));
 
 function App() {
   const [comments, setComments] = useState([]);
@@ -22,9 +23,11 @@ function App() {
   const navigate = useNavigate();
   const [scopes, setScopes] = useState([]);
   const [counties, setCounties] = useState([]);
+  const [types, setTypes] = useState([]);
   const [selectedUPC, setSelectedUPC] = useState("");
   const [selectedScope, setSelectedScope] = useState("All");
   const [selectedCounty, setSelectedCounty] = useState("All");
+  const [selectedType, setSelectedType] = useState("All");
   const [selectedFundingLayer, setSelectedFundingLayer] = useState("All");
   const [fundingSources, setFundingSources] = useState([]);
   const [projectTitle, setProjectTitle] = useState([]);
@@ -42,6 +45,13 @@ function App() {
     type: "Type",
     upc: "UPC",
     description: "Description"
+  });
+  const [isFactSheetOpen, setIsFactSheetOpen] = useState(() => {
+    const dismissedAt = localStorage.getItem("factSheetDismissedAt");
+    if (!dismissedAt) return true;
+    const now = Date.now();
+    const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+    return now - parseInt(dismissedAt) > threeDaysInMs;
   });
 
   useEffect(() => {
@@ -96,6 +106,11 @@ function App() {
         ...new Set(data.features.map((f) => f.properties[countyKey])),
       ].filter(Boolean);
       setCounties(["All", ...uniqueCounties.sort()]);
+
+      const uniqueTypes = [
+        ...new Set(data.features.map((f) => f.properties[typeKey])),
+      ].filter(Boolean);
+      setTypes(["All", ...uniqueTypes.sort()]);
 
       const sources = [
         ...new Set(data.features.map((f) => f.properties[typeKey])),
@@ -191,15 +206,18 @@ function App() {
         const matchesCounty =
           selectedCounty === "All" ||
           String(feature.properties[propertyKeys.county]) === selectedCounty;
+        const matchesType =
+          selectedType === "All" ||
+          String(feature.properties[propertyKeys.type]) === selectedType;
 
         const matchesFundingLayer =
           selectedFundingLayer === "All" ||
           String(feature.properties[propertyKeys.type]) === selectedFundingLayer;
 
-        return matchesSearch && matchesScope && matchesCounty && matchesFundingLayer;
+        return matchesSearch && matchesScope && matchesCounty && matchesType && matchesFundingLayer;
       }),
     };
-  }, [geoData, selectedUPC, selectedScope, selectedCounty, selectedFundingLayer, propertyKeys]);
+  }, [geoData, selectedUPC, selectedScope, selectedCounty, selectedType, selectedFundingLayer, propertyKeys]);
 
   if (!geoData) {
     return (
@@ -230,6 +248,7 @@ function App() {
         handleLogout={handleLogout}
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
+        onOpenFactSheet={() => setIsFactSheetOpen(true)}
       />
 
       <main style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -316,6 +335,21 @@ function App() {
                 </button>
                 {/* Visual Group: Filters */}
                 <div className="sidebar-group">
+                  <button 
+                    onClick={() => setIsFactSheetOpen(true)} 
+                    className="btn-primary" 
+                    style={{ 
+                      width: '100%', 
+                      padding: '1.25rem', 
+                      justifyContent: 'center', 
+                      fontSize: '0.9rem', 
+                      letterSpacing: '0.05em',
+                      marginBottom: '1.5rem',
+                      borderRadius: 'var(--radius-md)'
+                    }}
+                  >
+                    VIEW PUBLIC TESTIMONY REGISTRY (FACT SHEET)
+                  </button>
                   <header className="explorer-section-title">
                     <div style={{ background: 'rgba(14, 165, 233, 0.1)', padding: '6px', borderRadius: '6px', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Search size={14} />
@@ -348,7 +382,19 @@ function App() {
                     </div>
 
                     <div className="filter-control">
-                      <label>Global Registry Search</label>
+                      <label>{propertyKeys.type}</label>
+                      <select
+                        value={selectedType}
+                        onChange={(e) => setSelectedType(e.target.value)}
+                      >
+                        {types.map((type) => (
+                          <option key={type} value={type}>{type}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="filter-control">
+                      <label>UPC Search</label>
                       <div style={{ position: 'relative' }}>
                         <input
                           type="text"
@@ -368,13 +414,15 @@ function App() {
 
                 {/* Projects Table Indexcv */}
                 <div className="sidebar-group">
-                   <ProjectsTableIndex 
-                     geoData={filteredGeoData} 
-                     allHeaders={propertyKeys.allKeys} 
-                     onProjectClick={handleProjectClick}
-                     comments={comments}
-                     upcKey={propertyKeys.upc}
-                   />
+                    <ProjectsTableIndex 
+                      geoData={filteredGeoData} 
+                      allHeaders={propertyKeys.allKeys} 
+                      onProjectClick={handleProjectClick}
+                      comments={comments}
+                      upcKey={propertyKeys.upc}
+                      isAdmin={isAdmin}
+                      onOpenFactSheet={() => setIsFactSheetOpen(true)}
+                    />
                 </div>
               </aside>
 
@@ -409,6 +457,15 @@ function App() {
         </Routes>
         </Suspense>
       </main>
+      <Suspense fallback={null}>
+        <FactSheetModal 
+          isOpen={isFactSheetOpen} 
+          onClose={() => {
+            setIsFactSheetOpen(false);
+            localStorage.setItem("factSheetDismissedAt", Date.now().toString());
+          }} 
+        />
+      </Suspense>
     </div>
   );
 }
