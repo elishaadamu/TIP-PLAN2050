@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense, lazy, useMemo, useCallback } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
-import MapView from "./components/MapView";
-import AdminLogin from "./components/AdminLogin";
-import CommentsTable from "./components/CommentsTable";
-import ProjectsTable from "./components/ProjectsTable";
-import ProjectsTableIndex from "./components/ProjectsTableIndex";
 import Header from "./components/Header";
-import { MultiSelect } from "react-multi-select-component";
-import GeoJSONManager from "./components/GeoJSONManager";
-import { Layers, Search, ChevronLeft, ChevronRight, X } from "lucide-react";
+import ProjectsTableIndex from "./components/ProjectsTableIndex";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import "./components/FormElements.css";
+
+// Lazy load heavy components
+const MapView = lazy(() => import("./components/MapView"));
+const AdminLogin = lazy(() => import("./components/AdminLogin"));
+const CommentsTable = lazy(() => import("./components/CommentsTable"));
+const ProjectsTable = lazy(() => import("./components/ProjectsTable"));
+const GeoJSONManager = lazy(() => import("./components/GeoJSONManager"));
 
 function App() {
   const [comments, setComments] = useState([]);
@@ -172,6 +173,33 @@ function App() {
     navigate("/");
   };
 
+  // Memoize filtered geoData to prevent unnecessary recalculations
+  const filteredGeoData = useMemo(() => {
+    if (!geoData) return null;
+    return {
+      ...geoData,
+      features: geoData.features.filter((feature) => {
+        const searchTerm = selectedUPC.toLowerCase();
+        const matchesSearch = !searchTerm || Object.values(feature.properties).some(val =>
+          String(val).toLowerCase().includes(searchTerm)
+        );
+
+        const matchesScope =
+          selectedScope === "All" ||
+          String(feature.properties[propertyKeys.scope]) === selectedScope;
+        const matchesCounty =
+          selectedCounty === "All" ||
+          String(feature.properties[propertyKeys.county]) === selectedCounty;
+
+        const matchesFundingLayer =
+          selectedFundingLayer === "All" ||
+          String(feature.properties[propertyKeys.type]) === selectedFundingLayer;
+
+        return matchesSearch && matchesScope && matchesCounty && matchesFundingLayer;
+      }),
+    };
+  }, [geoData, selectedUPC, selectedScope, selectedCounty, selectedFundingLayer, propertyKeys]);
+
   if (!geoData) {
     return (
       <div className="app-container" style={{ background: 'var(--bg-main)' }}>
@@ -185,29 +213,6 @@ function App() {
       </div>
     );
   }
-
-  const filteredGeoData = {
-    ...geoData,
-    features: geoData.features.filter((feature) => {
-      const searchTerm = selectedUPC.toLowerCase();
-      const matchesSearch = !searchTerm || Object.values(feature.properties).some(val => 
-        String(val).toLowerCase().includes(searchTerm)
-      );
-      
-      const matchesScope =
-        selectedScope === "All" ||
-        String(feature.properties[propertyKeys.scope]) === selectedScope;
-      const matchesCounty =
-        selectedCounty === "All" ||
-        String(feature.properties[propertyKeys.county]) === selectedCounty;
-
-      const matchesFundingLayer =
-        selectedFundingLayer === "All" ||
-        String(feature.properties[propertyKeys.type]) === selectedFundingLayer;
-
-      return matchesSearch && matchesScope && matchesCounty && matchesFundingLayer;
-    }),
-  };
 
   return (
     <div
@@ -227,54 +232,62 @@ function App() {
       />
 
       <main style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', display: 'flex', flexDirection: 'column', width: '100%' }}>
-        <Routes>
-          <Route
-            path="/login"
-            element={<AdminLogin setIsAdmin={setIsAdmin} navigate={navigate} />}
-          />
-          <Route
-            path="/comments"
-            element={
-              isAdmin ? (
-                <CommentsTable comments={comments} setComments={setComments} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/projects"
-            element={
-              isAdmin ? (
-                <ProjectsTable 
-                  geoData={geoData} 
-                  headers={propertyKeys.allKeys} 
-                  onProjectClick={handleProjectClick}
-                  comments={comments}
-                  upcKey={propertyKeys.upc}
-                />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/geojson-manager"
-            element={
-              isAdmin ? (
-                <GeoJSONManager
-                  setGeoData={setGeoData}
-                  currentGeoDataFilename={currentGeoDataFilename}
-                  setCurrentGeoDataFilename={setCurrentGeoDataFilename}
-                />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/"
-            element={
+        <Suspense fallback={
+          <div className="loading-container" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="spinner shimmer"></div>
+            <p style={{ color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.05em' }}>
+              LOADING...
+            </p>
+          </div>
+        }>
+          <Routes>
+            <Route
+              path="/login"
+              element={<AdminLogin setIsAdmin={setIsAdmin} navigate={navigate} />}
+            />
+            <Route
+              path="/comments"
+              element={
+                isAdmin ? (
+                  <CommentsTable comments={comments} setComments={setComments} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/projects"
+              element={
+                isAdmin ? (
+                  <ProjectsTable
+                    geoData={geoData}
+                    headers={propertyKeys.allKeys}
+                    onProjectClick={handleProjectClick}
+                    comments={comments}
+                    upcKey={propertyKeys.upc}
+                  />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/geojson-manager"
+              element={
+                isAdmin ? (
+                  <GeoJSONManager
+                    setGeoData={setGeoData}
+                    currentGeoDataFilename={currentGeoDataFilename}
+                    setCurrentGeoDataFilename={setCurrentGeoDataFilename}
+                  />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/"
+              element={
               <div
                 className="app-content_2"
                 style={{ display: "flex", flex: 1, position: "relative", overflow: 'hidden' }}
@@ -392,7 +405,8 @@ function App() {
             </div>
           }
         />
-      </Routes>
+        </Routes>
+        </Suspense>
       </main>
     </div>
   );

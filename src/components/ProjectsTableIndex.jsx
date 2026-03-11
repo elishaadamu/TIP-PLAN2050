@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, memo } from "react";
 
-const ProjectsTableIndex = ({ geoData, allHeaders, onProjectClick, comments, upcKey }) => {
+const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments, upcKey }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  // Memoize comment count lookup
+  const commentCountMap = useMemo(() => {
+    if (!comments) return new Map();
+    const map = new Map();
+    comments.forEach(c => {
+      const projectId = String(c.projectId);
+      map.set(projectId, (map.get(projectId) || 0) + 1);
+    });
+    return map;
+  }, [comments]);
+
   const getCommentCount = (projectId) => {
-    if (!comments) return 0;
-    return comments.filter(c => String(c.projectId) === String(projectId)).length;
+    return commentCountMap.get(String(projectId)) || 0;
   };
 
   const getGeometryLabel = (geometry) => {
@@ -61,17 +71,20 @@ const ProjectsTableIndex = ({ geoData, allHeaders, onProjectClick, comments, upc
     }
   };
 
-  const projects = geoData ? geoData.features : [];
+  const projects = useMemo(() => geoData?.features || [], [geoData]);
 
-  const totalPages = Math.ceil(projects.length / itemsPerPage);
+  const totalPages = useMemo(() => Math.ceil(projects.length / itemsPerPage), [projects.length]);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProjects = projects.slice(indexOfFirstItem, indexOfLastItem);
+  const currentProjects = useMemo(() => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return projects.slice(indexOfFirstItem, indexOfLastItem);
+  }, [projects, currentPage]);
 
-  const headers = projects.length > 0 
-    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback", "Geometry"] 
-    : [];
+  const headers = useMemo(() => {
+    if (projects.length === 0) return [];
+    return [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback", "Geometry"];
+  }, [projects]);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -233,6 +246,6 @@ const ProjectsTableIndex = ({ geoData, allHeaders, onProjectClick, comments, upc
       )}
     </div>
   );
-};
+});
 
 export default ProjectsTableIndex;

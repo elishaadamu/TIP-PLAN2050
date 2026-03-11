@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, memo, useCallback } from "react";
 import L from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap } from "react-leaflet";
 import ProjectPopup from "./ProjectPopup";
@@ -120,6 +120,28 @@ function MapView({
     setOpenPopupId(null);
   };
 
+  // Memoize filtered features and markers for performance
+  const markers = useMemo(() => {
+    if (!geoData?.features) return [];
+
+    return geoData.features.map((feature, i) => {
+      const isHighlighted = highlightedProject &&
+        feature.properties[propertyKeys.upc] === highlightedProject.properties[propertyKeys.upc];
+
+      const projectComments = comments.filter(
+        (c) => String(c.projectId) === String(feature.properties[propertyKeys.upc])
+      );
+
+      return {
+        feature,
+        i,
+        isHighlighted,
+        projectComments,
+        color: getProjectColor(feature.properties[propertyKeys.scope]),
+      };
+    });
+  }, [geoData, highlightedProject, propertyKeys.upc, propertyKeys.scope, comments]);
+
   useEffect(() => {
     if (geoData && geoData.features && geoData.features.length > 0) {
       const leafletBounds = L.latLngBounds([]);
@@ -181,76 +203,63 @@ function MapView({
 
       <ChangeView bounds={bounds} />
 
-      <MapHighlightEffect 
-        project={highlightedProject} 
-        setOpenPopupId={setOpenPopupId} 
-        upcKey={propertyKeys.upc} 
+      <MapHighlightEffect
+        project={highlightedProject}
+        setOpenPopupId={setOpenPopupId}
+        upcKey={propertyKeys.upc}
       />
 
-      {/* Render both pointer and colored circle markers */}
-      {geoData &&
-        geoData.features.map((feature, i) => {
-          const isHighlighted = highlightedProject && 
-            feature.properties[propertyKeys.upc] === highlightedProject.properties[propertyKeys.upc];
-            
-          return (
-            <React.Fragment key={`marker-group-${i}`}>
-              {/* Pointer Marker */}
-              <Marker
-                key={`pointer-${i}`}
-                position={[
-                  feature.geometry.coordinates[1],
-                  feature.geometry.coordinates[0],
-                ]}
-                icon={DefaultIcon}
-                zIndexOffset={isHighlighted ? 3000 : 1000} // Keep highlighted pointer on top
-                ref={(ref) => {
-                  if (ref && openPopupId === feature.properties[propertyKeys.upc]) {
-                    ref.openPopup();
-                  }
-                }}
-                eventHandlers={{
-                  click: () => {
-                    setOpenPopupId(feature.properties[propertyKeys.upc]);
-                    if (setHighlightedProject) setHighlightedProject(null);
-                  },
-                }}
-              >
-                <Tooltip>{feature.properties[propertyKeys.description] || feature.properties[propertyKeys.upc]}</Tooltip>
-                <Popup onClose={() => {
-                  onClosePopup();
-                  if (setHighlightedProject) setHighlightedProject(null);
-                }}>
-                  <ProjectPopup
-                    project={feature}
-                    addComment={addComment}
-                    comments={comments.filter(
-                      (c) =>
-                        String(c.projectId) === String(feature.properties[propertyKeys.upc])
-                    )}
-                    onClosePopup={onClosePopup}
-                    isAdmin={isAdmin}
-                  />
-                </Popup>
-              </Marker>
-              {/* Colored Circle Marker */}
-              <Marker
-                key={`circle-${i}`}
-                position={[
-                  feature.geometry.coordinates[1],
-                  feature.geometry.coordinates[0],
-                ]}
-                icon={createCustomIcon(
-                  getProjectColor(feature.properties[propertyKeys.scope]),
-                  isHighlighted
-                )}
-                zIndexOffset={isHighlighted ? 2900 : 900} 
+      {markers.map(({ feature, i, isHighlighted, projectComments, color }) => (
+        <React.Fragment key={`marker-group-${i}`}>
+          {/* Pointer Marker */}
+          <Marker
+            key={`pointer-${i}`}
+            position={[
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+            ]}
+            icon={DefaultIcon}
+            zIndexOffset={isHighlighted ? 3000 : 1000}
+            ref={(ref) => {
+              if (ref && openPopupId === feature.properties[propertyKeys.upc]) {
+                ref.openPopup();
+              }
+            }}
+            eventHandlers={{
+              click: () => {
+                setOpenPopupId(feature.properties[propertyKeys.upc]);
+                if (setHighlightedProject) setHighlightedProject(null);
+              },
+            }}
+          >
+            <Tooltip>{feature.properties[propertyKeys.description] || feature.properties[propertyKeys.upc]}</Tooltip>
+            <Popup onClose={() => {
+              onClosePopup();
+              if (setHighlightedProject) setHighlightedProject(null);
+            }}>
+              <ProjectPopup
+                project={feature}
+                addComment={addComment}
+                comments={projectComments}
+                onClosePopup={onClosePopup}
+                isAdmin={isAdmin}
               />
-            </React.Fragment>
-          );
-        })}
+            </Popup>
+          </Marker>
+          {/* Colored Circle Marker */}
+          <Marker
+            key={`circle-${i}`}
+            position={[
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+            ]}
+            icon={createCustomIcon(color, isHighlighted)}
+            zIndexOffset={isHighlighted ? 2900 : 900}
+          />
+        </React.Fragment>
+      ))}
     </MapContainer>
   );
 }
 
-export default MapView;
+export default memo(MapView);
