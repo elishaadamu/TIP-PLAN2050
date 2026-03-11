@@ -107,6 +107,8 @@ function MapView({
   isAdmin,
   highlightedProject,
   setHighlightedProject,
+  isSidebarOpen,
+  isFactSheetOpen,
   propertyKeys = {
     scope: "Scope",
     county: "County",
@@ -117,6 +119,25 @@ function MapView({
 }) {
   const [openPopupId, setOpenPopupId] = useState(null);
   const [bounds, setBounds] = useState(null);
+
+  // New component to handle auto-alignment on sidebar toggle
+  const MapAutoAlign = () => {
+    const map = useMap();
+    
+    useEffect(() => {
+      // Small timeout to allow the flexible layout transitions to complete
+      const timer = setTimeout(() => {
+        map.invalidateSize();
+        if (bounds) {
+          map.fitBounds(bounds, { padding: [50, 50], animate: true });
+        }
+      }, 550); // Slightly longer than the 0.5s CSS transition
+      
+      return () => clearTimeout(timer);
+    }, [isSidebarOpen, isFactSheetOpen, map, bounds]);
+
+    return null;
+  };
   
   const onClosePopup = useCallback(() => {
     setOpenPopupId(null);
@@ -211,6 +232,7 @@ function MapView({
       />
 
       <ChangeView bounds={bounds} />
+      <MapAutoAlign />
 
       <MapHighlightEffect
         project={highlightedProject}

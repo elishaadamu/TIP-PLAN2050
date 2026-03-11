@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import ProjectsTableIndex from "./components/ProjectsTableIndex";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, FileText, Database, Map, X } from "lucide-react";
 import "./components/FormElements.css";
 
 // Lazy load heavy components
@@ -13,7 +13,7 @@ const AdminLogin = lazy(() => import("./components/AdminLogin"));
 const CommentsTable = lazy(() => import("./components/CommentsTable"));
 const ProjectsTable = lazy(() => import("./components/ProjectsTable"));
 const GeoJSONManager = lazy(() => import("./components/GeoJSONManager"));
-const FactSheetModal = lazy(() => import("./components/FactSheetModal"));
+const FactSheetSidebar = lazy(() => import("./components/FactSheetSidebar"));
 
 function App() {
   const [comments, setComments] = useState([]);
@@ -35,6 +35,7 @@ function App() {
   const [currentGeoDataFilename, setCurrentGeoDataFilename] = useState(null); // New state for active GeoJSON filename
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 991);
+  const [isFactSheetOpen, setIsFactSheetOpen] = useState(true);
   const [isLayersOpen, setIsLayersOpen] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [activeProjectLayers, setActiveProjectLayers] = useState([]);
@@ -45,13 +46,6 @@ function App() {
     type: "Type",
     upc: "UPC",
     description: "Description"
-  });
-  const [isFactSheetOpen, setIsFactSheetOpen] = useState(() => {
-    const dismissedAt = localStorage.getItem("factSheetDismissedAt");
-    if (!dismissedAt) return true;
-    const now = Date.now();
-    const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
-    return now - parseInt(dismissedAt) > threeDaysInMs;
   });
 
   useEffect(() => {
@@ -248,7 +242,7 @@ function App() {
         handleLogout={handleLogout}
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
-        onOpenFactSheet={() => setIsFactSheetOpen(true)}
+        onOpenFactSheet={() => setIsFactSheetOpen(!isFactSheetOpen)}
       />
 
       <main style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -309,163 +303,216 @@ function App() {
               path="/"
               element={
               <div
-                className="app-content_2"
-                style={{ display: "flex", flex: 1, position: "relative", overflow: 'hidden' }}
+                className="app-content_3_col"
+                style={{ position: 'relative' }}
               >
-              {/* Backdrop overlay for mobile/tablet sidebar */}
-              <div 
-                className={`sidebar-backdrop ${!isSidebarOpen ? 'hidden' : ''}`}
-                onClick={() => setIsSidebarOpen(false)}
-              />
-              <button 
-                className="sidebar-toggle-btn"
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                aria-label="Toggle Sidebar"
-              >
-                {isSidebarOpen ? <ChevronLeft size={36} /> : <ChevronRight size={36} />}
-              </button>
-              <aside className={`asidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
-                {/* Close button for mobile/tablet */}
-                <button 
-                  className="sidebar-close-btn"
-                  onClick={() => setIsSidebarOpen(false)}
-                  aria-label="Close Sidebar"
-                >
-                  <span className="sidebar-close-btn-text">X</span>
-                </button>
-                {/* Visual Group: Filters */}
-                <div className="sidebar-group">
-                  <button 
-                    onClick={() => setIsFactSheetOpen(true)} 
-                    className="btn-primary" 
-                    style={{ 
-                      width: '100%', 
-                      padding: '1.25rem', 
-                      justifyContent: 'center', 
-                      fontSize: '0.9rem', 
-                      letterSpacing: '0.05em',
-                      marginBottom: '1.5rem',
-                      borderRadius: 'var(--radius-md)'
+                  {/* Backdrop for mobile overlays */}
+                  <div 
+                    className={`sidebar-backdrop ${(isSidebarOpen || isFactSheetOpen) ? "" : "hidden"}`}
+                    onClick={() => {
+                      setIsSidebarOpen(false);
+                      setIsFactSheetOpen(false);
                     }}
+                  />
+                  {/* Sidebar 1: Fact Sheet */}
+                <div style={{ position: 'relative', display: 'flex', height: '100%' }} className={isFactSheetOpen ? "open" : "closed"}>
+                  <FactSheetSidebar 
+                    isOpen={isFactSheetOpen} 
+                    onClose={() => setIsFactSheetOpen(false)} 
+                    onOpenFilters={() => {
+                      setIsSidebarOpen(true);
+                    }}
+                  />
+                  <button 
+                    className="sidebar-tab" 
+                    onClick={() => setIsFactSheetOpen(!isFactSheetOpen)}
+                    title={isFactSheetOpen ? "Hide Fact Sheet" : "Show Fact Sheet"}
                   >
-                    VIEW PUBLIC TESTIMONY REGISTRY (FACT SHEET)
+                    {isFactSheetOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
                   </button>
-                  <header className="explorer-section-title">
-                    <div style={{ background: 'rgba(14, 165, 233, 0.1)', padding: '6px', borderRadius: '6px', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Search size={14} />
-                    </div>
-                    Project Filter
-                  </header>
-                  <div className="filter-grid">
-                    <div className="filter-control">
-                      <label>{propertyKeys.scope}</label>
-                      <select
-                        value={selectedScope}
-                        onChange={(e) => setSelectedScope(e.target.value)}
-                      >
-                        {scopes.map((scope) => (
-                          <option key={scope} value={scope}>{scope}</option>
-                        ))}
-                      </select>
-                    </div>
+                </div>
 
-                    <div className="filter-control">
-                      <label>{propertyKeys.county}</label>
-                      <select
-                        value={selectedCounty}
-                        onChange={(e) => setSelectedCounty(e.target.value)}
-                      >
-                        {counties.map((county) => (
-                          <option key={county} value={county}>{county}</option>
-                        ))}
-                      </select>
-                    </div>
+                {/* Sidebar 2: Project Filter & Inventory */}
+                <div style={{ position: 'relative', display: 'flex', height: '100%' }} className={isSidebarOpen ? "open" : "closed"}>
+                  <aside 
+                   className={`asidebar ${isSidebarOpen ? "open" : "closed"}`}
+                   style={{
+                     padding: isSidebarOpen ? '1.5rem' : '0'
+                   }}
+                  >
+                    {/* Close button for mobile/tablet */}
+                    <button 
+                      className="sidebar-close-btn mobile-only"
+                      onClick={() => setIsSidebarOpen(false)}
+                      aria-label="Close Sidebar"
+                    >
+                      <X size={20} />
+                    </button>
 
-                    <div className="filter-control">
-                      <label>{propertyKeys.type}</label>
-                      <select
-                        value={selectedType}
-                        onChange={(e) => setSelectedType(e.target.value)}
-                      >
-                        {types.map((type) => (
-                          <option key={type} value={type}>{type}</option>
-                        ))}
-                      </select>
-                    </div>
+                    {/* Visual Group: Filters */}
+                    <div className="sidebar-group">
+                      <header className="explorer-section-title" style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
+                          <div style={{ background: 'rgba(14, 165, 233, 0.1)', padding: '6px', borderRadius: '6px', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Search size={14} />
+                          </div>
+                          Project Filter
+                        </div>
+                        <button 
+                          className="header-icon-btn desktop-only"
+                          onClick={() => {
+                            setIsFactSheetOpen(true);
+                          }}
+                          title="View Fact Sheet"
+                          style={{ 
+                            background: 'rgba(14, 165, 233, 0.1)', 
+                            border: 'none',
+                            padding: '6px', 
+                            borderRadius: '6px', 
+                            color: 'var(--accent)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'all 0.2s ease',
+                            opacity: 0.8
+                          }}
+                          onMouseOver={(e) => e.currentTarget.style.opacity = '1'}
+                          onMouseOut={(e) => e.currentTarget.style.opacity = '0.8'}
+                        >
+                          <FileText size={14} />
+                        </button>
+                      </header>
+                      <div className="filter-grid">
+                        <div className="filter-control">
+                          <label>{propertyKeys.scope}</label>
+                          <select
+                            value={selectedScope}
+                            onChange={(e) => setSelectedScope(e.target.value)}
+                          >
+                            {scopes.map((scope) => (
+                              <option key={scope} value={scope}>{scope}</option>
+                            ))}
+                          </select>
+                        </div>
 
-                    <div className="filter-control">
-                      <label>UPC Search</label>
-                      <div style={{ position: 'relative' }}>
-                        <input
-                          type="text"
-                          className="search-input"
-                          value={selectedUPC}
-                          onChange={(e) => setSelectedUPC(e.target.value)}
-                          placeholder="Search UPC, Name, etc..."
-                          style={{ paddingRight: '2.5rem' }}
-                        />
-                        <span style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }}>
-                          <Search size={16} />
-                        </span>
+                        <div className="filter-control">
+                          <label>{propertyKeys.county}</label>
+                          <select
+                            value={selectedCounty}
+                            onChange={(e) => setSelectedCounty(e.target.value)}
+                          >
+                            {counties.map((county) => (
+                              <option key={county} value={county}>{county}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="filter-control">
+                          <label>{propertyKeys.type}</label>
+                          <select
+                            value={selectedType}
+                            onChange={(e) => setSelectedType(e.target.value)}
+                          >
+                            {types.map((type) => (
+                              <option key={type} value={type}>{type}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="filter-control">
+                          <label>UPC Search</label>
+                          <div style={{ position: 'relative' }}>
+                            <input
+                              type="text"
+                              className="search-input"
+                              value={selectedUPC}
+                              onChange={(e) => setSelectedUPC(e.target.value)}
+                              placeholder="Search UPC, Name, etc..."
+                              style={{ paddingRight: '2.5rem' }}
+                            />
+                            <span style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }}>
+                              <Search size={16} />
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
+
+                    {/* Projects Table Index */}
+                    <div className="sidebar-group">
+                        <header className="explorer-section-title">
+                          <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: '6px', borderRadius: '6px', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Database size={14} />
+                          </div>
+                          Inventory Explorer
+                        </header>
+                        <ProjectsTableIndex 
+                          geoData={filteredGeoData} 
+                          allHeaders={propertyKeys.allKeys} 
+                          onProjectClick={handleProjectClick}
+                          comments={comments}
+                          upcKey={propertyKeys.upc}
+                          isAdmin={isAdmin}
+                        />
+                    </div>
+                  </aside>
+                  <button 
+                    className="sidebar-tab" 
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                    style={{ right: '-24px' }}
+                    title={isSidebarOpen ? "Hide Inventory" : "Show Inventory"}
+                  >
+                    {isSidebarOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+                  </button>
+                </div>
+
+                {/* Main Content: Map */}
+                <main
+                  className="main-content-wrapper"
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    height: '100%'
+                  }}
+                >
+                    <div style={{ flex: 1, position: 'relative' }}>
+                      <MapView
+                        addComment={addComment}
+                        comments={comments}
+                        geoData={filteredGeoData}
+                        activeProjectLayers={activeProjectLayers}
+                        selectedScope={selectedScope}
+                        selectedCounty={selectedCounty}
+                        selectedUPC={selectedUPC}
+                        selectedFundingLayer={selectedFundingLayer}
+                        isAdmin={isAdmin}
+                        propertyKeys={propertyKeys}
+                        highlightedProject={highlightedProject}
+                        setHighlightedProject={setHighlightedProject}
+                        isSidebarOpen={isSidebarOpen}
+                        isFactSheetOpen={isFactSheetOpen}
+                      />
                   </div>
-                </div>
-
-                {/* Projects Table Indexcv */}
-                <div className="sidebar-group">
-                    <ProjectsTableIndex 
-                      geoData={filteredGeoData} 
-                      allHeaders={propertyKeys.allKeys} 
-                      onProjectClick={handleProjectClick}
-                      comments={comments}
-                      upcKey={propertyKeys.upc}
-                      isAdmin={isAdmin}
-                      onOpenFactSheet={() => setIsFactSheetOpen(true)}
-                    />
-                </div>
-              </aside>
-
-              <main
-                className="main-content-wrapper"
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                  <div style={{ flex: 1 }}>
-                    <MapView
-                      addComment={addComment}
-                      comments={comments}
-                      geoData={filteredGeoData}
-                      activeProjectLayers={activeProjectLayers}
-                      selectedScope={selectedScope}
-                      selectedCounty={selectedCounty}
-                      selectedUPC={selectedUPC}
-                      selectedFundingLayer={selectedFundingLayer}
-                      isAdmin={isAdmin}
-                      propertyKeys={propertyKeys}
-                      highlightedProject={highlightedProject}
-                      setHighlightedProject={setHighlightedProject}
-                    />
-                </div>
-              </main>
-            </div>
+                  
+                  {/* Floating Toggle (Mobile Only) */}
+                  <button
+                    className="sidebar-toggle-btn"
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                    aria-label="Toggle Project Menu"
+                  >
+                    {isSidebarOpen ? <X size={24} /> : <Map size={24} />}
+                  </button>
+                </main>
+              </div>
           }
         />
         </Routes>
         </Suspense>
       </main>
-      <Suspense fallback={null}>
-        <FactSheetModal 
-          isOpen={isFactSheetOpen} 
-          onClose={() => {
-            setIsFactSheetOpen(false);
-            localStorage.setItem("factSheetDismissedAt", Date.now().toString());
-          }} 
-        />
-      </Suspense>
+
     </div>
   );
 }

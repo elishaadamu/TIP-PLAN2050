@@ -98,6 +98,24 @@ body {
   background-clip: text;
 }
 
+/* Visibility Utilities */
+.mobile-only {
+  display: block;
+}
+
+@media (min-width: 992px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+@media (max-width: 991px) {
+  .desktop-toggle-row,
+  .desktop-only {
+    display: none !important;
+  }
+}
+
 .bg-gradient-primary {
   background: var(--grad-primary);
 }
@@ -254,19 +272,93 @@ input:focus, select:focus {
 
 /* Premium Sidebar Explorer */
 .asidebar {
-  width: 440px;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  width: 420px;
+  min-width: 420px;
+  background: var(--bg-sidebar);
   border-right: 1px solid var(--border-light);
-  padding: 2.25rem 2rem;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 1.5rem;
   z-index: 50;
-  transition: var(--transition);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-y: auto;
-  box-shadow: 10px 0 30px -15px rgba(0,0,0,0.05);
   position: relative;
+  box-shadow: 10px 0 30px -15px rgba(0,0,0,0.05);
+  flex-shrink: 0;
 }
+
+.asidebar.closed {
+  width: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  opacity: 0;
+  border: none;
+  pointer-events: none;
+}
+
+.fact-sheet-sidebar {
+  width: 380px;
+  min-width: 380px;
+  border-right: 1px solid var(--border-light);
+  background: var(--surface);
+  flex-shrink: 0;
+}
+
+.app-content_3_col {
+  display: flex;
+  height: calc(100vh - 72px);
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-main);
+}
+
+
+/* Sidebar Toggle Tabs */
+.sidebar-tab {
+  position: absolute;
+  top: 50%;
+  right: -24px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 80px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-left: none;
+  border-radius: 0 12px 12px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  box-shadow: 4px 0 15px rgba(0,0,0,0.08);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text-muted);
+}
+
+.sidebar-tab::before {
+  content: "";
+  width: 2px;
+  height: 20px;
+  background: var(--border-light);
+  border-radius: 2px;
+  margin-bottom: 4px;
+  box-shadow: 4px 0 0 var(--border-light), -4px 0 0 var(--border-light);
+}
+
+.sidebar-tab:hover {
+  background: var(--bg-main);
+  color: var(--primary);
+  width: 30px;
+  right: -30px;
+}
+
+.closed .sidebar-tab {
+  right: -24px;
+}
+
+
 
 /* Sidebar Close Button — hidden on desktop, visible on mobile/tablet */
 .sidebar-close-btn {
@@ -461,7 +553,7 @@ input:focus, select:focus {
   /* Show sidebar toggle on map area */
   .sidebar-toggle-btn {
     position: fixed;
-    left: 16px;
+    right: 16px;
     bottom: 0px;
     z-index: 1501;
     width: 56px;
@@ -524,7 +616,7 @@ input:focus, select:focus {
 
   .sidebar-toggle-btn {
     bottom: 16px;
-    left: 16px;
+    right: 16px;
     width: 44px;
     height: 44px;
   }
@@ -576,7 +668,7 @@ input:focus, select:focus {
 
 .leaflet-popup-content {
   margin: 0 !important;
-  width: 380px !important;
+  width: 320px !important;
 }
 
 .leaflet-popup-tip {
@@ -713,7 +805,7 @@ input:focus, select:focus {
 
 .sidebar-toggle-btn {
   position: absolute;
-  left: 20px;
+  right: 20px;
   bottom: 150px;
   z-index: 1000;
   width: 56px;
