@@ -108,21 +108,22 @@ function App() {
 
     const loadData = async () => {
       try {
-        let response;
-        if (isAdmin) {
-          response = await axios.get(
-            "https://ecointeractive.onrender.com/api/geojson/active"
-          );
+        // Always try to load the active GeoJSON from API first
+        const response = await axios.get(
+          "https://ecointeractive.onrender.com/api/geojson/active"
+        );
+        if (response.data.geojsonData) {
           processGeoData(response.data.geojsonData, response.data.filename);
         } else {
-          // Non-admins load the default file
-          response = await fetch(
+          // Fallback to default file if no active GeoJSON
+          const fallbackResponse = await fetch(
             `${window.location.origin}/projects_new.geojson`
           );
-          const data = await response.json();
+          const data = await fallbackResponse.json();
           processGeoData(data, "projects_new.geojson");
         }
       } catch (err) {
+        // Fallback to default file if API fails
         fetch(`${window.location.origin}/projects_new.geojson`)
           .then((res) => res.json())
           .then((data) => {
