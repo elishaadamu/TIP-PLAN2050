@@ -31,9 +31,16 @@ function GeoJSONManager({
         const response = await axios.get(
           "https://ecointeractive.onrender.com/api/geojson/active"
         );
-        setGeoData(response.data.geojsonData);
-        setCurrentGeoDataFilename(response.data.filename);
-        setSelectedFile(response.data.filename);
+        // Handle case where API returns null data (no active file)
+        if (response.data.geojsonData === null) {
+          setGeoData({ type: "FeatureCollection", features: [] });
+          setCurrentGeoDataFilename(null);
+          setSelectedFile("");
+        } else {
+          setGeoData(response.data.geojsonData);
+          setCurrentGeoDataFilename(response.data.filename);
+          setSelectedFile(response.data.filename);
+        }
       } catch (error) {
         console.error("Failed to load initial GeoJSON data:", error);
         Swal.fire({
