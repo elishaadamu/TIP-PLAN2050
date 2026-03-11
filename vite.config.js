@@ -39,6 +39,7 @@ export default defineConfig({
     cssMinify: true,
     sourcemap: false,
     reportCompressedSize: false,
+    cssCodeSplit: true,
   },
   server: {
     port: 5173,
@@ -46,5 +47,8 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'leaflet', 'react-leaflet', 'axios'],
+  },
+  css: {
+    devSourcemap: false,
   },
 })

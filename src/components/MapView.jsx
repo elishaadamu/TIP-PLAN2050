@@ -29,7 +29,7 @@ function MapHighlightEffect({ project, setOpenPopupId, upcKey }) {
   return null;
 }
 
-let DefaultIcon = L.icon({
+const DefaultIcon = L.icon({
   iconUrl: icon,
   iconRetinaUrl: iconRetina,
   shadowUrl: iconShadow,
@@ -41,9 +41,10 @@ let DefaultIcon = L.icon({
 });
 
 L.Marker.prototype.options.icon = DefaultIcon;
+
 const projectTypeColors = {
-  Roadway: "#f43f5e", 
-  Transit: "#3b82f6", 
+  Roadway: "#f43f5e",
+  Transit: "#3b82f6",
   "Bike/Ped": "#10b981",
   Bridge: "#f59e0b",
   Safety: "#8b5cf6",
@@ -116,9 +117,10 @@ function MapView({
 }) {
   const [openPopupId, setOpenPopupId] = useState(null);
   const [bounds, setBounds] = useState(null);
-  const onClosePopup = () => {
+  
+  const onClosePopup = useCallback(() => {
     setOpenPopupId(null);
-  };
+  }, []);
 
   // Memoize filtered features and markers for performance
   const markers = useMemo(() => {
@@ -194,11 +196,18 @@ function MapView({
       zoom={12}
       maxZoom={18}
       minZoom={10}
+      zoomControl={false}
       onMoveStart={() => setHighlightedProject && setHighlightedProject(null)}
     >
       <TileLayer
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        maxNativeZoom={19}
+        maxZoom={18}
+        minZoom={10}
+        tileSize={256}
+        updateWhenIdle={true}
+        updateWhenZooming={false}
       />
 
       <ChangeView bounds={bounds} />

@@ -15,7 +15,7 @@ function Header({
         <div className="header-left">
           <Link to="/" className="logo-link" onClick={() => setIsMobileMenuOpen(false)}>
             <div className="logo-container">
-              <img src="/MPO_Logo.jpg" alt="Logo" className="logo" />
+              <img src="/MPO_Logo.jpg" alt="Logo" className="logo" width="60" height="60" loading="eager" fetchPriority="high" />
             </div>
             <div className="title-container">
               <h1 className="header-title">Tri-Cities Area MPO</h1>
