@@ -9,9 +9,9 @@ function ProjectPopup({ project, addComment, comments, onClosePopup, isAdmin }) 
   const geometry = project.geometry || {};
 
   return (
-    <div className="project-popup premium-popup animate-slide-up" style={{ padding: '0.5rem' }}>
-      <header style={{ marginBottom: '1.25rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <div style={{ background: 'var(--primary-glow)', padding: '8px', borderRadius: '8px', color: 'var(--primary)' }}>
+    <div className="project-popup premium-popup animate-slide-up" style={{ padding: '0.25rem 0.5rem' }}>
+      <header style={{ marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ background: 'var(--primary-glow)', padding: '6px', borderRadius: '8px', color: 'var(--primary)' }}>
           <Info size={18} />
         </div>
         <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--text-main)', margin: 0, lineHeight: 1.4 }}>
@@ -19,12 +19,12 @@ function ProjectPopup({ project, addComment, comments, onClosePopup, isAdmin }) 
         </h3>
       </header>
 
-      <div className="project-data-grid" style={{ 
-        display: 'grid', 
-        gridTemplateColumns: '1fr 1fr', 
-        gap: '1rem', 
-        marginBottom: '1.5rem',
-        maxHeight: '260px',
+      <div className="project-data-grid" style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '0.5rem 0.75rem',
+        marginBottom: '0.75rem',
+        maxHeight: '100px',
         overflowY: 'auto',
         paddingRight: '0.5rem'
       }}>
@@ -44,8 +44,8 @@ function ProjectPopup({ project, addComment, comments, onClosePopup, isAdmin }) 
         })}
       </div>
 
-      <section style={{ marginBottom: '1.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+      <section style={{ marginBottom: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
            <MessageCircle size={14} style={{ color: 'var(--text-muted)' }} />
            <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>
              {isAdmin ? 'Public Testimony' : 'Participation Count'}
@@ -55,11 +55,17 @@ function ProjectPopup({ project, addComment, comments, onClosePopup, isAdmin }) 
         
         {comments.length > 0 ? (
           isAdmin ? (
-            <div className="comment-feed" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div className="comment-feed" style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem',
+              maxHeight: '80px',
+              overflowY: 'auto'
+            }}>
               {comments.map((c) => (
                 <div key={c._id} className="comment-bubble" style={{ 
                   background: 'var(--bg-main)', 
-                  padding: '0.75rem', 
+                  padding: '0.5rem 0.75rem', 
                   borderRadius: '8px', 
                   border: '1px solid var(--border-light)' 
                 }}>
@@ -75,8 +81,8 @@ function ProjectPopup({ project, addComment, comments, onClosePopup, isAdmin }) 
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center', 
-              gap: '0.75rem', 
-              padding: '1.5rem', 
+              gap: '0.5rem', 
+              padding: '0.75rem', 
               background: 'var(--bg-main)', 
               borderRadius: '12px', 
               border: '1px solid var(--border-light)',
@@ -96,11 +102,11 @@ function ProjectPopup({ project, addComment, comments, onClosePopup, isAdmin }) 
         )}
       </section>
 
-      <footer className="popup-actions" style={{ display: 'flex', gap: '1rem', borderTop: '1px solid var(--border-light)', paddingTop: '1rem' }}>
+      <footer className="popup-actions" style={{ display: 'flex', gap: '0.75rem', borderTop: '1px solid var(--border-light)', paddingTop: '0.5rem' }}>
         <button 
           className={showForm ? "btn-outline" : "btn-primary"} 
           onClick={() => setShowForm(!showForm)}
-          style={{ flex: 1, fontSize: '0.75rem', padding: '0.625rem' }}
+          style={{ flex: 1, fontSize: '0.75rem', padding: '0.5rem' }}
         >
           {showForm ? "Cancel Entry" : "Register Testimony"}
         </button>

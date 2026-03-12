@@ -129,7 +129,8 @@
   gap: 0.625rem;
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link.active {
   color: var(--primary);
   background: rgba(79, 70, 229, 0.08);
 }
@@ -146,7 +147,8 @@
   transform: translateX(-50%);
 }
 
-.nav-link:hover::after {
+.nav-link:hover::after,
+.nav-link.active::after {
   width: 60%;
 }
 
@@ -155,7 +157,8 @@
   transition: var(--transition);
 }
 
-.nav-link:hover svg {
+.nav-link:hover svg,
+.nav-link.active svg {
   opacity: 1;
   color: var(--primary);
   transform: translateY(-2px);

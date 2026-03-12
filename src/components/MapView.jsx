@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, memo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, memo, useCallback, useRef } from "react";
 import L from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap } from "react-leaflet";
 import ProjectPopup from "./ProjectPopup";
@@ -119,11 +119,21 @@ function MapView({
 }) {
   const [openPopupId, setOpenPopupId] = useState(null);
   const [bounds, setBounds] = useState(null);
+  const mapRef = useRef(null);
+
+  // Component to store map reference
+  const MapController = () => {
+    const map = useMap();
+    useEffect(() => {
+      mapRef.current = map;
+    }, [map]);
+    return null;
+  };
 
   // New component to handle auto-alignment on sidebar toggle
   const MapAutoAlign = () => {
     const map = useMap();
-    
+
     useEffect(() => {
       // Small timeout to allow the flexible layout transitions to complete
       const timer = setTimeout(() => {
@@ -132,12 +142,32 @@ function MapView({
           map.fitBounds(bounds, { padding: [50, 50], animate: true });
         }
       }, 550); // Slightly longer than the 0.5s CSS transition
-      
+
       return () => clearTimeout(timer);
     }, [isSidebarOpen, isFactSheetOpen, map, bounds]);
 
     return null;
   };
+
+  // Pan map to center the popup below the header
+  const panToCenterPopup = useCallback((lat, lng) => {
+    const map = mapRef.current;
+    if (!map) return;
+    
+    // Header height is 72px, add extra padding for popup height
+    const headerOffset = 120;
+    const currentPoint = map.latLngToContainerPoint([lat, lng]);
+    
+    // Calculate new point - move the clicked point DOWN by offset
+    // This makes the map pan so the point appears lower, leaving room for popup above
+    const newPoint = L.point(currentPoint.x, currentPoint.y + headerOffset);
+    const newLatLng = map.containerPointToLatLng(newPoint);
+    
+    map.flyTo(newLatLng, map.getZoom(), {
+      duration: 0.5,
+      easeLinearity: 0.25
+    });
+  }, []);
   
   const onClosePopup = useCallback(() => {
     setOpenPopupId(null);
@@ -231,6 +261,7 @@ function MapView({
         updateWhenZooming={false}
       />
 
+      <MapController />
       <ChangeView bounds={bounds} />
       <MapAutoAlign />
 
@@ -258,6 +289,9 @@ function MapView({
             }}
             eventHandlers={{
               click: () => {
+                const lat = feature.geometry.coordinates[1];
+                const lng = feature.geometry.coordinates[0];
+                panToCenterPopup(lat, lng);
                 setOpenPopupId(feature.properties[propertyKeys.upc]);
                 if (setHighlightedProject) setHighlightedProject(null);
               },

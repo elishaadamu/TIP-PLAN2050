@@ -8,7 +8,9 @@ function Header({
   handleLogout,
   isMobileMenuOpen,
   setIsMobileMenuOpen,
-  onOpenFactSheet
+  onOpenFactSheet,
+  onCloseFactSheet,
+  isFactSheetOpen
 }) {
   return (
     <>
@@ -27,14 +29,18 @@ function Header({
 
         {/* Desktop nav — visible above 991px, hidden on mobile */}
         <nav className="nav nav-desktop">
-          <Link to="/" className="nav-link">
+          <Link 
+            to="/" 
+            className={`nav-link ${!isFactSheetOpen ? "active" : ""}`}
+            onClick={onCloseFactSheet}
+          >
             <Map size={18} />
             <span>Explore Map</span>
           </Link>
 
           <button 
             onClick={onOpenFactSheet} 
-            className="nav-link" 
+            className={`nav-link ${isFactSheetOpen ? "active" : ""}`}
             style={{ 
               background: 'none', 
               border: 'none', 
@@ -96,13 +102,17 @@ function Header({
         <div className="nav-mobile-backdrop" onClick={() => setIsMobileMenuOpen(false)} />
       )}
       <nav className={`nav nav-mobile ${isMobileMenuOpen ? "open" : ""}`}>
-        <Link to="/" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+        <Link 
+          to="/" 
+          className={`nav-link ${!isFactSheetOpen ? "active" : ""}`}
+          onClick={() => { onCloseFactSheet(); setIsMobileMenuOpen(false); }}
+        >
           <Map size={18} />
           <span>Explore Map</span>
         </Link>
 
         <button 
-          className="nav-link" 
+          className={`nav-link ${isFactSheetOpen ? "active" : ""}`}
           onClick={() => { onOpenFactSheet(); setIsMobileMenuOpen(false); }}
           style={{ 
             background: 'none', 

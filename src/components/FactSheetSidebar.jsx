@@ -51,7 +51,7 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
               onClick={onClose}
               aria-label="Close Fact Sheet"
             >
-              <X size={20} />
+              X
             </button>
           </div>
         </div>

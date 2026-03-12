@@ -27,7 +27,7 @@ function CommentForm({ projectId, addComment, onClosePopup }) {
 
   return (
     <form onSubmit={handleSubmit} className="premium-form">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         <div className="filter-control">
           <label style={{ fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Public Testimony</label>
           <textarea
@@ -36,7 +36,7 @@ function CommentForm({ projectId, addComment, onClosePopup }) {
             onChange={(e) => setComment(e.target.value)}
             required
             disabled={loading}
-            rows={4}
+            rows={2}
             style={{ 
               width: '100%', 
               padding: '0.75rem', 
@@ -53,7 +53,7 @@ function CommentForm({ projectId, addComment, onClosePopup }) {
           type="submit"
           disabled={loading}
           className="btn-primary"
-          style={{ width: '100%', padding: '0.75rem' }}
+          style={{ width: '100%', padding: '0.625rem' }}
         >
           {loading ? "Transmitting..." : "Submit to Registry"}
         </button>

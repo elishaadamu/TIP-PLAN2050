@@ -242,7 +242,9 @@ function App() {
         handleLogout={handleLogout}
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
+        isFactSheetOpen={isFactSheetOpen}
         onOpenFactSheet={() => setIsFactSheetOpen(!isFactSheetOpen)}
+        onCloseFactSheet={() => setIsFactSheetOpen(false)}
       />
 
       <main style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -346,7 +348,7 @@ function App() {
                       onClick={() => setIsSidebarOpen(false)}
                       aria-label="Close Sidebar"
                     >
-                      <X size={20} />
+                      X
                     </button>
 
                     {/* Visual Group: Filters */}
