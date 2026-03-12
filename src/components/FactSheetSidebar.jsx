@@ -68,9 +68,9 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
         </p>
       </section>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '2rem' }}>
-        <div className="sidebar-group" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
             <Info size={16} style={{ color: 'var(--primary)' }} />
             <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700 }}>MTIP</h4>
           </div>
@@ -79,8 +79,8 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
           </p>
         </div>
 
-        <div className="sidebar-group" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
             <Info size={16} style={{ color: 'var(--secondary)' }} />
             <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700 }}>LRTP</h4>
           </div>
@@ -90,31 +90,43 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
         </div>
       </div>
 
-      <section className="bg-gradient-dark" style={{ 
+      <section className="sidebar-group" style={{ 
         padding: '1.5rem', 
-        borderRadius: 'var(--radius-lg)', 
-        color: 'white',
-        boxShadow: 'var(--shadow-lg)',
-        marginBottom: '2rem'
+        marginBottom: '2rem',
+        background: 'rgba(14, 165, 233, 0.08)',
+        border: '1px solid rgba(14, 165, 233, 0.2)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
           <Users size={20} style={{ color: 'var(--accent)' }} />
-          <h3 style={{ margin: 0, fontSize: '1.125rem', color: 'white' }}>How to Participate</h3>
+          <h3 style={{ margin: 0, fontSize: '1.125rem', color: 'var(--accent)' }}>How to Participate</h3>
         </div>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', opacity: 0.8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', opacity: 0.7 }}>
+              <Users size={12} />
+              <span style={{ fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase' }}>Public Meeting</span>
+            </div>
+            <p style={{ fontSize: '1rem', fontWeight: 700, margin: 0, color: 'var(--text-main)' }}>
+              Join Us: Monday, April 6, from 5:00 to 6:30 p.m.
+            </p>
+            <p style={{ fontSize: '0.813rem', color: 'var(--text-muted)', lineHeight: 1.4, margin: '0.25rem 0 0 0' }}>
+              Petersburg Public Library Conference Room, 201 W. Washington St.
+            </p>
+          </div>
+
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', opacity: 0.7 }}>
               <Calendar size={12} />
               <span style={{ fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase' }}>Review Period</span>
             </div>
-            <p style={{ fontSize: '1rem', fontWeight: 700, margin: 0 }}>
+            <p style={{ fontSize: '1rem', fontWeight: 700, margin: 0, color: 'var(--text-main)' }}>
               March 13 – April 12, 2026
             </p>
           </div>
           
-          <p style={{ fontSize: '0.813rem', opacity: 0.9, lineHeight: 1.5, margin: 0 }}>
-            Review the <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-FFY27-30-TCAMPO-MTIP-03.06.2026.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'underline' }}>Federal Fiscal year 2027-2030 MTIP</a> and the <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-RCA-Richmond-Area-FY27-30-TIP-and-2045-LRTP-for-public-review-final.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'underline' }}>Draft Regional Conformity Report</a> online.
+          <p style={{ fontSize: '0.813rem', color: 'var(--text-main)', lineHeight: 1.5, margin: 0 }}>
+            Review the <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-FFY27-30-TCAMPO-MTIP-03.06.2026.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'underline' }}>Federal Fiscal year 2027-2030 MTIP</a> and the <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-RCA-Richmond-Area-FY27-30-TIP-and-2045-LRTP-for-public-review-finalv3.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'underline' }}>Draft Regional Conformity Report</a> online.
           </p>
         </div>
       </section>
