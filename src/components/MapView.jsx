@@ -108,137 +108,165 @@ function MapView({
   highlightedProject,
   setHighlightedProject,
   isSidebarOpen,
-  isFactSheetOpen,
-  propertyKeys = {
-    scope: "Scope",
-    county: "County",
-    type: "Type",
-    upc: "UPC",
-    description: "Description"
-  }
-}) {
-  const [openPopupId, setOpenPopupId] = useState(null);
-  const [bounds, setBounds] = useState(null);
-  const mapRef = useRef(null);
-
-  // Component to store map reference
-  const MapController = () => {
-    const map = useMap();
-    useEffect(() => {
-      mapRef.current = map;
-    }, [map]);
-    return null;
-  };
-
-  // New component to handle auto-alignment on sidebar toggle
-  const MapAutoAlign = () => {
-    const map = useMap();
-
-    useEffect(() => {
-      // Small timeout to allow the flexible layout transitions to complete
-      const timer = setTimeout(() => {
-        map.invalidateSize();
-        if (bounds) {
-          map.fitBounds(bounds, { padding: [50, 50], animate: true });
-        }
-      }, 550); // Slightly longer than the 0.5s CSS transition
-
-      return () => clearTimeout(timer);
-    }, [isSidebarOpen, isFactSheetOpen, map, bounds]);
-
-    return null;
-  };
-
-  // Pan map to center the popup below the header
-  const panToCenterPopup = useCallback((lat, lng) => {
-    const map = mapRef.current;
-    if (!map) return;
-    
-    // Header height is 72px, add extra padding for popup height
-    const headerOffset = 120;
-    const currentPoint = map.latLngToContainerPoint([lat, lng]);
-    
-    // Calculate new point - move the clicked point DOWN by offset
-    // This makes the map pan so the point appears lower, leaving room for popup above
-    const newPoint = L.point(currentPoint.x, currentPoint.y + headerOffset);
-    const newLatLng = map.containerPointToLatLng(newPoint);
-    
-    map.flyTo(newLatLng, map.getZoom(), {
-      duration: 0.5,
-      easeLinearity: 0.25
-    });
-  }, []);
-  
-  const onClosePopup = useCallback(() => {
-    setOpenPopupId(null);
-  }, []);
-
-  // Memoize filtered features and markers for performance
-  const markers = useMemo(() => {
-    if (!geoData?.features) return [];
-
-    return geoData.features.map((feature, i) => {
-      const isHighlighted = highlightedProject &&
-        feature.properties[propertyKeys.upc] === highlightedProject.properties[propertyKeys.upc];
-
-      const projectComments = comments.filter(
-        (c) => String(c.projectId) === String(feature.properties[propertyKeys.upc])
-      );
-
-      return {
-        feature,
-        i,
-        isHighlighted,
-        projectComments,
-        color: getProjectColor(feature.properties[propertyKeys.scope]),
-      };
-    });
-  }, [geoData, highlightedProject, propertyKeys.upc, propertyKeys.scope, comments]);
-
-  useEffect(() => {
-    if (geoData && geoData.features && geoData.features.length > 0) {
-      const leafletBounds = L.latLngBounds([]);
-      let hasCoordinates = false;
-
-      geoData.features.forEach(feature => {
-        if (feature.geometry && feature.geometry.coordinates) {
-          const [lng, lat] = feature.geometry.coordinates;
-          if (!isNaN(lat) && !isNaN(lng)) {
-            leafletBounds.extend([lat, lng]);
-            hasCoordinates = true;
-          }
-        }
-      });
-
-      if (hasCoordinates) {
-        // Convert Leaflet bounds to simple array for state to trigger effect
-        const b = [
-          [leafletBounds.getSouthWest().lat, leafletBounds.getSouthWest().lng],
-          [leafletBounds.getNorthEast().lat, leafletBounds.getNorthEast().lng]
-        ];
-        setBounds(b);
-      }
-    } else {
-      // Default bounds if no data
-      setBounds([[37.0, -77.6], [37.4, -77.2]]);
+    isFactSheetOpen,
+    isLoading, // Added prop
+    propertyKeys = {
+      scope: "Scope",
+      county: "County",
+      type: "Type",
+      upc: "UPC",
+      description: "Description"
     }
-  }, [geoData]);
-
-  if (!bounds || !geoData) {
-    // Set default bounds if no data is available to prevent crashing
-    return (
-      <MapContainer
-        center={[37.2, -77.4]}
-        zoom={10}
-        style={{ height: "100%", width: "100%" }}
-      >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        />
-      </MapContainer>
-    );
-  }
+  }) {
+    const [openPopupId, setOpenPopupId] = useState(null);
+    const [bounds, setBounds] = useState(null);
+    const mapRef = useRef(null);
+  
+    // Component to store map reference
+    const MapController = () => {
+      const map = useMap();
+      useEffect(() => {
+        mapRef.current = map;
+      }, [map]);
+      return null;
+    };
+  
+    // New component to handle auto-alignment on sidebar toggle
+    const MapAutoAlign = () => {
+      const map = useMap();
+  
+      useEffect(() => {
+        // Small timeout to allow the flexible layout transitions to complete
+        const timer = setTimeout(() => {
+          map.invalidateSize();
+          if (bounds) {
+            map.fitBounds(bounds, { padding: [50, 50], animate: true });
+          }
+        }, 550); // Slightly longer than the 0.5s CSS transition
+  
+        return () => clearTimeout(timer);
+      }, [isSidebarOpen, isFactSheetOpen, map, bounds]);
+  
+      return null;
+    };
+  
+    // Pan map to center the popup below the header
+    const panToCenterPopup = useCallback((lat, lng) => {
+      const map = mapRef.current;
+      if (!map) return;
+      
+      // Header height is 72px, add extra padding for popup height
+      const headerOffset = 120;
+      const currentPoint = map.latLngToContainerPoint([lat, lng]);
+      
+      // Calculate new point - move the clicked point DOWN by offset
+      // This makes the map pan so the point appears lower, leaving room for popup above
+      const newPoint = L.point(currentPoint.x, currentPoint.y + headerOffset);
+      const newLatLng = map.containerPointToLatLng(newPoint);
+      
+      map.flyTo(newLatLng, map.getZoom(), {
+        duration: 0.5,
+        easeLinearity: 0.25
+      });
+    }, []);
+    
+    const onClosePopup = useCallback(() => {
+      setOpenPopupId(null);
+    }, []);
+  
+    // Memoize filtered features and markers for performance
+    const markers = useMemo(() => {
+      if (!geoData?.features) return [];
+  
+      return geoData.features.map((feature, i) => {
+        const isHighlighted = highlightedProject &&
+          feature.properties[propertyKeys.upc] === highlightedProject.properties[propertyKeys.upc];
+  
+        const projectComments = comments.filter(
+          (c) => String(c.projectId) === String(feature.properties[propertyKeys.upc])
+        );
+  
+        return {
+          feature,
+          i,
+          isHighlighted,
+          projectComments,
+          color: getProjectColor(feature.properties[propertyKeys.scope]),
+        };
+      });
+    }, [geoData, highlightedProject, propertyKeys.upc, propertyKeys.scope, comments]);
+  
+    useEffect(() => {
+      if (geoData && geoData.features && geoData.features.length > 0) {
+        const leafletBounds = L.latLngBounds([]);
+        let hasCoordinates = false;
+  
+        geoData.features.forEach(feature => {
+          if (feature.geometry && feature.geometry.coordinates) {
+            const [lng, lat] = feature.geometry.coordinates;
+            if (!isNaN(lat) && !isNaN(lng)) {
+              leafletBounds.extend([lat, lng]);
+              hasCoordinates = true;
+            }
+          }
+        });
+  
+        if (hasCoordinates) {
+          // Convert Leaflet bounds to simple array for state to trigger effect
+          const b = [
+            [leafletBounds.getSouthWest().lat, leafletBounds.getSouthWest().lng],
+            [leafletBounds.getNorthEast().lat, leafletBounds.getNorthEast().lng]
+          ];
+          setBounds(b);
+        }
+      } else {
+        // Default bounds if no data
+        setBounds([[37.0, -77.6], [37.4, -77.2]]);
+      }
+    }, [geoData]);
+  
+    if (isLoading || !bounds || !geoData) {
+      return (
+        <div style={{ height: "100%", width: "100%", position: 'relative' }}>
+           <MapContainer
+            center={[37.2, -77.4]}
+            zoom={10}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            />
+          </MapContainer>
+          <div className="map-loading-overlay" style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(255, 255, 255, 0.4)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            gap: '1rem'
+          }}>
+            <div className="spinner shimmer" style={{ width: '40px', height: '40px' }}></div>
+            <span style={{ 
+              color: 'var(--primary)', 
+              fontWeight: 800, 
+              fontSize: '0.65rem', 
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase'
+            }}>
+              Syncing Geospatial Engine...
+            </span>
+          </div>
+        </div>
+      );
+    }
 
   return (
     <MapContainer

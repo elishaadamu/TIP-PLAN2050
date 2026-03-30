@@ -1,6 +1,6 @@
 import React, { useState, useMemo, memo } from "react";
 
-const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments, upcKey, isAdmin }) => {
+const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments, upcKey, isAdmin, isLoading }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -82,9 +82,10 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
   }, [projects, currentPage]);
 
   const headers = useMemo(() => {
+    if (isLoading) return ["Project Registry", "Status", "Feedback", "Geometry"];
     if (projects.length === 0) return [];
     return [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback", "Geometry"];
-  }, [projects]);
+  }, [projects, isLoading]);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -101,7 +102,7 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
         <div>
           <h2 className="gradient-text" style={{ fontSize: '1.5rem', fontWeight: 800 }}>Inventory Registry</h2>
           <p style={{ fontSize: '0.813rem', color: 'var(--secondary)', fontWeight: 700, letterSpacing: '0.05em' }}>
-            {projects.length} PROJECTS LOGGED
+            {isLoading ? "SYNCHRONIZING..." : `${projects.length} PROJECTS LOGGED`}
           </p>
         </div>
         {isAdmin && (
@@ -109,6 +110,7 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
             onClick={handleExportAllProjects}
             className="btn-outline"
             style={{ padding: '0.5rem 0.75rem', fontSize: '0.75rem' }}
+            disabled={isLoading}
           >
             Export CSV
           </button>
@@ -146,65 +148,84 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
               </tr>
             </thead>
             <tbody>
-              {currentProjects.map((feature, index) => (
-                <tr 
-                  key={(feature.properties.UPC || feature.properties.ID || feature.properties.id || index) + "-" + index}
-                  style={{ 
-                    borderBottom: '1px solid var(--border-light)',
-                    transition: 'var(--transition)',
-                    cursor: 'pointer'
-                  }}
-                  className="inventory-row"
-                  onClick={() => onProjectClick && onProjectClick(feature)}
-                >
-                  {headers.map((header) => (
-                    <td
-                      key={header}
-                      style={{ padding: "1rem" }}
-                    >
-                      {header === "Feedback"
-                        ? (
-                           <span style={{ 
-                             background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(79, 70, 229, 0.1)' : 'rgba(0,0,0,0.05)',
-                             color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--primary)' : 'var(--text-muted)',
-                             padding: '0.2rem 0.4rem',
-                             borderRadius: '4px',
-                             fontSize: '0.7rem',
-                             fontWeight: '700'
-                           }}>
-                             {getCommentCount(feature.properties[upcKey])}
-                           </span>
-                        )
-                        : header === "Geometry"
-                        ? (
-                          <span style={{ 
-                            background: 'rgba(79, 70, 229, 0.1)', 
-                            color: 'var(--primary)', 
-                            padding: '0.25rem 0.5rem', 
-                            borderRadius: '4px',
-                            fontSize: '0.7rem',
-                            fontWeight: '600',
-                            fontFamily: 'monospace'
-                          }}>
-                            {getGeometryLabel(feature.geometry)}
-                          </span>
-                        )
-                        : (
-                          <div style={{ 
-                            maxWidth: '180px', 
-                            overflow: 'hidden', 
-                            textOverflow: 'ellipsis', 
-                            whiteSpace: 'nowrap',
-                            color: 'var(--text-main)'
-                          }}>
-                            {String(feature.properties[header] || "—")}
-                          </div>
-                        )
-                      }
-                    </td>
-                  ))}
+              {isLoading ? (
+                // Loading Skeletons
+                [...Array(5)].map((_, i) => (
+                  <tr key={`loader-${i}`} style={{ borderBottom: '1px solid var(--border-light)' }}>
+                    {headers.map((h, j) => (
+                      <td key={`cell-${i}-${j}`} style={{ padding: "1rem" }}>
+                        <div className="shimmer" style={{ height: '1rem', background: 'rgba(0,0,0,0.05)', borderRadius: '4px', width: j === 0 ? '80%' : '50%' }}></div>
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : currentProjects.length === 0 ? (
+                <tr>
+                  <td colSpan={headers.length} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                    No projects found matching the criteria.
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                currentProjects.map((feature, index) => (
+                  <tr 
+                    key={(feature.properties.UPC || feature.properties.ID || feature.properties.id || index) + "-" + index}
+                    style={{ 
+                      borderBottom: '1px solid var(--border-light)',
+                      transition: 'var(--transition)',
+                      cursor: 'pointer'
+                    }}
+                    className="inventory-row"
+                    onClick={() => onProjectClick && onProjectClick(feature)}
+                  >
+                    {headers.map((header) => (
+                      <td
+                        key={header}
+                        style={{ padding: "1rem" }}
+                      >
+                        {header === "Feedback"
+                          ? (
+                             <span style={{ 
+                               background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(79, 70, 229, 0.1)' : 'rgba(0,0,0,0.05)',
+                               color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--primary)' : 'var(--text-muted)',
+                               padding: '0.2rem 0.4rem',
+                               borderRadius: '4px',
+                               fontSize: '0.7rem',
+                               fontWeight: '700'
+                             }}>
+                               {getCommentCount(feature.properties[upcKey])}
+                             </span>
+                          )
+                          : header === "Geometry"
+                          ? (
+                            <span style={{ 
+                              background: 'rgba(79, 70, 229, 0.1)', 
+                              color: 'var(--primary)', 
+                              padding: '0.25rem 0.5rem', 
+                              borderRadius: '4px',
+                              fontSize: '0.7rem',
+                              fontWeight: '600',
+                              fontFamily: 'monospace'
+                            }}>
+                              {getGeometryLabel(feature.geometry)}
+                            </span>
+                          )
+                          : (
+                            <div style={{ 
+                              maxWidth: '180px', 
+                              overflow: 'hidden', 
+                              textOverflow: 'ellipsis', 
+                              whiteSpace: 'nowrap',
+                              color: 'var(--text-main)'
+                            }}>
+                              {String(feature.properties[header] || "—")}
+                            </div>
+                          )
+                        }
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

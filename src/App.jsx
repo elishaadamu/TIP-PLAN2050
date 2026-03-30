@@ -213,19 +213,8 @@ function App() {
     };
   }, [geoData, selectedUPC, selectedScope, selectedCounty, selectedType, selectedFundingLayer, propertyKeys]);
 
-  if (!geoData) {
-    return (
-      <div className="app-container" style={{ background: 'var(--bg-main)' }}>
-        <Header isAdmin={isAdmin} handleLogout={handleLogout} />
-        <div className="loading-container animate-slide-up">
-          <div className="spinner shimmer"></div>
-          <p style={{ color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.05em' }}>
-            REGISTRY SYNCHRONIZING...
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // No longer returning early if !geoData to allow sidebar and layout to show immediately
+  const isLoading = !geoData;
 
   return (
     <div
@@ -391,37 +380,52 @@ function App() {
                           <select
                             value={selectedScope}
                             onChange={(e) => setSelectedScope(e.target.value)}
+                            disabled={isLoading}
                           >
-                            {scopes.map((scope) => (
-                              <option key={scope} value={scope}>{scope}</option>
-                            ))}
+                            {isLoading ? (
+                              <option>Loading Scopes...</option>
+                            ) : (
+                              scopes.map((scope) => (
+                                <option key={scope} value={scope}>{scope}</option>
+                              ))
+                            )}
                           </select>
                         </div>
-
+ 
                         <div className="filter-control">
                           <label>{propertyKeys.county}</label>
                           <select
                             value={selectedCounty}
                             onChange={(e) => setSelectedCounty(e.target.value)}
+                            disabled={isLoading}
                           >
-                            {counties.map((county) => (
-                              <option key={county} value={county}>{county}</option>
-                            ))}
+                            {isLoading ? (
+                              <option>Loading Counties...</option>
+                            ) : (
+                              counties.map((county) => (
+                                <option key={county} value={county}>{county}</option>
+                              ))
+                            )}
                           </select>
                         </div>
-
+ 
                         <div className="filter-control">
                           <label>{propertyKeys.type}</label>
                           <select
                             value={selectedType}
                             onChange={(e) => setSelectedType(e.target.value)}
+                            disabled={isLoading}
                           >
-                            {types.map((type) => (
-                              <option key={type} value={type}>{type}</option>
-                            ))}
+                            {isLoading ? (
+                              <option>Loading Type...</option>
+                            ) : (
+                              types.map((type) => (
+                                <option key={type} value={type}>{type}</option>
+                              ))
+                            )}
                           </select>
                         </div>
-
+ 
                         <div className="filter-control">
                           <label>UPC Search</label>
                           <div style={{ position: 'relative' }}>
@@ -430,7 +434,8 @@ function App() {
                               className="search-input"
                               value={selectedUPC}
                               onChange={(e) => setSelectedUPC(e.target.value)}
-                              placeholder="Search UPC, Name, etc..."
+                              placeholder={isLoading ? "Updating registry..." : "Search UPC, Name, etc..."}
+                              disabled={isLoading}
                               style={{ paddingRight: '2.5rem' }}
                             />
                             <span style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }}>
@@ -456,6 +461,7 @@ function App() {
                           comments={comments}
                           upcKey={propertyKeys.upc}
                           isAdmin={isAdmin}
+                          isLoading={isLoading}
                         />
                     </div>
                   </aside>
@@ -496,6 +502,7 @@ function App() {
                         setHighlightedProject={setHighlightedProject}
                         isSidebarOpen={isSidebarOpen}
                         isFactSheetOpen={isFactSheetOpen}
+                        isLoading={isLoading}
                       />
                   </div>
                   
