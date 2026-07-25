@@ -1,50 +1,61 @@
-import { FileText, Info, Users, Calendar, ChevronLeft, X, Map, Database } from "lucide-react";
+import React from "react";
+import { FileText, Info, Users, Calendar, Map, Database, Sparkles, ExternalLink, ShieldCheck, Clock } from "lucide-react";
 
 function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
-
   return (
     <aside 
       className={`asidebar fact-sheet-sidebar ${isOpen ? "open" : "closed"}`}
       style={{
-        padding: '2rem',
+        padding: '1.75rem',
         overflowY: 'auto',
       }}
     >
       <header style={{
-        marginBottom: '1.5rem',
+        marginBottom: '1.25rem',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1rem'
+        gap: '0.75rem'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ background: 'var(--grad-primary)', padding: '8px', borderRadius: '8px', color: 'white' }}>
+            <div style={{ 
+              background: 'var(--grad-cyan-purple)', 
+              padding: '8px', 
+              borderRadius: '10px', 
+              color: 'white',
+              boxShadow: 'var(--shadow-neon-cyan)'
+            }}>
               <FileText size={18} />
             </div>
-            <h2 style={{ fontSize: '1.125rem', fontWeight: 800, margin: 0 }}>FACT SHEET</h2>
+            <div>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>
+                PROGRAM FACT SHEET
+              </h2>
+              <span style={{ fontSize: '0.65rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '0.05em' }}>
+                FFY 2027–2030 MTIP OVERVIEW
+              </span>
+            </div>
           </div>
+          
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <button 
               className="header-icon-btn desktop-only"
               onClick={onOpenFilters}
-              title="View Project Filter"
+              title="Open Project Explorer & Filters"
               style={{ 
-                background: 'rgba(79, 70, 229, 0.1)', 
-                border: 'none',
+                background: 'rgba(6, 182, 212, 0.15)', 
+                border: '1px solid var(--border-cyan)',
                 padding: '8px', 
                 borderRadius: '8px', 
-                color: 'var(--primary)',
+                color: 'var(--accent-cyan)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'all 0.2s ease',
-                opacity: 0.8
+                transition: 'var(--transition)',
               }}
-              onMouseOver={(e) => e.currentTarget.style.opacity = '1'}
-              onMouseOut={(e) => e.currentTarget.style.opacity = '0.8'}
             >
-              <Database size={18} />
+              <Database size={16} />
             </button>
             <button 
               className="sidebar-close-btn mobile-only"
@@ -55,119 +66,176 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
             </button>
           </div>
         </div>
-
-
       </header>
 
-      <section style={{ marginBottom: '2rem' }}>
-        <h3 style={{ fontSize: '1.25rem', color: 'var(--primary)', marginBottom: '1rem', lineHeight: 1.3 }}>
-          FFY 2027-30 MTIP & Draft Conformity Assessment
+      {/* Cyber Metric Stats Row */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '0.75rem',
+        marginBottom: '1.5rem'
+      }}>
+        <div style={{
+          background: 'rgba(6, 182, 212, 0.08)',
+          border: '1px solid var(--border-cyan)',
+          borderRadius: '12px',
+          padding: '0.875rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', marginBottom: '0.25rem' }}>
+            <Sparkles size={14} style={{ color: 'var(--accent-cyan)' }} />
+            <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Scope Window</span>
+          </div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>4-Year Plan</div>
+          <div style={{ fontSize: '0.65rem', color: 'var(--accent-cyan)', marginTop: '2px' }}>FY 2027 – 2030 MTIP</div>
+        </div>
+
+        <div style={{
+          background: 'rgba(139, 92, 246, 0.08)',
+          border: '1px solid var(--border-purple)',
+          borderRadius: '12px',
+          padding: '0.875rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', marginBottom: '0.25rem' }}>
+            <ShieldCheck size={14} style={{ color: '#c084fc' }} />
+            <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Horizon Year</span>
+          </div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>Vision 2045</div>
+          <div style={{ fontSize: '0.65rem', color: '#c084fc', marginTop: '2px' }}>Long Range Plan (LRTP)</div>
+        </div>
+      </div>
+
+      <section style={{ marginBottom: '1.5rem' }}>
+        <h3 style={{ fontSize: '1.1rem', color: 'var(--accent-cyan)', marginBottom: '0.75rem', lineHeight: 1.3, fontWeight: 800 }}>
+          FFY 2027–30 MTIP & Conformity Assessment
         </h3>
-        <p style={{ color: 'var(--text-main)', fontSize: '0.875rem', lineHeight: 1.6 }}>
-          The Tri‑Cities Area Metropolitan Planning Organization (TCAMPO) guides regional investments in transportation, multi-modal mobility, freight movement, and road safety projects:
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.813rem', lineHeight: 1.6 }}>
+          The Tri‑Cities Area Metropolitan Planning Organization (TCAMPO) directs regional transportation investments, multi-modal mobility, transit expansions, freight corridors, and roadway safety initiatives.
         </p>
       </section>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
-            <Info size={16} style={{ color: 'var(--primary)' }} />
-            <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700 }}>MTIP</h4>
+      {/* Program Pillars */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: '10px',
+          padding: '0.875rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+            <Info size={16} style={{ color: 'var(--accent-cyan)' }} />
+            <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' }}>MTIP Program Focus</h4>
           </div>
-          <p style={{ margin: 0, fontSize: '0.813rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
-            Short-range list of projects planned for the Tri-Cities area over the next four years (FY 2027–2030).
+          <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            A prioritized list of federally funded transportation capital projects scheduled for execution over FY 2027–2030.
           </p>
         </div>
 
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
-            <Info size={16} style={{ color: 'var(--secondary)' }} />
-            <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700 }}>LRTP</h4>
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: '10px',
+          padding: '0.875rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+            <Info size={16} style={{ color: 'var(--accent-purple)' }} />
+            <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' }}>LRTP 2045 Regional Vision</h4>
           </div>
-          <p style={{ margin: 0, fontSize: '0.813rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
-            The region’s transportation vision through 2045.
+          <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            Strategic framework steering multi-modal infrastructure and environmental sustainability goals through 2045.
           </p>
         </div>
       </div>
 
-      <section className="sidebar-group" style={{ 
-        padding: '1.5rem', 
-        marginBottom: '2rem',
-        background: 'rgba(14, 165, 233, 0.08)',
-        border: '1px solid rgba(14, 165, 233, 0.2)'
+      {/* Public Participation Section */}
+      <section className="glass-card" style={{ 
+        padding: '1.25rem', 
+        marginBottom: '1.5rem',
+        background: 'rgba(11, 15, 25, 0.8)',
+        border: '1px solid var(--border-cyan)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-          <Users size={20} style={{ color: 'var(--accent)' }} />
-          <h3 style={{ margin: 0, fontSize: '1.125rem', color: 'var(--accent)' }}>How to Participate</h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '1rem' }}>
+          <Users size={18} style={{ color: 'var(--accent-cyan)' }} />
+          <h3 style={{ margin: 0, fontSize: '1rem', color: 'var(--accent-cyan)', fontWeight: 800 }}>Public Input Calendar</h3>
         </div>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', opacity: 0.7 }}>
-              <Users size={12} />
-              <span style={{ fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase' }}>Public Meeting</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '6px', borderRadius: '8px', color: 'var(--accent-emerald)', marginTop: '2px' }}>
+              <Clock size={16} />
             </div>
-            <p style={{ fontSize: '1rem', fontWeight: 700, margin: 0, color: 'var(--text-main)' }}>
-              Join Us: Monday, April 6, from 5:00 to 6:30 p.m.
-            </p>
-            <p style={{ fontSize: '0.813rem', color: 'var(--text-muted)', lineHeight: 1.4, margin: '0.25rem 0 0 0' }}>
-              Petersburg Public Library Conference Room, 201 W. Washington St.
-            </p>
+            <div>
+              <span style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent-emerald)' }}>Public Review Window</span>
+              <p style={{ fontSize: '0.875rem', fontWeight: 700, margin: '2px 0 0 0', color: 'var(--text-primary)' }}>
+                March 13 – April 12, 2026
+              </p>
+            </div>
           </div>
 
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', opacity: 0.7 }}>
-              <Calendar size={12} />
-              <span style={{ fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase' }}>Review Period</span>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+            <div style={{ background: 'rgba(6, 182, 212, 0.15)', padding: '6px', borderRadius: '8px', color: 'var(--accent-cyan)', marginTop: '2px' }}>
+              <Calendar size={16} />
             </div>
-            <p style={{ fontSize: '1rem', fontWeight: 700, margin: 0, color: 'var(--text-main)' }}>
-              March 13 – April 12, 2026
-            </p>
+            <div>
+              <span style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent-cyan)' }}>Live Public Hearing</span>
+              <p style={{ fontSize: '0.875rem', fontWeight: 700, margin: '2px 0 0 0', color: 'var(--text-primary)' }}>
+                Monday, April 6 | 5:00 – 6:30 PM
+              </p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4, margin: '2px 0 0 0' }}>
+                Petersburg Public Library Conference Room, 201 W. Washington St.
+              </p>
+            </div>
           </div>
           
-          <p style={{ fontSize: '0.813rem', color: 'var(--text-main)', lineHeight: 1.5, margin: 0 }}>
-            Review the <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-FFY27-30-TCAMPO-MTIP-03.06.2026.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'underline' }}>Federal Fiscal year 2027-2030 MTIP</a> and the <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-RCA-Richmond-Area-FY27-30-TIP-and-2045-LRTP-for-public-review-finalv3.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'underline' }}>Draft Regional Conformity Report</a> online.
-          </p>
+          <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem' }}>
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+              Download official drafts:
+              <br />
+              <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-FFY27-30-TCAMPO-MTIP-03.06.2026.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-cyan)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
+                <span>Federal FY 2027-2030 MTIP (PDF)</span> <ExternalLink size={12} />
+              </a>
+              <br />
+              <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-RCA-Richmond-Area-FY27-30-TIP-and-2045-LRTP-for-public-review-finalv3.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-purple)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
+                <span>Regional Conformity Report (PDF)</span> <ExternalLink size={12} />
+              </a>
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="mobile-only" style={{ marginTop: '2rem' }}>
-        <h3 style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
-          Quick Actions
-        </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+      {/* Quick Action Navigation */}
+      <section style={{ marginTop: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
           <button 
             onClick={onClose}
             className="btn-primary"
             style={{ 
               width: '100%', 
-              padding: '1rem', 
+              padding: '0.875rem', 
               justifyContent: 'center',
               fontSize: '0.813rem',
               fontWeight: 700,
-              gap: '0.75rem'
+              gap: '0.5rem',
+              borderRadius: '10px'
             }}
           >
-            <Map size={18} />
-            EXPLORE INTERACTIVE MAP
+            <Map size={16} />
+            EXPLORE SPATIAL MAP
           </button>
           <button 
             onClick={onOpenFilters}
             className="btn-secondary"
             style={{ 
               width: '100%', 
-              padding: '1rem', 
+              padding: '0.875rem', 
               justifyContent: 'center',
               fontSize: '0.813rem',
               fontWeight: 700,
-              gap: '0.75rem',
-              background: 'rgba(79, 70, 229, 0.05)',
-              border: '1px solid var(--primary)',
-              color: 'var(--primary)'
+              gap: '0.5rem',
+              borderRadius: '10px'
             }}
           >
-            <Database size={18} />
-            FILTER PROJECTS
+            <Database size={16} />
+            FILTER & SEARCH PROJECTS
           </button>
         </div>
       </section>

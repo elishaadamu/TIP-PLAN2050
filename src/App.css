@@ -3,13 +3,13 @@ html,
 #root {
   height: 100%;
   margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: var(--bg-main);
-  color: var(--text-main);
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
 }
 
 button {
-  font-family: 'Inter', sans-serif;
+  font-family: inherit;
 }
 
 .leaflet-popup-pane {
@@ -25,104 +25,17 @@ button {
 }
 
 .project-popup {
-  border-radius: 8px;
-  background: white;
-  max-width: 300px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  max-width: 340px;
   font-size: 14px;
 }
 
-.project-popup h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 18px;
-  color: #333;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-}
-
-.project-details p {
-  margin: 5px 0;
-}
-
-.project-details strong {
-  color: #555;
-}
-
-.popup-buttons {
-  margin-top: 15px;
-  display: flex;
-  gap: 10px;
-}
-
-.popup-buttons button {
-  flex: 1;
-  padding: 4px 8px;
-  border-radius: 5px;
-  font-size: 13px;
-}
-
-.comment-form-container {
-  margin-top: 10px;
-  padding-top: 5px;
-  border-top: 1px solid #eee;
-}
-
-/* New styles for responsiveness */
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
-}
-
-.app-header {
-  background: #f8f9fa;
-  padding: 10px 20px;
-  border-bottom: 1px solid #e7e7e7;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
-}
-
-.header-left,
-.header-right {
-  display: flex;
-  align-items: center;
-}
-
-.header-logo-link {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: inherit;
-}
-
-.app-logo {
-  height: 40px;
-  margin-right: 10px;
-}
-
-.app-title {
-  font-weight: bold;
-  font-size: 1.2em;
-  margin-right: 20px;
-}
-
-.header-link {
-  font-weight: bold;
-  text-decoration: none;
-  color: #333;
-  margin-right: 15px;
-  white-space: nowrap; /* Prevent links from breaking */
-}
-
-.menu-button {
-  display: none; /* Hidden by default, shown on small screens */
-  background: none;
-  border: none;
-  font-size: 1.5em;
-  cursor: pointer;
-  padding: 5px;
 }
 
 .main-content-area {
@@ -130,183 +43,15 @@ button {
   flex: 1;
 }
 
-.app-sidebar {
-  width: 450px;
-  padding: 20px;
-  border-right: 1px solid #e7e7e7;
-  overflow-y: auto;
-  flex-shrink: 0; /* Prevent sidebar from shrinking */
-}
-
-.project-layers,
-.project-filters {
-  margin-bottom: 20px;
-}
-
-.layer-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.layer-checkbox {
-  margin-right: 10px;
-  width: 20px;
-  height: 20px;
-}
-
-.layer-color-box {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  margin-right: 5px;
-}
-
-.roadway-color {
-  background: #ff6b6b;
-}
-
-.transit-color {
-  background: #4ecdc4;
-}
-
-.bikeped-color {
-  background: #ccd145ff;
-}
-
-.filter-group {
-  margin-bottom: 10px;
-}
-
-.filter-label {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 0.9em;
-  color: #555;
-}
-
-.filter-select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.search-bar-container {
-  padding: 10px;
-  border-bottom: 1px solid #e7e7e7;
-  display: flex;
-  align-items: center;
-}
-
-.search-icon {
-  margin-right: 10px;
-  color: #888;
-}
-
 .search-input {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.map-view-container {
-  flex: 1;
-}
-
-/* Media Queries for responsiveness — aligned to 991px breakpoint */
-@media (max-width: 991px) {
-  .app-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .header-right {
-    margin-top: 10px;
-    width: 100%;
-    justify-content: space-around;
-  }
-
-  .app-title {
-    font-size: 1em;
-    margin-right: 10px;
-  }
-
-  .header-link {
-    margin-right: 10px;
-    font-size: 0.9em;
-  }
-
-  .menu-button {
-    display: block;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-  }
-
-  .main-content-area {
-    flex-direction: column;
-  }
-
-  .app-sidebar {
-    width: 100%;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid #e7e7e7;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-  }
-
-  .app-sidebar.open {
-    max-height: 500px;
-    transition: max-height 0.3s ease-in;
-  }
-
-  .project-filters {
-    flex-direction: column;
-  }
-
-  .filter-group {
-    width: 100%;
-  }
-
-  .filters-container {
-    display: flex;
-    flex-wrap: wrap;
-  }
-}
-
-@media screen and (min-width: 992px) {
-  .asidebar {
-    width: 450px;
-    padding: 20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .app-header {
-    padding: 10px;
-  }
-
-  .app-logo {
-    height: 30px;
-  }
-
-  .app-title {
-    font-size: 0.9em;
-  }
-
-  .header-link {
-    font-size: 0.8em;
-    margin-right: 5px;
-  }
-
-  .search-input {
-    padding: 6px;
-  }
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(17, 24, 39, 0.8);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--text-primary);
 }
 
 .funding-sources-container {
@@ -317,69 +62,10 @@ button {
   flex-wrap: wrap;
 }
 
-/* Responsive Classes */
-.sidebar-toggle {
-  display: none;
-}
-
+/* Responsiveness helper */
 @media (max-width: 991px) {
-  .sidebar-toggle {
-    display: block;
-    position: absolute;
-    top: 10px;
-    z-index: 1000;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px;
-    cursor: pointer;
-    transition: left 0.3s;
-  }
-
-  .mobile-collapsible-header {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .desktop-only-header {
-    display: none;
-  }
-
-  .mobile-collapsible-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
-  }
-
-  .mobile-collapsible-content.open {
-    max-height: 1000px;
-  }
-
-  .filters-container.mobile.open {
-    max-height: 1000px !important;
-  }
-
-  .filters-container {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
-  }
-
-  .filter-item-wrapper {
-    width: 100% !important;
-    margin-bottom: 15px !important;
-  }
-
   .main-content-wrapper {
     z-index: 0;
     transition: margin-left 0.3s ease, width 0.3s ease;
-  }
-}
-
-@media (min-width: 992px) {
-  .mobile-collapsible-header {
-    display: none !important;
   }
 }

@@ -1,10 +1,10 @@
 import React, { useState, useMemo, memo } from "react";
+import { Download, ChevronLeft, ChevronRight, FileSpreadsheet, Layers } from "lucide-react";
 
 const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments, upcKey, isAdmin, isLoading }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Memoize comment count lookup
   const commentCountMap = useMemo(() => {
     if (!comments) return new Map();
     const map = new Map();
@@ -23,32 +23,30 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
     if (!geometry) return "No Data";
     if (geometry.type === 'Point') {
       const [lng, lat] = geometry.coordinates;
-      return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      return `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
     }
     if (geometry.type === 'LineString') {
       return `Line (${geometry.coordinates.length} pts)`;
     }
     if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
-      return "Area Data";
+      return "Polygon Area";
     }
     return geometry.type;
   };
 
   const exportToCsv = (data, filename) => {
     if (!data || data.length === 0) {
-      alert("No data to export.");
+      alert("No data available to export.");
       return;
     }
 
     const csvRows = [];
-    // Get headers from the properties of the first feature
     const headers = Object.keys(data[0].properties);
     csvRows.push(headers.join(","));
 
-    // Loop over the features (rows)
     for (const feature of data) {
       const values = headers.map((header) => {
-        const escaped = ("" + feature.properties[header]).replace(/"/g, '"');
+        const escaped = ("" + (feature.properties[header] ?? "")).replace(/"/g, '""');
         return `"${escaped}"`;
       });
       csvRows.push(values.join(","));
@@ -65,7 +63,7 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
 
   const handleExportAllProjects = () => {
     if (geoData && geoData.features) {
-      exportToCsv(geoData.features, "all_projects.csv");
+      exportToCsv(geoData.features, "mpo_projects_2027_2030.csv");
     } else {
       alert("No project data available to export.");
     }
@@ -93,31 +91,32 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
     <div className="sidebar-inventory animate-slide-up">
       <div
         style={{
-          padding: "0 0 1.5rem 0",
+          padding: "0 0 1rem 0",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
         }}
       >
         <div>
-          <h2 className="gradient-text" style={{ fontSize: '1.5rem', fontWeight: 800 }}>Inventory Registry</h2>
-          <p style={{ fontSize: '0.813rem', color: 'var(--secondary)', fontWeight: 700, letterSpacing: '0.05em' }}>
-            {isLoading ? "SYNCHRONIZING..." : `${projects.length} PROJECTS LOGGED`}
+          <h2 className="gradient-text" style={{ fontSize: '1.25rem', fontWeight: 800 }}>Project Inventory</h2>
+          <p style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '0.05em' }}>
+            {isLoading ? "SYNCING..." : `${projects.length} TOTAL REGISTERED NODES`}
           </p>
         </div>
         {isAdmin && (
           <button
             onClick={handleExportAllProjects}
             className="btn-outline"
-            style={{ padding: '0.5rem 0.75rem', fontSize: '0.75rem' }}
+            style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem', borderRadius: '8px' }}
             disabled={isLoading}
           >
+            <Download size={14} />
             Export CSV
           </button>
         )}
       </div>
 
-      <div className="table-container card" style={{ padding: '0', overflow: 'hidden' }}>
+      <div className="table-container glass-card" style={{ padding: '0', overflow: 'hidden', borderRadius: '12px' }}>
         <div style={{ overflowX: "auto" }}>
           <table
             style={{
@@ -127,18 +126,18 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
             }}
           >
             <thead>
-              <tr style={{ background: 'var(--bg-main)', borderBottom: '1px solid var(--border-light)' }}>
+              <tr style={{ background: 'rgba(11, 15, 25, 0.9)', borderBottom: '1px solid var(--border-subtle)' }}>
                 {headers.map((header) => (
                   <th
                     key={header}
                     style={{
-                      padding: "1rem",
+                      padding: "0.875rem 1rem",
                       textAlign: "left",
-                      color: "var(--primary)",
+                      color: "var(--accent-cyan)",
                       fontWeight: "800",
                       textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                      fontSize: "0.688rem",
+                      letterSpacing: "0.06em",
+                      fontSize: "0.65rem",
                       minWidth: "120px"
                     }}
                   >
@@ -149,12 +148,11 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
             </thead>
             <tbody>
               {isLoading ? (
-                // Loading Skeletons
                 [...Array(5)].map((_, i) => (
-                  <tr key={`loader-${i}`} style={{ borderBottom: '1px solid var(--border-light)' }}>
+                  <tr key={`loader-${i}`} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                     {headers.map((h, j) => (
-                      <td key={`cell-${i}-${j}`} style={{ padding: "1rem" }}>
-                        <div className="shimmer" style={{ height: '1rem', background: 'rgba(0,0,0,0.05)', borderRadius: '4px', width: j === 0 ? '80%' : '50%' }}></div>
+                      <td key={`cell-${i}-${j}`} style={{ padding: "0.875rem 1rem" }}>
+                        <div className="shimmer" style={{ height: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', width: j === 0 ? '80%' : '50%' }}></div>
                       </td>
                     ))}
                   </tr>
@@ -162,7 +160,7 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
               ) : currentProjects.length === 0 ? (
                 <tr>
                   <td colSpan={headers.length} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                    No projects found matching the criteria.
+                    No project records match the current filter selection.
                   </td>
                 </tr>
               ) : (
@@ -170,7 +168,7 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
                   <tr 
                     key={(feature.properties.UPC || feature.properties.ID || feature.properties.id || index) + "-" + index}
                     style={{ 
-                      borderBottom: '1px solid var(--border-light)',
+                      borderBottom: '1px solid var(--border-subtle)',
                       transition: 'var(--transition)',
                       cursor: 'pointer'
                     }}
@@ -180,34 +178,36 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
                     {headers.map((header) => (
                       <td
                         key={header}
-                        style={{ padding: "1rem" }}
+                        style={{ padding: "0.875rem 1rem" }}
                       >
                         {header === "Feedback"
                           ? (
                              <span style={{ 
-                               background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(79, 70, 229, 0.1)' : 'rgba(0,0,0,0.05)',
-                               color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--primary)' : 'var(--text-muted)',
-                               padding: '0.2rem 0.4rem',
-                               borderRadius: '4px',
+                               background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.04)',
+                               color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)',
+                               border: getCommentCount(feature.properties[upcKey]) > 0 ? '1px solid var(--border-cyan)' : '1px solid var(--border-subtle)',
+                               padding: '0.2rem 0.5rem',
+                               borderRadius: '6px',
                                fontSize: '0.7rem',
                                fontWeight: '700'
                              }}>
-                               {getCommentCount(feature.properties[upcKey])}
+                               {getCommentCount(feature.properties[upcKey])} Submissions
                              </span>
                           )
                           : header === "Geometry"
                           ? (
-                            <span style={{ 
-                              background: 'rgba(79, 70, 229, 0.1)', 
-                              color: 'var(--primary)', 
-                              padding: '0.25rem 0.5rem', 
-                              borderRadius: '4px',
-                              fontSize: '0.7rem',
-                              fontWeight: '600',
-                              fontFamily: 'monospace'
-                            }}>
-                              {getGeometryLabel(feature.geometry)}
-                            </span>
+                             <span style={{ 
+                               background: 'rgba(139, 92, 246, 0.15)', 
+                               color: '#c084fc', 
+                               border: '1px solid rgba(139, 92, 246, 0.3)',
+                               padding: '0.25rem 0.5rem', 
+                               borderRadius: '6px',
+                               fontSize: '0.68rem',
+                               fontWeight: '600',
+                               fontFamily: 'monospace'
+                             }}>
+                               {getGeometryLabel(feature.geometry)}
+                             </span>
                           )
                           : (
                             <div style={{ 
@@ -215,9 +215,10 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
                               overflow: 'hidden', 
                               textOverflow: 'ellipsis', 
                               whiteSpace: 'nowrap',
-                              color: 'var(--text-main)'
+                              color: 'var(--text-primary)',
+                              fontWeight: 500
                             }}>
-                              {String(feature.properties[header] || "—")}
+                              {String(feature.properties[header] ?? "—")}
                             </div>
                           )
                         }
@@ -237,32 +238,32 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginTop: "1.5rem",
-            padding: "1rem",
-            background: "var(--surface)",
-            borderRadius: "var(--radius-md)",
-            border: "1px solid var(--border-light)"
+            marginTop: "1rem",
+            padding: "0.75rem 1rem",
+            background: "var(--bg-card)",
+            borderRadius: "10px",
+            border: "1px solid var(--border-subtle)"
           }}
         >
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-             {currentPage} of {totalPages}
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+             Page {currentPage} of {totalPages}
           </span>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.375rem' }}>
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
               className="btn-outline"
-              style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}
+              style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', borderRadius: '6px' }}
             >
-              Prev
+              <ChevronLeft size={14} />
             </button>
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
               className="btn-outline"
-              style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}
+              style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', borderRadius: '6px' }}
             >
-              Next
+              <ChevronRight size={14} />
             </button>
           </div>
         </div>

@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import ProjectsTableIndex from "./components/ProjectsTableIndex";
-import { Search, ChevronLeft, ChevronRight, FileText, Database, Map, X } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, FileText, Database, Map, X, SlidersHorizontal, RefreshCw } from "lucide-react";
 import "./components/FormElements.css";
 
 // Lazy load heavy components
@@ -19,7 +19,7 @@ function App() {
   const [comments, setComments] = useState([]);
   const [isAdmin, setIsAdmin] = useState(
     localStorage.getItem("isAdmin") === "true"
-  ); // New state for admin status
+  );
   const navigate = useNavigate();
   const [scopes, setScopes] = useState([]);
   const [counties, setCounties] = useState([]);
@@ -32,12 +32,10 @@ function App() {
   const [fundingSources, setFundingSources] = useState([]);
   const [projectTitle, setProjectTitle] = useState([]);
   const [geoData, setGeoData] = useState(null);
-  const [currentGeoDataFilename, setCurrentGeoDataFilename] = useState(null); // New state for active GeoJSON filename
+  const [currentGeoDataFilename, setCurrentGeoDataFilename] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 991);
-  const [isFactSheetOpen, setIsFactSheetOpen] = useState(true);
-  const [isLayersOpen, setIsLayersOpen] = useState(false);
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [isFactSheetOpen, setIsFactSheetOpen] = useState(false);
   const [activeProjectLayers, setActiveProjectLayers] = useState([]);
   const [highlightedProject, setHighlightedProject] = useState(null);
   const [propertyKeys, setPropertyKeys] = useState({
@@ -55,9 +53,8 @@ function App() {
           "https://ecointeractive.onrender.com/api/comments"
         );
         setComments(response.data);
-       
       } catch (err) {
-       
+        console.error("Failed to fetch comments:", err);
       }
     };
     fetchComments();
@@ -68,7 +65,6 @@ function App() {
 
       if (!data.features || data.features.length === 0) return;
 
-      // Find all unique keys across all features
       const allKeys = Array.from(new Set(data.features.flatMap(f => Object.keys(f.properties || {}))));
       const keys = allKeys;
 
@@ -117,14 +113,12 @@ function App() {
 
     const loadData = async () => {
       try {
-        // Always try to load the active GeoJSON from API first
         const response = await axios.get(
           "https://ecointeractive.onrender.com/api/geojson/active"
         );
         if (response.data.geojsonData) {
           processGeoData(response.data.geojsonData, response.data.filename);
         } else {
-          // Fallback to default file if no active GeoJSON
           const fallbackResponse = await fetch(
             `${window.location.origin}/projects_new.geojson`
           );
@@ -132,14 +126,13 @@ function App() {
           processGeoData(data, "projects_new.geojson");
         }
       } catch (err) {
-        // Fallback to default file if API fails
         fetch(`${window.location.origin}/projects_new.geojson`)
           .then((res) => res.json())
           .then((data) => {
             processGeoData(data, "projects_new.geojson");
           })
           .catch((fallbackErr) =>
-            console.error("Failed to fetch fallback GeoJSON data:")
+            console.error("Failed to fetch fallback GeoJSON data:", fallbackErr)
           );
       }
     };
@@ -153,21 +146,24 @@ function App() {
         "https://ecointeractive.onrender.com/api/comments",
         comment
       );
-      console.log("Comment added:", response);
-      setComments([...comments, response.data]);
+      setComments(prev => [...prev, response.data]);
       Swal.fire({
         icon: "success",
-        title: "Comment Added!",
-        text: "Your comment has been successfully submitted.",
-        timer: 1500,
+        title: "Testimony Registered!",
+        text: "Your public comment has been successfully recorded.",
+        timer: 2000,
         showConfirmButton: false,
+        background: "#111827",
+        color: "#f8fafc"
       });
     } catch (err) {
       console.error("Failed to add comment:", err);
       Swal.fire({
         icon: "error",
-        title: "Submission Failed",
-        text: "There was an error submitting your comment. Please try again.",
+        title: "Submission Error",
+        text: "There was an issue registering your comment. Please try again.",
+        background: "#111827",
+        color: "#f8fafc"
       });
     }
   };
@@ -183,7 +179,14 @@ function App() {
     navigate("/");
   };
 
-  // Memoize filtered geoData to prevent unnecessary recalculations
+  const handleResetFilters = () => {
+    setSelectedScope("All");
+    setSelectedCounty("All");
+    setSelectedType("All");
+    setSelectedUPC("");
+    setSelectedFundingLayer("All");
+  };
+
   const filteredGeoData = useMemo(() => {
     if (!geoData) return null;
     return {
@@ -213,8 +216,8 @@ function App() {
     };
   }, [geoData, selectedUPC, selectedScope, selectedCounty, selectedType, selectedFundingLayer, propertyKeys]);
 
-  // No longer returning early if !geoData to allow sidebar and layout to show immediately
   const isLoading = !geoData;
+  const isFiltered = selectedScope !== "All" || selectedCounty !== "All" || selectedType !== "All" || selectedUPC !== "";
 
   return (
     <div
@@ -226,6 +229,7 @@ function App() {
         <div className="blob blob-2"></div>
         <div className="blob blob-3"></div>
       </div>
+
       <Header
         isAdmin={isAdmin}
         handleLogout={handleLogout}
@@ -240,8 +244,8 @@ function App() {
         <Suspense fallback={
           <div className="loading-container" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div className="spinner shimmer"></div>
-            <p style={{ color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.05em' }}>
-              LOADING...
+            <p style={{ color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '0.1em' }}>
+              INITIALIZING PORTAL DATA...
             </p>
           </div>
         }>
@@ -340,43 +344,41 @@ function App() {
                       X
                     </button>
 
-                    {/* Visual Group: Filters */}
-                    <div className="sidebar-group">
-                      <header className="explorer-section-title" style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                    {/* Filter Widget Group */}
+                    <div className="sidebar-group glass-card" style={{ padding: '1.25rem', borderRadius: '14px' }}>
+                      <header className="explorer-section-title" style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: '1rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
-                          <div style={{ background: 'rgba(14, 165, 233, 0.1)', padding: '6px', borderRadius: '6px', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Search size={14} />
+                          <div style={{ background: 'rgba(6, 182, 212, 0.15)', padding: '6px', borderRadius: '8px', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <SlidersHorizontal size={14} />
                           </div>
-                          Project Filter
+                          <span style={{ color: 'var(--text-primary)', fontWeight: 800 }}>Spatial Filters</span>
                         </div>
-                        <button 
-                          className="header-icon-btn desktop-only"
-                          onClick={() => {
-                            setIsFactSheetOpen(true);
-                          }}
-                          title="View Fact Sheet"
-                          style={{ 
-                            background: 'rgba(14, 165, 233, 0.1)', 
-                            border: 'none',
-                            padding: '6px', 
-                            borderRadius: '6px', 
-                            color: 'var(--accent)',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            transition: 'all 0.2s ease',
-                            opacity: 0.8
-                          }}
-                          onMouseOver={(e) => e.currentTarget.style.opacity = '1'}
-                          onMouseOut={(e) => e.currentTarget.style.opacity = '0.8'}
-                        >
-                          <FileText size={14} />
-                        </button>
+                        {isFiltered && (
+                          <button
+                            onClick={handleResetFilters}
+                            title="Reset all filters"
+                            style={{
+                              background: 'rgba(239, 68, 68, 0.15)',
+                              border: '1px solid rgba(239, 68, 68, 0.3)',
+                              color: '#f87171',
+                              fontSize: '0.68rem',
+                              padding: '0.25rem 0.5rem',
+                              borderRadius: '6px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            <RefreshCw size={10} /> Reset
+                          </button>
+                        )}
                       </header>
-                      <div className="filter-grid">
+
+                      <div className="filter-grid" style={{ gap: '0.875rem' }}>
                         <div className="filter-control">
-                          <label>{propertyKeys.scope}</label>
+                          <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                            {propertyKeys.scope}
+                          </label>
                           <select
                             value={selectedScope}
                             onChange={(e) => setSelectedScope(e.target.value)}
@@ -393,7 +395,9 @@ function App() {
                         </div>
  
                         <div className="filter-control">
-                          <label>{propertyKeys.county}</label>
+                          <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                            {propertyKeys.county}
+                          </label>
                           <select
                             value={selectedCounty}
                             onChange={(e) => setSelectedCounty(e.target.value)}
@@ -410,7 +414,9 @@ function App() {
                         </div>
  
                         <div className="filter-control">
-                          <label>{propertyKeys.type}</label>
+                          <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                            {propertyKeys.type}
+                          </label>
                           <select
                             value={selectedType}
                             onChange={(e) => setSelectedType(e.target.value)}
@@ -427,19 +433,21 @@ function App() {
                         </div>
  
                         <div className="filter-control">
-                          <label>UPC Search</label>
+                          <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                            Quick Search (UPC / Title)
+                          </label>
                           <div style={{ position: 'relative' }}>
                             <input
                               type="text"
                               className="search-input"
                               value={selectedUPC}
                               onChange={(e) => setSelectedUPC(e.target.value)}
-                              placeholder={isLoading ? "Updating registry..." : "Search UPC, Name, etc..."}
+                              placeholder={isLoading ? "Loading projects..." : "Search UPC or keyword..."}
                               disabled={isLoading}
                               style={{ paddingRight: '2.5rem' }}
                             />
-                            <span style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }}>
-                              <Search size={16} />
+                            <span style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                              <Search size={14} />
                             </span>
                           </div>
                         </div>
@@ -447,13 +455,7 @@ function App() {
                     </div>
 
                     {/* Projects Table Index */}
-                    <div className="sidebar-group">
-                        <header className="explorer-section-title">
-                          <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: '6px', borderRadius: '6px', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Database size={14} />
-                          </div>
-                          Inventory Explorer
-                        </header>
+                    <div className="sidebar-group glass-card" style={{ padding: '1.25rem', borderRadius: '14px' }}>
                         <ProjectsTableIndex 
                           geoData={filteredGeoData} 
                           allHeaders={propertyKeys.allKeys} 
@@ -475,7 +477,7 @@ function App() {
                   </button>
                 </div>
 
-                {/* Main Content: Map */}
+                {/* Main Content Map Container */}
                 <main
                   className="main-content-wrapper"
                   style={{
@@ -506,13 +508,13 @@ function App() {
                       />
                   </div>
                   
-                  {/* Floating Toggle (Mobile Only) */}
+                  {/* Floating Toggle Button (Mobile) */}
                   <button
                     className="sidebar-toggle-btn"
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                     aria-label="Toggle Project Menu"
                   >
-                    {isSidebarOpen ? <X size={24} /> : <Map size={24} />}
+                    {isSidebarOpen ? <X size={22} /> : <Map size={22} />}
                   </button>
                 </main>
               </div>
@@ -521,8 +523,8 @@ function App() {
         </Routes>
         </Suspense>
       </main>
-
     </div>
   );
 }
+
 export default App;

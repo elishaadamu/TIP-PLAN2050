@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Map, MessageSquare, Database, Settings, Lock, LogOut, FileText } from "lucide-react";
-import "./Header.css"; // import styles
+import { Map, MessageSquare, Database, Settings, ShieldCheck, LogOut, FileText } from "lucide-react";
+import "./Header.css";
 
 function Header({
   isAdmin,
@@ -18,54 +18,53 @@ function Header({
         <div className="header-left">
           <Link to="/" className="logo-link" onClick={() => setIsMobileMenuOpen(false)}>
             <div className="logo-container">
-              <img src="/MPO_Logo.jpg" alt="Logo" className="logo" width="60" height="60" loading="eager" fetchpriority="high" />
+              <img src="/MPO_Logo.jpg" alt="Tri-Cities MPO Logo" className="logo" width="44" height="44" loading="eager" />
             </div>
             <div className="title-container">
-              <h1 className="header-title">Tri-Cities Area MPO</h1>
-              <p className="header-subtitle">2027 - 2030 TIP INTERACTIVE PUBLIC INPUT PORTAL</p>
+              <div className="title-row">
+                <h1 className="header-title">Tri-Cities MPO</h1>
+                <span className="live-badge">
+                  <span className="pulse-dot"></span> LIVE PORTAL
+                </span>
+              </div>
+              <p className="header-subtitle">2027 - 2030 TIP & PLAN 2050 INTERACTIVE PORTAL</p>
             </div>
           </Link>
         </div>
 
-        {/* Desktop nav — visible above 991px, hidden on mobile */}
+        {/* Desktop Navbar */}
         <nav className="nav nav-desktop">
-          <Link 
-            to="/" 
-            className={`nav-link ${!isFactSheetOpen ? "active" : ""}`}
-            onClick={onCloseFactSheet}
-          >
-            <Map size={18} />
-            <span>Explore Map</span>
-          </Link>
+          <div className="nav-pill-group">
+            <Link 
+              to="/" 
+              className={`nav-link ${!isFactSheetOpen ? "active" : ""}`}
+              onClick={onCloseFactSheet}
+            >
+              <Map size={16} />
+              <span>Explore Map</span>
+            </Link>
 
-          <button 
-            onClick={onOpenFactSheet} 
-            className={`nav-link ${isFactSheetOpen ? "active" : ""}`}
-            style={{ 
-              background: 'none', 
-              border: 'none', 
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              textTransform: 'inherit',
-              letterSpacing: 'inherit'
-            }}
-          >
-            <FileText size={18} />
-            <span className="text-uppercase">FACT SHEET</span>
-          </button>
+            <button 
+              onClick={onOpenFactSheet} 
+              className={`nav-link ${isFactSheetOpen ? "active" : ""}`}
+            >
+              <FileText size={16} />
+              <span>Fact Sheet</span>
+            </button>
+          </div>
 
           {isAdmin && (
             <div className="admin-nav-group">
               <Link to="/comments" className="nav-link">
-                <MessageSquare size={18} />
+                <MessageSquare size={16} />
                 <span>Feedback</span>
               </Link>
               <Link to="/projects" className="nav-link">
-                <Database size={18} />
+                <Database size={16} />
                 <span>Inventory</span>
               </Link>
               <Link to="/geojson-manager" className="nav-link">
-                <Settings size={18} />
+                <Settings size={16} />
                 <span>Data Manager</span>
               </Link>
             </div>
@@ -74,22 +73,25 @@ function Header({
           <div className="nav-divider"></div>
 
           {isAdmin ? (
-            <button onClick={handleLogout} className="btn-outline logout-btn">
-              <LogOut size={16} />
-              Sign Out
+            <button onClick={handleLogout} className="logout-btn">
+              <LogOut size={15} />
+              <span>Sign Out</span>
             </button>
           ) : (
-            <Link to="/login" className="btn-primary login-btn">
-              <Lock size={16} />
-              Admin Access
+            <Link to="/login" className="admin-access-btn">
+              <div className="admin-icon-wrapper">
+                <ShieldCheck size={14} />
+              </div>
+              <span>Admin Access</span>
             </Link>
           )}
         </nav>
 
+        {/* Hamburger Menu Toggle */}
         <button
           className={`menu-toggle ${isMobileMenuOpen ? "open" : ""}`}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle Menu"
+          aria-label="Toggle Navigation Menu"
         >
           <span></span>
           <span></span>
@@ -97,7 +99,7 @@ function Header({
         </button>
       </header>
 
-      {/* Mobile nav — rendered OUTSIDE the header to avoid backdrop-filter stacking context */}
+      {/* Mobile Nav Overlay */}
       {isMobileMenuOpen && (
         <div className="nav-mobile-backdrop" onClick={() => setIsMobileMenuOpen(false)} />
       )}
@@ -114,16 +116,6 @@ function Header({
         <button 
           className={`nav-link ${isFactSheetOpen ? "active" : ""}`}
           onClick={() => { onOpenFactSheet(); setIsMobileMenuOpen(false); }}
-          style={{ 
-            background: 'none', 
-            border: 'none', 
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            textTransform: 'inherit',
-            letterSpacing: 'inherit',
-            width: '100%',
-            justifyContent: 'center'
-          }}
         >
           <FileText size={18} />
           <span>Fact Sheet</span>
@@ -149,14 +141,16 @@ function Header({
         <div className="nav-divider-mobile"></div>
 
         {isAdmin ? (
-          <button onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} className="btn-outline logout-btn">
-            <LogOut size={16} />
-            Sign Out
+          <button onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} className="logout-btn" style={{ width: '100%', justifyContent: 'center', height: '46px' }}>
+            <LogOut size={18} />
+            <span>Sign Out</span>
           </button>
         ) : (
-          <Link to="/login" className="btn-primary login-btn" onClick={() => setIsMobileMenuOpen(false)}>
-            <Lock size={16} />
-            Admin Access
+          <Link to="/login" className="admin-access-btn" onClick={() => setIsMobileMenuOpen(false)} style={{ width: '100%', justifyContent: 'center', height: '46px' }}>
+            <div className="admin-icon-wrapper">
+              <ShieldCheck size={16} />
+            </div>
+            <span>Admin Access</span>
           </Link>
         )}
       </nav>

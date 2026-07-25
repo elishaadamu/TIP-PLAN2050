@@ -2,22 +2,22 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import { X, Download, Trash2, Eye } from "lucide-react";
+import { X, Download, Trash2, Search, MessageSquare, ShieldAlert, ChevronLeft, ChevronRight } from "lucide-react";
 
-const CommentsTable = ({ comments, setComments }) => {
+const CommentsTable = ({ comments = [], setComments }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [searchTerm, setSearchTerm] = useState("");
+  const itemsPerPage = 8;
 
   const exportToCsv = (data, filename) => {
+    if (!data || data.length === 0) return;
     const csvRows = [];
-    // Get headers
     const headers = Object.keys(data[0] || {});
     csvRows.push(headers.join(","));
 
-    // Loop over the rows
     for (const row of data) {
       const values = headers.map((header) => {
-        const escaped = ("" + row[header]).replace(/"/g, '"');
+        const escaped = ("" + (row[header] ?? "")).replace(/"/g, '""');
         return `"${escaped}"`;
       });
       csvRows.push(values.join(","));
@@ -33,66 +33,89 @@ const CommentsTable = ({ comments, setComments }) => {
   };
 
   const handleExportAll = () => {
-    exportToCsv(comments, "all_comments.csv");
-  };
-
-  const handleExportRow = (comment) => {
-    exportToCsv([comment], `comment_${comment.id || new Date().getTime()}.csv`);
+    exportToCsv(filteredComments, "public_testimony_logs.csv");
   };
 
   const handleDeleteAllComments = async () => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Purge All Comments?",
+      text: "This action will permanently delete all public testimony submissions!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete all!",
+      confirmButtonColor: "#06b6d4",
+      cancelButtonColor: "#ef4444",
+      confirmButtonText: "Yes, Purge Registry",
+      background: "#111827",
+      color: "#f8fafc"
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(
-            "https://ecointeractive.onrender.com/api/comments"
-          );
-          setComments([]); // Clear comments in state
-          Swal.fire("Deleted!", "All comments have been deleted.", "success");
+          await axios.delete("https://ecointeractive.onrender.com/api/comments");
+          setComments([]);
+          Swal.fire({
+            title: "Purged!",
+            text: "All public testimony logs deleted.",
+            icon: "success",
+            background: "#111827",
+            color: "#f8fafc"
+          });
         } catch (error) {
-          console.error("Failed to delete all comments:", error);
-          Swal.fire("Error!", "Failed to delete comments.", "error");
+          console.error("Failed to delete comments:", error);
+          Swal.fire({
+            title: "Error!",
+            text: "Failed to purge comments.",
+            icon: "error",
+            background: "#111827",
+            color: "#f8fafc"
+          });
         }
       }
     });
   };
 
-  const totalPages = Math.ceil(comments.length / itemsPerPage);
+  const filteredComments = comments.filter((c) => {
+    const text = String(c.comment || c.text || "").toLowerCase();
+    const pid = String(c.projectId || "").toLowerCase();
+    const name = String(c.name || "").toLowerCase();
+    const term = searchTerm.toLowerCase();
+    return text.includes(term) || pid.includes(term) || name.includes(term);
+  });
 
+  const totalPages = Math.ceil(filteredComments.length / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentComments = comments.slice(indexOfFirstItem, indexOfLastItem);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const currentComments = filteredComments.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="comments-view animate-slide-up" style={{ 
-      padding: 'clamp(1rem, 5vw, 3rem)', 
-      maxWidth: '100%', 
-      width: '1200px', 
+      padding: 'clamp(1rem, 4vw, 2.5rem)', 
+      maxWidth: '1200px', 
       margin: '0 auto', 
-      position: 'relative',
-      boxSizing: 'border-box'
+      width: '100%',
+      position: 'relative'
     }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+      <header style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'flex-start', 
+        marginBottom: '2rem',
+        flexWrap: 'wrap',
+        gap: '1rem'
+      }}>
         <div>
-          <h1 style={{ fontSize: '2.75rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 }}>Project Comments</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', marginTop: '0.5rem', fontWeight: 500 }}>Review and audit community feedback on regional infrastructure.</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.5rem' }}>
+            <MessageSquare size={24} style={{ color: 'var(--accent-cyan)' }} />
+            <h1 className="gradient-text" style={{ fontSize: '2.25rem', fontWeight: 800 }}>Public Feedback Registry</h1>
+          </div>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.938rem' }}>Review and audit public testimony submitted for 2027–2030 TIP projects.</p>
         </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <button className="btn-outline" onClick={handleExportAll} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <button className="btn-outline" onClick={handleExportAll} style={{ fontSize: '0.813rem', borderRadius: '8px' }}>
              <Download size={16} />
-             Export Registry
+             Export CSV
           </button>
-          <button className="btn-outline" onClick={handleDeleteAllComments} style={{ color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.2)', background: 'rgba(239, 68, 68, 0.05)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <button className="btn-outline" onClick={handleDeleteAllComments} style={{ color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.4)', background: 'rgba(239, 68, 68, 0.1)', fontSize: '0.813rem', borderRadius: '8px' }}>
              <Trash2 size={16} />
              Purge All
           </button>
@@ -100,68 +123,80 @@ const CommentsTable = ({ comments, setComments }) => {
             to="/" 
             className="btn-ghost" 
             style={{ 
-              width: '40px', 
-              height: '40px', 
+              width: '38px', 
+              height: '38px', 
               borderRadius: '50%', 
               padding: 0,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'var(--transition)'
+              border: '1px solid var(--border-subtle)',
+              color: 'var(--text-primary)'
             }}
-            title="Close and return to Map"
+            title="Return to Map"
           >
-            <X size={24} />
+            <X size={20} />
           </Link>
         </div>
       </header>
 
-      <div className="card glass-card" style={{ padding: '0', overflow: 'hidden' }}>
+      {/* Search Input Bar */}
+      <div style={{ marginBottom: '1.25rem', position: 'relative', maxWidth: '400px' }}>
+        <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+        <input 
+          type="text"
+          placeholder="Filter feedback by UPC, comment, or name..."
+          value={searchTerm}
+          onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+          style={{ paddingLeft: '38px', background: 'rgba(17, 24, 39, 0.8)', border: '1px solid var(--border-subtle)', borderRadius: '10px' }}
+        />
+      </div>
+
+      <div className="glass-card" style={{ padding: '0', overflow: 'hidden', borderRadius: '16px' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ background: 'rgba(0,0,0,0.02)', borderBottom: '2px solid var(--border)' }}>
-                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', color: 'var(--text-muted)' }}>Project ID</th>
-                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', color: 'var(--text-muted)' }}>Comment</th>
-                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', color: 'var(--text-muted)' }}>Date</th>
-                <th style={{ padding: '1.25rem', textAlign: 'right', fontWeight: '600', color: 'var(--text-muted)' }}>Actions</th>
+              <tr style={{ background: 'rgba(11, 15, 25, 0.9)', borderBottom: '1px solid var(--border-subtle)' }}>
+                <th style={{ padding: '1rem 1.25rem', textAlign: 'left', fontWeight: '800', color: 'var(--accent-cyan)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Project UPC / ID</th>
+                <th style={{ padding: '1rem 1.25rem', textAlign: 'left', fontWeight: '800', color: 'var(--accent-cyan)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Citizen Name</th>
+                <th style={{ padding: '1rem 1.25rem', textAlign: 'left', fontWeight: '800', color: 'var(--accent-cyan)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Testimony Detail</th>
+                <th style={{ padding: '1rem 1.25rem', textAlign: 'left', fontWeight: '800', color: 'var(--accent-cyan)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date Recorded</th>
               </tr>
             </thead>
             <tbody>
               {currentComments.length > 0 ? (
                 currentComments.map((comment, index) => (
-                  <tr key={comment._id || index} style={{ borderBottom: '1px solid var(--border)', transition: 'background 0.2s' }}>
-                    <td style={{ padding: '1rem', fontWeight: '600', color: 'var(--primary)' }}>
-                      {comment.projectId || (indexOfFirstItem + index + 1)}
+                  <tr key={comment._id || index} style={{ borderBottom: '1px solid var(--border-subtle)', transition: 'var(--transition)' }} className="inventory-row">
+                    <td style={{ padding: '1rem 1.25rem' }}>
+                      <span style={{ 
+                        background: 'rgba(6, 182, 212, 0.15)', 
+                        color: 'var(--accent-cyan)', 
+                        border: '1px solid var(--border-cyan)',
+                        padding: '0.2rem 0.5rem', 
+                        borderRadius: '6px',
+                        fontSize: '0.75rem',
+                        fontWeight: '700'
+                      }}>
+                        UPC #{comment.projectId || 'General'}
+                      </span>
                     </td>
-                    <td style={{ padding: '1rem', maxWidth: '300px' }}>
-                      <div style={{ 
-                        whiteSpace: 'nowrap', 
-                        overflow: 'hidden', 
-                        textOverflow: 'ellipsis' 
-                      }} title={comment.comment}>
-                        {comment.comment}
+                    <td style={{ padding: '1rem 1.25rem', color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.875rem' }}>
+                      {comment.name || 'Anonymous Citizen'}
+                    </td>
+                    <td style={{ padding: '1rem 1.25rem', maxWidth: '400px' }}>
+                      <div style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.5 }}>
+                        {comment.comment || comment.text}
                       </div>
                     </td>
-                    <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-                      {new Date(comment.timestamp).toLocaleDateString()}
-                    </td>
-                    <td style={{ padding: '1rem', textAlign: 'right' }}>
-                      <button 
-                         className="btn-outline" 
-                         onClick={() => handleExportRow(comment)}
-                         style={{ padding: '0.5rem', borderRadius: '6px' }}
-                         title="Export Row"
-                       >
-                         <Eye size={16} />
-                       </button>
+                    <td style={{ padding: '1rem 1.25rem', color: 'var(--text-muted)', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>
+                      {new Date(comment.timestamp || comment.createdAt || Date.now()).toLocaleDateString()}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                    No comments found.
+                  <td colSpan="4" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                    No testimony entries found matching your query.
                   </td>
                 </tr>
               )}
@@ -169,42 +204,36 @@ const CommentsTable = ({ comments, setComments }) => {
           </table>
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div style={{ 
-            padding: '1.25rem', 
-            borderTop: '1px solid var(--border)', 
+            padding: '1rem 1.25rem', 
+            borderTop: '1px solid var(--border-subtle)', 
             display: 'flex', 
-            justifyContent: 'center', 
-            gap: '0.5rem',
-            background: 'rgba(0,0,0,0.01)'
+            justifyContent: 'space-between',
+            alignItems: 'center', 
+            background: 'rgba(11, 15, 25, 0.6)'
           }}>
-            <button
-              className="btn-outline"
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              style={{ padding: '0.5rem 1rem' }}
-            >
-              Previous
-            </button>
-            {Array.from({ length: totalPages }).map((_, i) => (
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              Page {currentPage} of {totalPages} ({filteredComments.length} total entries)
+            </span>
+            <div style={{ display: 'flex', gap: '0.375rem' }}>
               <button
-                key={i}
-                className={currentPage === i + 1 ? "btn-primary" : "btn-outline"}
-                onClick={() => paginate(i + 1)}
-                style={{ padding: '0.5rem 1rem', minWidth: '40px' }}
+                className="btn-outline"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                style={{ padding: '0.35rem 0.65rem', borderRadius: '6px' }}
               >
-                {i + 1}
+                <ChevronLeft size={14} />
               </button>
-            ))}
-            <button
-              className="btn-outline"
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              style={{ padding: '0.5rem 1rem' }}
-            >
-              Next
-            </button>
+              <button
+                className="btn-outline"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                style={{ padding: '0.35rem 0.65rem', borderRadius: '6px' }}
+              >
+                <ChevronRight size={14} />
+              </button>
+            </div>
           </div>
         )}
       </div>

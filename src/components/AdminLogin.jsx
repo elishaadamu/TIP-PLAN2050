@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, ArrowLeft, Loader2, ShieldCheck } from "lucide-react";
 
 const AdminLogin = ({ setIsAdmin, navigate }) => {
   const [email, setEmail] = useState("");
@@ -12,15 +12,12 @@ const AdminLogin = ({ setIsAdmin, navigate }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear previous errors
-    setLoading(true); // Set loading to true
+    setErrorMessage("");
+    setLoading(true);
     try {
       const response = await axios.post(
         "https://ecointeractive.onrender.com/api/login",
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
       if (response.data.message === "Login successful!") {
         setIsAdmin(true);
@@ -28,16 +25,14 @@ const AdminLogin = ({ setIsAdmin, navigate }) => {
         navigate("/");
       } else {
         setErrorMessage(
-          response.data.error || "Login failed. Please check your credentials."
+          response.data.error || "Authentication failed. Please check your credentials."
         );
       }
     } catch (err) {
       console.error("Login error:", err);
-      setErrorMessage(
-        "Login failed. Please check your credentials and try again."
-      );
+      setErrorMessage("Authentication failed. Invalid email or password.");
     } finally {
-      setLoading(false); // Set loading to false regardless of success or failure
+      setLoading(false);
     }
   };
 
@@ -48,35 +43,43 @@ const AdminLogin = ({ setIsAdmin, navigate }) => {
         justifyContent: "center",
         alignItems: "center",
         flex: 1,
-        padding: "20px",
-        background: "var(--bg-main)"
+        padding: "2rem 1rem",
+        minHeight: "calc(100vh - 72px)"
       }}
     >
       <div
-        className="card glass-panel animate-slide-up"
+        className="glass-card animate-slide-up"
         style={{
           width: "100%",
-          maxWidth: "420px",
-          padding: "3rem",
+          maxWidth: "430px",
+          padding: "2.5rem 2rem",
           display: "flex",
           flexDirection: "column",
-          gap: "2rem"
+          gap: "1.75rem",
+          background: "rgba(19, 27, 46, 0.95)",
+          border: "1px solid var(--border-medium)",
+          boxShadow: "0 20px 40px rgba(0, 0, 0, 0.5)",
+          borderRadius: "16px"
         }}
       >
         <div style={{ textAlign: "center" }}>
            <div style={{ 
-             background: 'white', 
+             background: 'rgba(14, 165, 233, 0.12)', 
              display: 'inline-flex', 
-             padding: '10px', 
-             borderRadius: '12px', 
-             boxShadow: 'var(--shadow-premium)',
-             marginBottom: '1.5rem'
+             padding: '12px', 
+             borderRadius: '16px', 
+             marginBottom: '1rem',
+             border: '1px solid rgba(14, 165, 233, 0.3)',
+             color: 'var(--accent-cyan)'
            }}>
-             <img src="/MPO_Logo.jpg" alt="Logo" style={{ height: "64px" }} />
+             <ShieldCheck size={28} />
            </div>
-           <h2 className="gradient-text" style={{ fontSize: "1.75rem", fontWeight: 800 }}>Admin Portal</h2>
-           <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", marginTop: "0.5rem" }}>
-             Secure access for regional planning authorities.
+           
+           <h2 style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary)", margin: 0, letterSpacing: "-0.02em" }}>
+             Administrator Sign In
+           </h2>
+           <p style={{ color: "var(--text-secondary)", fontSize: "0.813rem", marginTop: "0.4rem", lineHeight: 1.5 }}>
+             Authorized access for regional planning dataset management and feedback registry moderation.
            </p>
         </div>
 
@@ -85,46 +88,65 @@ const AdminLogin = ({ setIsAdmin, navigate }) => {
             <label
               style={{
                 display: "block",
-                marginBottom: "0.5rem",
-                fontWeight: "600",
-                fontSize: "0.75rem",
+                marginBottom: "0.4rem",
+                fontWeight: "700",
+                fontSize: "0.68rem",
                 textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: 'var(--text-muted)'
+                letterSpacing: '0.06em',
+                color: 'var(--text-secondary)'
               }}
             >
               Institutional Email
             </label>
-            <input
-              type="email"
-              placeholder="admin@mpo-tri-cities.gov"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <div style={{ position: "relative" }}>
+              <Mail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input
+                type="email"
+                placeholder="admin@mpo-tri-cities.gov"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{ 
+                  paddingLeft: '42px', 
+                  background: 'rgba(13, 19, 34, 0.9)', 
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: '10px',
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
           </div>
 
           <div>
             <label
               style={{
                 display: "block",
-                marginBottom: "0.5rem",
-                fontWeight: "600",
-                fontSize: "0.75rem",
+                marginBottom: "0.4rem",
+                fontWeight: "700",
+                fontSize: "0.68rem",
                 textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: 'var(--text-muted)'
+                letterSpacing: '0.06em',
+                color: 'var(--text-secondary)'
               }}
             >
               Secured Password
             </label>
             <div style={{ position: "relative" }}>
+              <Lock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                style={{ 
+                  paddingLeft: '42px', 
+                  paddingRight: '44px',
+                  background: 'rgba(13, 19, 34, 0.9)', 
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: '10px',
+                  fontSize: '0.875rem'
+                }}
               />
               <button
                 type="button"
@@ -135,12 +157,14 @@ const AdminLogin = ({ setIsAdmin, navigate }) => {
                   right: "0.5rem",
                   top: "50%",
                   transform: "translateY(-50%)",
-                  padding: "0.5rem",
-                  width: "36px",
-                  height: "36px"
+                  padding: "0.375rem",
+                  width: "32px",
+                  height: "32px",
+                  color: 'var(--text-muted)'
                 }}
+                title={showPassword ? "Hide Password" : "Show Password"}
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
@@ -149,14 +173,14 @@ const AdminLogin = ({ setIsAdmin, navigate }) => {
             <div
               className="animate-slide-up"
               style={{
-                color: "#ef4444",
+                color: "#f87171",
                 textAlign: "center",
                 fontSize: "0.813rem",
-                background: "rgba(239, 68, 68, 0.05)",
+                background: "rgba(239, 68, 68, 0.1)",
                 padding: "0.75rem",
-                borderRadius: "8px",
-                border: "1px solid rgba(239, 68, 68, 0.2)",
-                fontWeight: 500
+                borderRadius: "10px",
+                border: "1px solid rgba(239, 68, 68, 0.3)",
+                fontWeight: 600
               }}
             >
               {errorMessage}
@@ -167,15 +191,33 @@ const AdminLogin = ({ setIsAdmin, navigate }) => {
             type="submit"
             className="btn-primary"
             disabled={loading}
-            style={{ width: "100%", padding: '1rem', marginTop: '0.5rem' }}
+            style={{ 
+              width: "100%", 
+              padding: '0.875rem', 
+              marginTop: '0.25rem', 
+              borderRadius: '10px',
+              fontSize: '0.875rem',
+              fontWeight: 700
+            }}
           >
-            {loading ? "Authenticating..." : "Authorize Login"}
+            {loading ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                <span>Authenticating System...</span>
+              </>
+            ) : (
+              <>
+                <ShieldCheck size={16} />
+                <span>Authorize Access</span>
+              </>
+            )}
           </button>
         </form>
 
-        <div style={{ textAlign: 'center' }}>
-          <Link to="/" style={{ fontSize: '0.813rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-             ← Return to Explorer Map
+        <div style={{ textAlign: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem' }}>
+          <Link to="/" style={{ fontSize: '0.813rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.375rem', textDecoration: 'none', transition: 'var(--transition)' }}>
+             <ArrowLeft size={14} />
+             <span>Return to Public Map Explorer</span>
           </Link>
         </div>
       </div>

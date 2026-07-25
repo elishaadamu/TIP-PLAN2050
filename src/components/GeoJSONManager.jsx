@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import { Target, Upload, FileJson, Trash2, X } from "lucide-react";
-import "./GeoJSONManager.css"; // import styles
+import { Target, Upload, FileJson, Trash2, X, CheckCircle, Database, Server } from "lucide-react";
+import "./GeoJSONManager.css";
 
 function GeoJSONManager({
   setGeoData,
@@ -21,7 +21,13 @@ function GeoJSONManager({
       );
       setAvailableGeoJSONs(response.data);
     } catch (error) {
-      Swal.fire("Error", "Failed to load available GeoJSON files.", "error");
+      Swal.fire({
+        title: "Error",
+        text: "Failed to load available GeoJSON files.",
+        icon: "error",
+        background: "#111827",
+        color: "#f8fafc"
+      });
     }
   }, []);
 
@@ -31,7 +37,6 @@ function GeoJSONManager({
         const response = await axios.get(
           "https://ecointeractive.onrender.com/api/geojson/active"
         );
-        // Handle case where API returns null data (no active file)
         if (response.data.geojsonData === null) {
           setGeoData({ type: "FeatureCollection", features: [] });
           setCurrentGeoDataFilename(null);
@@ -43,13 +48,6 @@ function GeoJSONManager({
         }
       } catch (error) {
         console.error("Failed to load initial GeoJSON data:", error);
-        Swal.fire({
-          icon: "warning",
-          title: "No Active Dataset",
-          text: "Could not load the active GeoJSON data. You can upload a new file below.",
-          timer: 3000,
-        });
-        // Set empty data so the page can still render
         setGeoData({ type: "FeatureCollection", features: [] });
         setCurrentGeoDataFilename(null);
         setSelectedFile("");
@@ -64,16 +62,20 @@ function GeoJSONManager({
 
   const handleSetActiveGeoJSON = async () => {
     if (!selectedFile) {
-      Swal.fire("Warning", "Please select a GeoJSON file.", "warning");
+      Swal.fire({
+        title: "Warning",
+        text: "Please select a GeoJSON file.",
+        icon: "warning",
+        background: "#111827",
+        color: "#f8fafc"
+      });
       return;
     }
 
     try {
       await axios.post(
         "https://ecointeractive.onrender.com/api/geojson/set-active",
-        {
-          filename: selectedFile,
-        }
+        { filename: selectedFile }
       );
 
       const response = await axios.get(
@@ -82,13 +84,21 @@ function GeoJSONManager({
       setGeoData(response.data.geojsonData);
       setCurrentGeoDataFilename(response.data.filename);
 
-      Swal.fire(
-        "Success",
-        `${selectedFile} is now the active GeoJSON file!`,
-        "success"
-      );
+      Swal.fire({
+        title: "Success",
+        text: `${selectedFile} is now deployed as the active dataset!`,
+        icon: "success",
+        background: "#111827",
+        color: "#f8fafc"
+      });
     } catch (error) {
-      Swal.fire("Error", "Failed to set active GeoJSON file.", "error");
+      Swal.fire({
+        title: "Error",
+        text: "Failed to set active GeoJSON file.",
+        icon: "error",
+        background: "#111827",
+        color: "#f8fafc"
+      });
     }
   };
 
@@ -96,7 +106,13 @@ function GeoJSONManager({
 
   const handleFileUpload = async () => {
     if (!fileToUpload) {
-      Swal.fire("Warning", "Please select a file to upload.", "warning");
+      Swal.fire({
+        title: "Warning",
+        text: "Please select a file to upload.",
+        icon: "warning",
+        background: "#111827",
+        color: "#f8fafc"
+      });
       return;
     }
 
@@ -107,118 +123,90 @@ function GeoJSONManager({
       await axios.post(
         "https://ecointeractive.onrender.com/api/geojson/upload",
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      Swal.fire(
-        "Success",
-        `${fileToUpload.name} uploaded successfully!`,
-        "success"
-      );
+      Swal.fire({
+        title: "Success",
+        text: `${fileToUpload.name} uploaded successfully!`,
+        icon: "success",
+        background: "#111827",
+        color: "#f8fafc"
+      });
       setFileToUpload(null);
       fetchAvailableGeoJSONs();
     } catch (error) {
-      Swal.fire("Error", "Failed to upload GeoJSON file.", "error");
+      Swal.fire({
+        title: "Error",
+        text: "Failed to upload GeoJSON file.",
+        icon: "error",
+        background: "#111827",
+        color: "#f8fafc"
+      });
     }
-  };
-
-  const handleDeleteAllGeoJSONs = async () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You will not be able to recover these files!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#dc3545",
-      cancelButtonColor: "#6c757d",
-      confirmButtonText: "Yes, delete all!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await axios.delete(
-            "https://ecointeractive.onrender.com/api/geojson/delete-all"
-          );
-          Swal.fire(
-            "Deleted!",
-            "All GeoJSON files have been deleted.",
-            "success"
-          );
-          fetchAvailableGeoJSONs();
-          setGeoData(null);
-          setCurrentGeoDataFilename(null);
-          setSelectedFile("");
-        } catch (error) {
-          Swal.fire("Error", "Failed to delete GeoJSON files.", "error");
-        }
-      }
-    });
   };
 
   return (
     <div className="geojson-manager animate-slide-up" style={{ 
-      padding: 'clamp(1rem, 5vw, 3rem)', 
-      maxWidth: '100%', 
-      width: '1200px', 
+      padding: 'clamp(1rem, 4vw, 2.5rem)', 
+      maxWidth: '1200px', 
       margin: '0 auto', 
-      position: 'relative',
-      boxSizing: 'border-box'
+      width: '100%',
+      position: 'relative'
     }}>
-      <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ textAlign: 'left' }}>
-          <h1 className="gradient-text" style={{ fontSize: '2.75rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 }}>Data Registry</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', marginTop: '0.5rem', fontWeight: 500 }}>
-            Upload, configure, and manage regional infrastructure datasets.
-          </p>
+      <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.5rem' }}>
+            <Server size={24} style={{ color: 'var(--accent-cyan)' }} />
+            <h1 className="gradient-text" style={{ fontSize: '2.25rem', fontWeight: 800 }}>Spatial Dataset Manager</h1>
+          </div>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.938rem' }}>Upload, deploy, and switch regional GIS GeoJSON datasets.</p>
         </div>
         <Link 
           to="/" 
           className="btn-ghost" 
           style={{ 
-            width: '40px', 
-            height: '40px', 
+            width: '38px', 
+            height: '38px', 
             borderRadius: '50%', 
             padding: 0,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'var(--transition)',
-            marginTop: '0.5rem'
+            border: '1px solid var(--border-subtle)',
+            color: 'var(--text-primary)'
           }}
-          title="Close and return to Map"
+          title="Return to Map"
         >
-          <X size={24} />
+          <X size={20} />
         </Link>
       </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.5rem' }}>
         
-        {/* Upload Interface */}
-        <div className="card">
-          <div style={{ marginBottom: '2rem' }}>
+        {/* Upload Interface Card */}
+        <div className="glass-card" style={{ padding: '1.5rem', background: 'rgba(17, 24, 39, 0.9)' }}>
+          <div style={{ marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-               <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: '8px', borderRadius: '8px', color: 'var(--primary)' }}>
+               <div style={{ background: 'rgba(6, 182, 212, 0.15)', padding: '8px', borderRadius: '10px', color: 'var(--accent-cyan)', border: '1px solid var(--border-cyan)' }}>
                  <Upload size={20} />
                </div>
-               <h2 style={{ fontSize: '1.25rem' }}>1. Ingest Data</h2>
+               <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>1. Ingest New GeoJSON</h2>
             </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-              Drag and drop GeoJSON files to enrich the regional database.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.813rem' }}>
+              Upload standard GeoJSON files containing feature geometries & properties.
             </p>
           </div>
 
           <div style={{ 
-            border: '2px dashed var(--border-light)', 
-            borderRadius: 'var(--radius-md)', 
-            padding: '2.5rem', 
+            border: '2px dashed var(--border-cyan)', 
+            borderRadius: '12px', 
+            padding: '2rem 1.5rem', 
             textAlign: 'center',
-            marginBottom: '1.5rem',
-            background: 'var(--bg-main)',
-            transition: 'var(--transition)',
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--primary)'}
-          onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-light)'}
-          >
+            marginBottom: '1.25rem',
+            background: 'rgba(11, 15, 25, 0.6)',
+            transition: 'var(--transition)'
+          }}>
             <input
               type="file"
               id="geo-upload"
@@ -227,42 +215,47 @@ function GeoJSONManager({
               style={{ display: 'none' }}
             />
             <label htmlFor="geo-upload" style={{ cursor: 'pointer' }}>
-              <div style={{ marginBottom: '1rem', color: 'var(--primary)', opacity: 0.6 }}>
-                <FileJson size={48} style={{ margin: '0 auto' }} />
+              <div style={{ marginBottom: '0.75rem', color: 'var(--accent-cyan)' }}>
+                <FileJson size={40} style={{ margin: '0 auto' }} />
               </div>
-              <div style={{ fontWeight: '700', color: 'var(--text-main)' }}>{fileToUpload ? fileToUpload.name : 'Select GeoJSON'}</div>
-              <div style={{ fontSize: '0.813rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Standard GeoJSON Specification only</div>
+              <div style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '0.875rem' }}>
+                {fileToUpload ? fileToUpload.name : 'Click to Select GeoJSON File'}
+              </div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                Supports standard RFC 7946 GeoJSON format
+              </div>
             </label>
           </div>
 
-          <button className="btn-outline" onClick={handleFileUpload} style={{ width: '100%', padding: '1rem' }} disabled={!fileToUpload}>
-            Initialize Upload
+          <button className="btn-primary" onClick={handleFileUpload} style={{ width: '100%', padding: '0.875rem', borderRadius: '10px' }} disabled={!fileToUpload}>
+            Initialize Dataset Upload
           </button>
         </div>
-        {/* Dataset Selection */}
-        <div className="card glass-panel" style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ marginBottom: '2rem' }}>
+
+        {/* Dataset Active Deployment Card */}
+        <div className="glass-card" style={{ padding: '1.5rem', background: 'rgba(17, 24, 39, 0.9)', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-               <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: '8px', borderRadius: '8px', color: 'var(--primary)' }}>
+               <div style={{ background: 'rgba(139, 92, 246, 0.15)', padding: '8px', borderRadius: '10px', color: '#c084fc', border: '1px solid rgba(139, 92, 246, 0.3)' }}>
                  <Target size={20} />
                </div>
-               <h2 style={{ fontSize: '1.25rem' }}>2. Active Dataset</h2>
+               <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>2. Active Dataset Deployment</h2>
             </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-              Set the primary project data currently visible to all platform users.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.813rem' }}>
+              Select the active GeoJSON dataset powering the live map and public portal.
             </p>
           </div>
 
-          <div style={{ marginBottom: '1.5rem', flex: 1 }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Select Source File
+          <div style={{ marginBottom: '1.25rem', flex: 1 }}>
+            <label style={{ display: 'block', marginBottom: '0.375rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>
+              Available Server Datasets
             </label>
             <select
               value={selectedFile}
               onChange={handleFileChange}
-              style={{ padding: '0.875rem' }}
+              style={{ padding: '0.75rem', background: 'rgba(11, 15, 25, 0.8)', border: '1px solid var(--border-subtle)', borderRadius: '10px' }}
             >
-              <option value="">Choose a file...</option>
+              <option value="">Choose a GeoJSON file...</option>
               {availableGeoJSONs.map((filename) => (
                 <option key={filename} value={filename}>
                   {filename}
@@ -271,94 +264,32 @@ function GeoJSONManager({
             </select>
           </div>
 
-          <button className="btn-primary" onClick={handleSetActiveGeoJSON} style={{ width: '100%', padding: '1rem' }}>
-            Deploy Dataset
+          <button className="btn-secondary" onClick={handleSetActiveGeoJSON} style={{ width: '100%', padding: '0.875rem', borderRadius: '10px', marginBottom: '1.25rem' }}>
+            Deploy Selected Dataset
           </button>
 
           {currentGeoDataFilename && (
             <div style={{ 
-              marginTop: '1.5rem', 
-              padding: '1rem', 
-              background: 'rgba(79, 70, 229, 0.03)', 
-              borderRadius: '8px', 
-              border: '1px solid var(--border-light)',
+              padding: '0.875rem 1rem', 
+              background: 'rgba(16, 185, 129, 0.08)', 
+              borderRadius: '10px', 
+              border: '1px solid rgba(16, 185, 129, 0.3)',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center'
             }}>
               <div>
-                <p style={{ fontSize: '0.688rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Active Status</p>
-                <p style={{ fontSize: '0.938rem', fontWeight: 600, color: 'var(--primary)' }}>{currentGeoDataFilename}</p>
+                <p style={{ fontSize: '0.65rem', color: 'var(--accent-emerald)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>
+                  Currently Active Dataset
+                </p>
+                <p style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
+                  {currentGeoDataFilename}
+                </p>
               </div>
-              <div style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 0 4px rgba(16, 185, 129, 0.2)' }}></div>
+              <CheckCircle size={20} style={{ color: 'var(--accent-emerald)' }} />
             </div>
           )}
         </div>
-
-        {/* Stored Files Table
-        <div className="card" style={{ gridColumn: '1 / -1' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-            <div>
-              <h2 style={{ fontSize: '1.5rem' }}>Dataset Registry</h2>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage all previously ingested spatial datasets.</p>
-            </div>
-            <button className="btn-ghost" onClick={handleDeleteAllGeoJSONs} style={{ color: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Trash2 size={16} />
-              Purge Registry
-            </button>
-          </div>
-
-          <div style={{ overflowX: 'auto', border: '1px solid var(--border-light)', borderRadius: '8px' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ background: 'var(--bg-main)', borderBottom: '1px solid var(--border-light)' }}>
-                  <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontWeight: '700', color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Source Filename</th>
-                  <th style={{ padding: '1rem 1.5rem', textAlign: 'center', fontWeight: '700', color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Provisioning</th>
-                  <th style={{ padding: '1rem 1.5rem', textAlign: 'right', fontWeight: '700', color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {availableGeoJSONs.length > 0 ? (
-                  availableGeoJSONs.map((filename) => (
-                    <tr key={filename} style={{ borderBottom: '1px solid var(--border-light)', transition: 'background 0.2s' }}>
-                      <td style={{ padding: '1.25rem 1.5rem', fontWeight: '600', color: 'var(--text-main)' }}>{filename}</td>
-                      <td style={{ padding: '1.25rem 1.5rem', textAlign: 'center' }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>MPO Server</span>
-                      </td>
-                      <td style={{ padding: '1.25rem 1.5rem', textAlign: 'right' }}>
-                        {filename === currentGeoDataFilename ? (
-                          <span style={{ 
-                            background: '#dcfce7', 
-                            color: '#065f46', 
-                            padding: '0.4rem 0.8rem', 
-                            borderRadius: '2rem',
-                            fontSize: '0.75rem',
-                            fontWeight: '700'
-                          }}>PRODUCTION</span>
-                        ) : (
-                          <span style={{ 
-                            background: 'var(--bg-main)', 
-                            color: 'var(--text-muted)', 
-                            padding: '0.4rem 0.8rem', 
-                            borderRadius: '2rem',
-                            fontSize: '0.75rem',
-                            fontWeight: '600'
-                          }}>ARCHIVED</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="3" style={{ padding: '4rem', textAlign: 'center' }}>
-                       <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>No datasets currently registered.</div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div> */}
       </div>
     </div>
   );

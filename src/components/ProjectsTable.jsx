@@ -1,22 +1,23 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Download, FileSpreadsheet, Eye, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Download, Eye, ChevronLeft, ChevronRight, X, Database, Search } from "lucide-react";
 
 const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comments, upcKey }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 10;
 
   const getGeometryLabel = (geometry) => {
     if (!geometry) return "No Data";
     if (geometry.type === 'Point') {
       const [lng, lat] = geometry.coordinates;
-      return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      return `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
     }
     if (geometry.type === 'LineString') {
       return `Line (${geometry.coordinates.length} pts)`;
     }
     if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
-      return "Area Data";
+      return "Polygon Area";
     }
     return geometry.type;
   };
@@ -28,14 +29,12 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
     }
 
     const csvRows = [];
-    // Get headers from the properties of the first feature
     const headers = Object.keys(data[0].properties);
     csvRows.push(headers.join(","));
 
-    // Loop over the features (rows)
     for (const feature of data) {
       const values = headers.map((header) => {
-        const escaped = ("" + feature.properties[header]).replace(/"/g, '"');
+        const escaped = ("" + (feature.properties[header] ?? "")).replace(/"/g, '""');
         return `"${escaped}"`;
       });
       csvRows.push(values.join(","));
@@ -51,8 +50,8 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
   };
 
   const handleExportAllProjects = () => {
-    if (geoData && geoData.features) {
-      exportToCsv(geoData.features, "all_projects.csv");
+    if (filteredProjects && filteredProjects.length > 0) {
+      exportToCsv(filteredProjects, "mpo_inventory_full.csv");
     } else {
       alert("No project data available to export.");
     }
@@ -63,11 +62,19 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
   };
 
   const projects = geoData ? geoData.features : [];
-  const totalPages = Math.ceil(projects.length / itemsPerPage);
 
+  const filteredProjects = projects.filter((feature) => {
+    const term = searchTerm.toLowerCase();
+    if (!term) return true;
+    return Object.values(feature.properties || {}).some(val =>
+      String(val).toLowerCase().includes(term)
+    );
+  });
+
+  const totalPages = Math.ceil(filteredProjects.length / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProjects = projects.slice(indexOfFirstItem, indexOfLastItem);
+  const currentProjects = filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
 
   const getCommentCount = (projectId) => {
     if (!comments) return 0;
@@ -82,66 +89,81 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
 
   return (
     <div className="admin-inventory-view animate-slide-up" style={{ 
-      padding: 'clamp(1rem, 5vw, 3rem)', 
-      maxWidth: '100%', 
-      width: '1400px', 
+      padding: 'clamp(1rem, 4vw, 2.5rem)', 
+      maxWidth: '1400px', 
       margin: '0 auto', 
-      position: 'relative',
-      boxSizing: 'border-box'
+      width: '100%',
+      position: 'relative'
     }}>
-      <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 className="gradient-text" style={{ fontSize: '2.75rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 }}>Project Inventory</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', marginTop: '0.5rem', fontWeight: 500 }}>Manage and audit all regional infrastructure projects.</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.5rem' }}>
+            <Database size={24} style={{ color: 'var(--accent-cyan)' }} />
+            <h1 className="gradient-text" style={{ fontSize: '2.25rem', fontWeight: 800 }}>Master Project Inventory</h1>
+          </div>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.938rem' }}>Full GIS dataset management and project parameter audit.</p>
         </div>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-           <button className="btn-outline" onClick={handleExportAllProjects} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+           <button className="btn-outline" onClick={handleExportAllProjects} style={{ fontSize: '0.813rem', borderRadius: '8px' }}>
              <Download size={16} />
-             Export Registry
+             Export CSV
            </button>
            <Link 
             to="/" 
             className="btn-ghost" 
             style={{ 
-              width: '40px', 
-              height: '40px', 
+              width: '38px', 
+              height: '38px', 
               borderRadius: '50%', 
               padding: 0,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'var(--transition)'
+              border: '1px solid var(--border-subtle)',
+              color: 'var(--text-primary)'
             }}
-            title="Close and return to Map"
+            title="Return to Map"
           >
-            <X size={24} />
+            <X size={20} />
           </Link>
         </div>
       </header>
 
-      <div className="card glass-panel" style={{ padding: '0', overflow: 'hidden' }}>
+      {/* Search Bar */}
+      <div style={{ marginBottom: '1.25rem', position: 'relative', maxWidth: '400px' }}>
+        <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+        <input 
+          type="text"
+          placeholder="Filter master inventory by keyword or UPC..."
+          value={searchTerm}
+          onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+          style={{ paddingLeft: '38px', background: 'rgba(17, 24, 39, 0.8)', border: '1px solid var(--border-subtle)', borderRadius: '10px' }}
+        />
+      </div>
+
+      <div className="glass-card" style={{ padding: '0', overflow: 'hidden', borderRadius: '16px' }}>
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: '0.875rem' }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: '0.813rem' }}>
             <thead>
-              <tr style={{ background: 'rgba(0,0,0,0.02)', borderBottom: '2px solid var(--border-light)' }}>
+              <tr style={{ background: 'rgba(11, 15, 25, 0.9)', borderBottom: '1px solid var(--border-subtle)' }}>
                 {headers.map((header) => (
                   <th
                     key={header}
                     style={{
-                      padding: "1.25rem 1rem",
+                      padding: "1rem 1rem",
                       textAlign: "left",
-                      color: "var(--text-muted)",
-                      fontWeight: "600",
+                      color: "var(--accent-cyan)",
+                      fontWeight: "800",
                       textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                      fontSize: "0.75rem",
-                      minWidth: '150px'
+                      letterSpacing: "0.06em",
+                      fontSize: "0.65rem",
+                      minWidth: '140px'
                     }}
                   >
                     {header}
                   </th>
                 ))}
-                <th style={{ padding: "1.25rem 1rem", textAlign: "right", color: "var(--text-muted)", fontSize: '0.75rem' }}>
+                <th style={{ padding: "1rem 1rem", textAlign: "right", color: "var(--accent-cyan)", fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                   Actions
                 </th>
               </tr>
@@ -150,69 +172,69 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
               {currentProjects.length > 0 ? (
                 currentProjects.map((feature, index) => (
                   <tr 
-                    key={feature.properties.UPC || feature.properties.ID || index}
-                    style={{ borderBottom: '1px solid var(--border-light)', transition: 'var(--transition)', cursor: 'pointer' }}
+                    key={(feature.properties.UPC || feature.properties.ID || index) + "-" + index}
+                    style={{ borderBottom: '1px solid var(--border-subtle)', transition: 'var(--transition)', cursor: 'pointer' }}
                     onClick={() => onProjectClick && onProjectClick(feature)}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-hover)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                    className="inventory-row"
                   >
                     {headers.map((header) => (
                       <td
                         key={header}
-                        style={{ padding: "1.25rem 1rem", color: "var(--text-main)" }}
+                        style={{ padding: "0.875rem 1rem", color: "var(--text-primary)" }}
                       >
                         {header === "Feedback"
                           ? (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)' }}>
-                              <span style={{ 
-                                background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(79, 70, 229, 0.1)' : 'rgba(0,0,0,0.05)',
-                                color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--primary)' : 'var(--text-muted)',
-                                padding: '0.25rem 0.5rem',
-                                borderRadius: '4px',
-                                fontSize: '0.75rem',
-                                fontWeight: '700'
-                              }}>
-                                {getCommentCount(feature.properties[upcKey])}
-                              </span>
-                            </div>
+                             <span style={{ 
+                               background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.04)',
+                               color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)',
+                               border: getCommentCount(feature.properties[upcKey]) > 0 ? '1px solid var(--border-cyan)' : '1px solid var(--border-subtle)',
+                               padding: '0.25rem 0.5rem',
+                               borderRadius: '6px',
+                               fontSize: '0.7rem',
+                               fontWeight: '700'
+                             }}>
+                               {getCommentCount(feature.properties[upcKey])} Submissions
+                             </span>
                           )
                           : header === "Geometry"
                           ? (
-                            <span style={{ 
-                              background: 'rgba(79, 70, 229, 0.1)', 
-                              color: 'var(--primary)', 
-                              padding: '0.3rem 0.6rem', 
-                              borderRadius: '6px',
-                              fontSize: '0.75rem',
-                              fontWeight: '600'
-                            }}>
-                              {getGeometryLabel(feature.geometry)}
-                            </span>
+                             <span style={{ 
+                               background: 'rgba(139, 92, 246, 0.15)', 
+                               color: '#c084fc', 
+                               border: '1px solid rgba(139, 92, 246, 0.3)',
+                               padding: '0.25rem 0.5rem', 
+                               borderRadius: '6px',
+                               fontSize: '0.68rem',
+                               fontWeight: '600',
+                               fontFamily: 'monospace'
+                             }}>
+                               {getGeometryLabel(feature.geometry)}
+                             </span>
                           )
                           : (
-                            <div style={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                              {String(feature.properties[header] || "—")}
+                            <div style={{ maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {String(feature.properties[header] ?? "—")}
                             </div>
                           )
                         }
                       </td>
                     ))}
-                    <td style={{ padding: "1rem", textAlign: "right" }}>
+                    <td style={{ padding: "0.875rem 1rem", textAlign: "right" }}>
                       <button 
                          className="btn-outline" 
                          onClick={(e) => { e.stopPropagation(); handleExportRow(feature); }}
-                         style={{ padding: '0.5rem', borderRadius: '6px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
-                         title="Export Details"
+                         style={{ padding: '0.35rem 0.65rem', borderRadius: '6px' }}
+                         title="Export Project CSV"
                        >
-                         <Eye size={16} />
+                         <Eye size={14} />
                        </button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={headers.length + 1} style={{ padding: '5rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                    No infrastructure data found in the current dataset.
+                  <td colSpan={headers.length + 1} style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                    No infrastructure project matching current query.
                   </td>
                 </tr>
               )}
@@ -220,42 +242,36 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
           </table>
         </div>
 
-        {/* Improved Pagination */}
         {totalPages > 1 && (
           <div style={{ 
-            padding: '1.5rem', 
-            borderTop: '1px solid var(--border-light)', 
+            padding: '1rem 1.25rem', 
+            borderTop: '1px solid var(--border-subtle)', 
             display: 'flex', 
-            justifyContent: 'center', 
-            gap: '0.5rem',
-            background: 'var(--surface)' 
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            background: 'rgba(11, 15, 25, 0.6)'
           }}>
-            <button
-              className="btn-outline"
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem' }}
-            >
-              <ChevronLeft size={20} />
-            </button>
-            {Array.from({ length: totalPages }).map((_, i) => (
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+              Page {currentPage} of {totalPages} ({filteredProjects.length} total features)
+            </span>
+            <div style={{ display: 'flex', gap: '0.375rem' }}>
               <button
-                key={i}
-                className={currentPage === i+1 ? "btn-primary" : "btn-outline"}
-                onClick={() => paginate(i + 1)}
-                style={{ minWidth: '40px', fontWeight: '600' }}
+                className="btn-outline"
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                style={{ padding: '0.35rem 0.65rem', borderRadius: '6px' }}
               >
-                {i + 1}
+                <ChevronLeft size={14} />
               </button>
-            ))}
-            <button
-              className="btn-outline"
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem' }}
-            >
-              <ChevronRight size={20} />
-            </button>
+              <button
+                className="btn-outline"
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                style={{ padding: '0.35rem 0.65rem', borderRadius: '6px' }}
+              >
+                <ChevronRight size={14} />
+              </button>
+            </div>
           </div>
         )}
       </div>
