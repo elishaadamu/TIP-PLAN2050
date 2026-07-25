@@ -375,7 +375,7 @@ function MapView({
           featureCount={markers.length} 
         />
 
-        {markers.map(({ feature, i, isHighlighted, projectComments, color }) => (
+        {markers.map(({ feature, i, isHighlighted, color }) => (
           <React.Fragment key={`marker-group-${i}`}>
             <Marker
               key={`pointer-${i}`}
@@ -385,11 +385,6 @@ function MapView({
               ]}
               icon={DefaultIcon}
               zIndexOffset={isHighlighted ? 3000 : 1000}
-              ref={(ref) => {
-                if (ref && openPopupId !== null && openPopupId === feature.properties[propertyKeys.upc]) {
-                  ref.openPopup();
-                }
-              }}
               eventHandlers={{
                 click: () => {
                   const lat = feature.geometry.coordinates[1];
@@ -400,19 +395,9 @@ function MapView({
                 },
               }}
             >
-              <Tooltip>{feature.properties[propertyKeys.description] || feature.properties[propertyKeys.upc]}</Tooltip>
-              <Popup onClose={() => {
-                onClosePopup();
-                if (setHighlightedProject) setHighlightedProject(null);
-              }}>
-                <ProjectPopup
-                  project={feature}
-                  addComment={addComment}
-                  comments={projectComments}
-                  onClosePopup={onClosePopup}
-                  isAdmin={isAdmin}
-                />
-              </Popup>
+              <Tooltip direction="top" offset={[0, -20]}>
+                {feature.properties[propertyKeys.description] || `UPC #${feature.properties[propertyKeys.upc]}`}
+              </Tooltip>
             </Marker>
             <Marker
               key={`circle-${i}`}
@@ -422,10 +407,42 @@ function MapView({
               ]}
               icon={createCustomIcon(color, isHighlighted)}
               zIndexOffset={isHighlighted ? 2900 : 900}
+              eventHandlers={{
+                click: () => {
+                  const lat = feature.geometry.coordinates[1];
+                  const lng = feature.geometry.coordinates[0];
+                  panToCenterPopup(lat, lng);
+                  setOpenPopupId(feature.properties[propertyKeys.upc]);
+                  if (setHighlightedProject) setHighlightedProject(null);
+                },
+              }}
             />
           </React.Fragment>
         ))}
       </MapContainer>
+
+      {/* Floating Unclipped Project Details & Public Input Overlay */}
+      {(() => {
+        const activeMarker = markers.find(m => 
+          (openPopupId !== null && m.feature.properties[propertyKeys.upc] === openPopupId) || 
+          (highlightedProject && m.feature.properties[propertyKeys.upc] === highlightedProject.properties[propertyKeys.upc])
+        );
+
+        if (!activeMarker) return null;
+
+        return (
+          <ProjectPopup
+            project={activeMarker.feature}
+            addComment={addComment}
+            comments={activeMarker.projectComments}
+            onClosePopup={() => {
+              onClosePopup();
+              if (setHighlightedProject) setHighlightedProject(null);
+            }}
+            isAdmin={isAdmin}
+          />
+        );
+      })()}
     </div>
   );
 }
