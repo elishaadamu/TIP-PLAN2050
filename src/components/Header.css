@@ -143,8 +143,8 @@
 
 .nav-link.active {
   color: #ffffff;
-  background: var(--grad-cyan-purple);
-  box-shadow: var(--shadow-neon-cyan);
+  background: var(--accent-cyan);
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
 }
 
 .nav-link.active svg {
