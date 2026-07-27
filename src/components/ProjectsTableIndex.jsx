@@ -80,9 +80,9 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
   }, [projects, currentPage]);
 
   const headers = useMemo(() => {
-    if (isLoading) return ["Project Registry", "Status", "Feedback", "Geometry"];
+    if (isLoading) return ["Project Registry", "Status", "Feedback"];
     if (projects.length === 0) return [];
-    return [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback", "Geometry"];
+    return [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback"];
   }, [projects, isLoading]);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -165,9 +165,9 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
                 </tr>
               ) : (
                 currentProjects.map((feature, index) => (
-                  <tr 
+                  <tr
                     key={(feature.properties.UPC || feature.properties.ID || feature.properties.id || index) + "-" + index}
-                    style={{ 
+                    style={{
                       borderBottom: '1px solid var(--border-subtle)',
                       transition: 'var(--transition)',
                       cursor: 'pointer'
@@ -182,45 +182,45 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
                       >
                         {header === "Feedback"
                           ? (
-                             <span style={{ 
-                               background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.04)',
-                               color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)',
-                               border: getCommentCount(feature.properties[upcKey]) > 0 ? '1px solid var(--border-cyan)' : '1px solid var(--border-subtle)',
-                               padding: '0.2rem 0.5rem',
-                               borderRadius: '6px',
-                               fontSize: '0.7rem',
-                               fontWeight: '700'
-                             }}>
-                               {getCommentCount(feature.properties[upcKey])} Submissions
-                             </span>
+                            <span style={{
+                              background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.04)',
+                              color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)',
+                              border: getCommentCount(feature.properties[upcKey]) > 0 ? '1px solid var(--border-cyan)' : '1px solid var(--border-subtle)',
+                              padding: '0.2rem 0.5rem',
+                              borderRadius: '6px',
+                              fontSize: '0.7rem',
+                              fontWeight: '700'
+                            }}>
+                              {getCommentCount(feature.properties[upcKey])} Submissions
+                            </span>
                           )
                           : header === "Geometry"
-                          ? (
-                             <span style={{ 
-                               background: 'rgba(139, 92, 246, 0.15)', 
-                               color: '#c084fc', 
-                               border: '1px solid rgba(139, 92, 246, 0.3)',
-                               padding: '0.25rem 0.5rem', 
-                               borderRadius: '6px',
-                               fontSize: '0.68rem',
-                               fontWeight: '600',
-                               fontFamily: 'monospace'
-                             }}>
-                               {getGeometryLabel(feature.geometry)}
-                             </span>
-                          )
-                          : (
-                            <div style={{ 
-                              maxWidth: '180px', 
-                              overflow: 'hidden', 
-                              textOverflow: 'ellipsis', 
-                              whiteSpace: 'nowrap',
-                              color: 'var(--text-primary)',
-                              fontWeight: 500
-                            }}>
-                              {String(feature.properties[header] ?? "—")}
-                            </div>
-                          )
+                            ? (
+                              <span style={{
+                                background: 'rgba(139, 92, 246, 0.15)',
+                                color: '#c084fc',
+                                border: '1px solid rgba(139, 92, 246, 0.3)',
+                                padding: '0.25rem 0.5rem',
+                                borderRadius: '6px',
+                                fontSize: '0.68rem',
+                                fontWeight: '600',
+                                fontFamily: 'monospace'
+                              }}>
+                                {getGeometryLabel(feature.geometry)}
+                              </span>
+                            )
+                            : (
+                              <div style={{
+                                maxWidth: '180px',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                color: 'var(--text-primary)',
+                                fontWeight: 500
+                              }}>
+                                {String(feature.properties[header] ?? "—")}
+                              </div>
+                            )
                         }
                       </td>
                     ))}
@@ -246,7 +246,7 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
           }}
         >
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-             Page {currentPage} of {totalPages}
+            Page {currentPage} of {totalPages}
           </span>
           <div style={{ display: 'flex', gap: '0.375rem' }}>
             <button

@@ -81,17 +81,17 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
     return comments.filter(c => String(c.projectId) === String(projectId)).length;
   };
 
-  const headers = projects.length > 0 
-    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback", "Geometry"] 
+  const headers = projects.length > 0
+    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback", "Geometry"]
     : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="admin-inventory-view animate-slide-up" style={{ 
-      padding: 'clamp(1rem, 4vw, 2.5rem)', 
-      maxWidth: '1400px', 
-      margin: '0 auto', 
+    <div className="admin-inventory-view animate-slide-up" style={{
+      padding: 'clamp(1rem, 4vw, 2.5rem)',
+      maxWidth: '1400px',
+      margin: '0 auto',
       width: '100%',
       position: 'relative'
     }}>
@@ -104,17 +104,17 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.938rem' }}>Full GIS dataset management and project parameter audit.</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-           <button className="btn-outline" onClick={handleExportAllProjects} style={{ fontSize: '0.813rem', borderRadius: '8px' }}>
-             <Download size={16} />
-             Export CSV
-           </button>
-           <Link 
-            to="/" 
-            className="btn-ghost" 
-            style={{ 
-              width: '38px', 
-              height: '38px', 
-              borderRadius: '50%', 
+          <button className="btn-outline" onClick={handleExportAllProjects} style={{ fontSize: '0.813rem', borderRadius: '8px' }}>
+            <Download size={16} />
+            Export CSV
+          </button>
+          <Link
+            to="/"
+            className="btn-ghost"
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '50%',
               padding: 0,
               display: 'flex',
               alignItems: 'center',
@@ -132,7 +132,7 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
       {/* Search Bar */}
       <div style={{ marginBottom: '1.25rem', position: 'relative', maxWidth: '400px' }}>
         <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-        <input 
+        <input
           type="text"
           placeholder="Filter master inventory by keyword or UPC..."
           value={searchTerm}
@@ -171,7 +171,7 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
             <tbody>
               {currentProjects.length > 0 ? (
                 currentProjects.map((feature, index) => (
-                  <tr 
+                  <tr
                     key={(feature.properties.UPC || feature.properties.ID || index) + "-" + index}
                     style={{ borderBottom: '1px solid var(--border-subtle)', transition: 'var(--transition)', cursor: 'pointer' }}
                     onClick={() => onProjectClick && onProjectClick(feature)}
@@ -184,50 +184,50 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
                       >
                         {header === "Feedback"
                           ? (
-                             <span style={{ 
-                               background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.04)',
-                               color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)',
-                               border: getCommentCount(feature.properties[upcKey]) > 0 ? '1px solid var(--border-cyan)' : '1px solid var(--border-subtle)',
-                               padding: '0.25rem 0.5rem',
-                               borderRadius: '6px',
-                               fontSize: '0.7rem',
-                               fontWeight: '700'
-                             }}>
-                               {getCommentCount(feature.properties[upcKey])} Submissions
-                             </span>
+                            <span style={{
+                              background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.04)',
+                              color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)',
+                              border: getCommentCount(feature.properties[upcKey]) > 0 ? '1px solid var(--border-cyan)' : '1px solid var(--border-subtle)',
+                              padding: '0.25rem 0.5rem',
+                              borderRadius: '6px',
+                              fontSize: '0.7rem',
+                              fontWeight: '700'
+                            }}>
+                              {getCommentCount(feature.properties[upcKey])} Submissions
+                            </span>
                           )
                           : header === "Geometry"
-                          ? (
-                             <span style={{ 
-                               background: 'rgba(139, 92, 246, 0.15)', 
-                               color: '#c084fc', 
-                               border: '1px solid rgba(139, 92, 246, 0.3)',
-                               padding: '0.25rem 0.5rem', 
-                               borderRadius: '6px',
-                               fontSize: '0.68rem',
-                               fontWeight: '600',
-                               fontFamily: 'monospace'
-                             }}>
-                               {getGeometryLabel(feature.geometry)}
-                             </span>
-                          )
-                          : (
-                            <div style={{ maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                              {String(feature.properties[header] ?? "—")}
-                            </div>
-                          )
+                            ? (
+                              <span style={{
+                                background: 'rgba(139, 92, 246, 0.15)',
+                                color: '#c084fc',
+                                border: '1px solid rgba(139, 92, 246, 0.3)',
+                                padding: '0.25rem 0.5rem',
+                                borderRadius: '6px',
+                                fontSize: '0.68rem',
+                                fontWeight: '600',
+                                fontFamily: 'monospace'
+                              }}>
+                                {getGeometryLabel(feature.geometry)}
+                              </span>
+                            )
+                            : (
+                              <div style={{ maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {String(feature.properties[header] ?? "—")}
+                              </div>
+                            )
                         }
                       </td>
                     ))}
                     <td style={{ padding: "0.875rem 1rem", textAlign: "right" }}>
-                      <button 
-                         className="btn-outline" 
-                         onClick={(e) => { e.stopPropagation(); handleExportRow(feature); }}
-                         style={{ padding: '0.35rem 0.65rem', borderRadius: '6px' }}
-                         title="Export Project CSV"
-                       >
-                         <Eye size={14} />
-                       </button>
+                      <button
+                        className="btn-outline"
+                        onClick={(e) => { e.stopPropagation(); handleExportRow(feature); }}
+                        style={{ padding: '0.35rem 0.65rem', borderRadius: '6px' }}
+                        title="Export Project CSV"
+                      >
+                        <Eye size={14} />
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -243,10 +243,10 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
         </div>
 
         {totalPages > 1 && (
-          <div style={{ 
-            padding: '1rem 1.25rem', 
-            borderTop: '1px solid var(--border-subtle)', 
-            display: 'flex', 
+          <div style={{
+            padding: '1rem 1.25rem',
+            borderTop: '1px solid var(--border-subtle)',
+            display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             background: 'rgba(11, 15, 25, 0.6)'
