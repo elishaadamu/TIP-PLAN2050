@@ -7,21 +7,6 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
   const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 10;
 
-  const getGeometryLabel = (geometry) => {
-    if (!geometry) return "No Data";
-    if (geometry.type === 'Point') {
-      const [lng, lat] = geometry.coordinates;
-      return `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
-    }
-    if (geometry.type === 'LineString') {
-      return `Line (${geometry.coordinates.length} pts)`;
-    }
-    if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
-      return "Polygon Area";
-    }
-    return geometry.type;
-  };
-
   const exportToCsv = (data, filename) => {
     if (!data || data.length === 0) {
       alert("No data to export.");
@@ -82,7 +67,7 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
   };
 
   const headers = projects.length > 0
-    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback", "Geometry"]
+    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback"]
     : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -196,26 +181,11 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
                               {getCommentCount(feature.properties[upcKey])} Submissions
                             </span>
                           )
-                          : header === "Geometry"
-                            ? (
-                              <span style={{
-                                background: 'rgba(139, 92, 246, 0.15)',
-                                color: '#c084fc',
-                                border: '1px solid rgba(139, 92, 246, 0.3)',
-                                padding: '0.25rem 0.5rem',
-                                borderRadius: '6px',
-                                fontSize: '0.68rem',
-                                fontWeight: '600',
-                                fontFamily: 'monospace'
-                              }}>
-                                {getGeometryLabel(feature.geometry)}
-                              </span>
-                            )
-                            : (
-                              <div style={{ maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                {String(feature.properties[header] ?? "—")}
-                              </div>
-                            )
+                          : (
+                            <div style={{ maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {String(feature.properties[header] ?? "—")}
+                            </div>
+                          )
                         }
                       </td>
                     ))}

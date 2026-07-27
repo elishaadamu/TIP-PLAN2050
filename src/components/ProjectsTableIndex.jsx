@@ -19,21 +19,6 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
     return commentCountMap.get(String(projectId)) || 0;
   };
 
-  const getGeometryLabel = (geometry) => {
-    if (!geometry) return "No Data";
-    if (geometry.type === 'Point') {
-      const [lng, lat] = geometry.coordinates;
-      return `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
-    }
-    if (geometry.type === 'LineString') {
-      return `Line (${geometry.coordinates.length} pts)`;
-    }
-    if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
-      return "Polygon Area";
-    }
-    return geometry.type;
-  };
-
   const exportToCsv = (data, filename) => {
     if (!data || data.length === 0) {
       alert("No data available to export.");
@@ -194,33 +179,18 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
                               {getCommentCount(feature.properties[upcKey])} Submissions
                             </span>
                           )
-                          : header === "Geometry"
-                            ? (
-                              <span style={{
-                                background: 'rgba(139, 92, 246, 0.15)',
-                                color: '#c084fc',
-                                border: '1px solid rgba(139, 92, 246, 0.3)',
-                                padding: '0.25rem 0.5rem',
-                                borderRadius: '6px',
-                                fontSize: '0.68rem',
-                                fontWeight: '600',
-                                fontFamily: 'monospace'
-                              }}>
-                                {getGeometryLabel(feature.geometry)}
-                              </span>
-                            )
-                            : (
-                              <div style={{
-                                maxWidth: '180px',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                color: 'var(--text-primary)',
-                                fontWeight: 500
-                              }}>
-                                {String(feature.properties[header] ?? "—")}
-                              </div>
-                            )
+                          : (
+                            <div style={{
+                              maxWidth: '180px',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              color: 'var(--text-primary)',
+                              fontWeight: 500
+                            }}>
+                              {String(feature.properties[header] ?? "—")}
+                            </div>
+                          )
                         }
                       </td>
                     ))}
