@@ -89,25 +89,15 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
           </p>
         </div>
         {isAdmin && (
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <Link
-              to="/geojson-manager"
-              className="btn-outline"
-              style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem', borderRadius: '8px', color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.4)', background: 'rgba(239, 68, 68, 0.1)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.375rem' }}
-            >
-              <Trash2 size={14} />
-              Manage / Delete Datasets
-            </Link>
-            <button
-              onClick={handleExportAllProjects}
-              className="btn-outline"
-              style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem', borderRadius: '8px' }}
-              disabled={isLoading}
-            >
-              <Download size={14} />
-              Export CSV
-            </button>
-          </div>
+          <button
+            onClick={handleExportAllProjects}
+            className="btn-outline"
+            style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem', borderRadius: '8px' }}
+            disabled={isLoading}
+          >
+            <Download size={14} />
+            Export CSV
+          </button>
         )}
       </div>
 
