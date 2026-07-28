@@ -40,7 +40,7 @@ function Header({
               className={`nav-link ${!isFactSheetOpen ? "active" : ""}`}
               onClick={onCloseFactSheet}
             >
-              <Map size={16} />
+              <Map size={14} />
               <span>Explore Map</span>
             </Link>
 
@@ -48,7 +48,7 @@ function Header({
               onClick={onOpenFactSheet} 
               className={`nav-link ${isFactSheetOpen ? "active" : ""}`}
             >
-              <FileText size={16} />
+              <FileText size={14} />
               <span>Fact Sheet</span>
             </button>
           </div>
@@ -56,15 +56,15 @@ function Header({
           {isAdmin && (
             <div className="admin-nav-group">
               <Link to="/comments" className="nav-link">
-                <MessageSquare size={16} />
+                <MessageSquare size={14} />
                 <span>Feedback</span>
               </Link>
               <Link to="/projects" className="nav-link">
-                <Database size={16} />
+                <Database size={14} />
                 <span>Inventory</span>
               </Link>
               <Link to="/geojson-manager" className="nav-link">
-                <Settings size={16} />
+                <Settings size={14} />
                 <span>Data Manager</span>
               </Link>
             </div>
@@ -74,13 +74,13 @@ function Header({
 
           {isAdmin ? (
             <button onClick={handleLogout} className="logout-btn">
-              <LogOut size={15} />
+              <LogOut size={14} />
               <span>Sign Out</span>
             </button>
           ) : (
             <Link to="/login" className="admin-access-btn">
               <div className="admin-icon-wrapper">
-                <ShieldCheck size={14} />
+                <ShieldCheck size={13} />
               </div>
               <span>Admin Access</span>
             </Link>
