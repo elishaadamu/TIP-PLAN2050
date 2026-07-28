@@ -86,7 +86,7 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
             <Sparkles size={14} style={{ color: 'var(--accent-cyan)' }} />
             <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>FY 2027 – 2030 MTIP</span>
           </div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>4-Year Plan</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase' }}>4-Year Plan</div>
 
         </div>
 
