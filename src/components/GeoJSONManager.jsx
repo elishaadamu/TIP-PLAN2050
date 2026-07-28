@@ -6,14 +6,6 @@ import { Target, Upload, FileJson, Trash2, X, CheckCircle, Database, Server } fr
 import { fetchSpatialData, parseFgbBuffer } from "../utils/fgbLoader";
 import "./GeoJSONManager.css";
 
-const defaultPublicDatasets = [
-  "gdf_projects.fgb",
-  "gdf_mtip_and_lrtp_projects.fgb",
-  "mtip_27-30_projects.geojson",
-  "projects_new.geojson",
-  "projects.geojson"
-];
-
 const inMemorySpatialCache = new Map();
 
 function GeoJSONManager({
@@ -21,8 +13,8 @@ function GeoJSONManager({
   currentGeoDataFilename,
   setCurrentGeoDataFilename,
 }) {
-  const [availableGeoJSONs, setAvailableGeoJSONs] = useState(defaultPublicDatasets);
-  const [selectedFile, setSelectedFile] = useState(currentGeoDataFilename || "gdf_mtip_and_lrtp_projects.fgb");
+  const [availableGeoJSONs, setAvailableGeoJSONs] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(currentGeoDataFilename || "");
   const [fileToUpload, setFileToUpload] = useState(null);
 
   const fetchAvailableGeoJSONs = useCallback(async () => {
@@ -31,10 +23,10 @@ function GeoJSONManager({
         "https://ecointeractive.onrender.com/api/geojson/list"
       );
       const remoteList = response.data || [];
-      const merged = Array.from(new Set([...defaultPublicDatasets, ...remoteList, ...Array.from(inMemorySpatialCache.keys())]));
+      const merged = Array.from(new Set([...remoteList, ...Array.from(inMemorySpatialCache.keys())]));
       setAvailableGeoJSONs(merged);
     } catch (error) {
-      const merged = Array.from(new Set([...defaultPublicDatasets, ...Array.from(inMemorySpatialCache.keys())]));
+      const merged = Array.from(new Set([...Array.from(inMemorySpatialCache.keys())]));
       setAvailableGeoJSONs(merged);
     }
   }, []);
@@ -54,20 +46,14 @@ function GeoJSONManager({
           setCurrentGeoDataFilename(response.data.filename);
           setSelectedFile(response.data.filename);
         } else {
-          const fgbData = await fetchSpatialData(`${window.location.origin}/gdf_mtip_and_lrtp_projects.fgb`);
-          setGeoData(fgbData);
-          setCurrentGeoDataFilename("gdf_mtip_and_lrtp_projects.fgb");
-          setSelectedFile("gdf_mtip_and_lrtp_projects.fgb");
+          setGeoData({ type: "FeatureCollection", features: [] });
+          setCurrentGeoDataFilename(null);
+          setSelectedFile("");
         }
       } catch (error) {
-        try {
-          const fgbData = await fetchSpatialData(`${window.location.origin}/gdf_mtip_and_lrtp_projects.fgb`);
-          setGeoData(fgbData);
-          setCurrentGeoDataFilename("gdf_mtip_and_lrtp_projects.fgb");
-          setSelectedFile("gdf_mtip_and_lrtp_projects.fgb");
-        } catch (fgbErr) {
-          console.error("Failed to load initial FGB spatial data:", fgbErr);
-        }
+        setGeoData({ type: "FeatureCollection", features: [] });
+        setCurrentGeoDataFilename(null);
+        setSelectedFile("");
       }
     };
 
@@ -204,6 +190,103 @@ function GeoJSONManager({
     }
   };
 
+  const handleDeleteSingleDataset = (filenameToDelete) => {
+    Swal.fire({
+      title: `Delete Dataset?`,
+      text: `Are you sure you want to delete ${filenameToDelete} from the database?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, Delete File",
+      background: "#111827",
+      color: "#f8fafc"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        // Try backend delete
+        try {
+          await axios.delete(`https://ecointeractive.onrender.com/api/geojson/delete/${encodeURIComponent(filenameToDelete)}`);
+        } catch (apiErr) {
+          console.warn("Backend single dataset delete note (proceeding with local deletion):", apiErr);
+        }
+
+        // Always clean up local cache & state
+        inMemorySpatialCache.delete(filenameToDelete);
+        localStorage.removeItem("activeSpatialDataContent_" + filenameToDelete);
+
+        const updatedList = availableGeoJSONs.filter(f => f !== filenameToDelete);
+        setAvailableGeoJSONs(updatedList);
+
+        if (currentGeoDataFilename === filenameToDelete) {
+          const nextFile = updatedList[0] || null;
+          if (nextFile) {
+            try {
+              const data = await fetchSpatialData(`${window.location.origin}/${nextFile}`);
+              setGeoData(data);
+              setCurrentGeoDataFilename(nextFile);
+              setSelectedFile(nextFile);
+              localStorage.setItem("activeGeoDataFilename", nextFile);
+            } catch (e) {}
+          } else {
+            setGeoData({ type: "FeatureCollection", features: [] });
+            setCurrentGeoDataFilename(null);
+            setSelectedFile("");
+            localStorage.removeItem("activeGeoDataFilename");
+          }
+        } else if (selectedFile === filenameToDelete) {
+          setSelectedFile(updatedList[0] || "");
+        }
+
+        Swal.fire({
+          title: "Deleted!",
+          text: `${filenameToDelete} deleted successfully.`,
+          icon: "success",
+          background: "#111827",
+          color: "#f8fafc"
+        });
+      }
+    });
+  };
+
+  const handleDeleteAllDatasets = () => {
+    Swal.fire({
+      title: "Purge All Datasets?",
+      text: "This action will permanently delete all spatial dataset files from the database!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, Purge All Datasets",
+      background: "#111827",
+      color: "#f8fafc"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        // Try backend purge
+        try {
+          await axios.delete("https://ecointeractive.onrender.com/api/geojson/delete-all");
+        } catch (apiErr) {
+          console.warn("Backend purge datasets note (proceeding with local purge):", apiErr);
+        }
+
+        // Always clean up local cache & state
+        inMemorySpatialCache.clear();
+        setAvailableGeoJSONs([]);
+        setSelectedFile("");
+        setGeoData({ type: "FeatureCollection", features: [] });
+        setCurrentGeoDataFilename(null);
+        localStorage.removeItem("activeGeoDataFilename");
+
+        Swal.fire({
+          title: "Purged!",
+          text: "All spatial datasets purged successfully.",
+          icon: "success",
+          background: "#111827",
+          color: "#f8fafc"
+        });
+      }
+    });
+  };
+
   return (
     <div className="geojson-manager animate-slide-up" style={{ 
       padding: 'clamp(1rem, 4vw, 2.5rem)', 
@@ -218,26 +301,36 @@ function GeoJSONManager({
             <Server size={24} style={{ color: 'var(--accent-cyan)' }} />
             <h1 className="gradient-text" style={{ fontSize: '2.25rem', fontWeight: 800 }}>Spatial Dataset Manager</h1>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.938rem' }}>Upload, deploy, and switch regional GIS GeoJSON datasets.</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.938rem' }}>Upload, deploy, manage, and delete regional GIS datasets.</p>
         </div>
-        <Link 
-          to="/" 
-          className="btn-ghost" 
-          style={{ 
-            width: '38px', 
-            height: '38px', 
-            borderRadius: '50%', 
-            padding: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: '1px solid var(--border-subtle)',
-            color: 'var(--text-primary)'
-          }}
-          title="Return to Map"
-        >
-          <X size={20} />
-        </Link>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <button 
+            onClick={handleDeleteAllDatasets} 
+            className="btn-outline" 
+            style={{ color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.4)', background: 'rgba(239, 68, 68, 0.1)', fontSize: '0.813rem', borderRadius: '8px', gap: '0.375rem' }}
+          >
+            <Trash2 size={16} />
+            Purge All Datasets
+          </button>
+          <Link 
+            to="/" 
+            className="btn-ghost" 
+            style={{ 
+              width: '38px', 
+              height: '38px', 
+              borderRadius: '50%', 
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid var(--border-subtle)',
+              color: 'var(--text-primary)'
+            }}
+            title="Return to Map"
+          >
+            <X size={20} />
+          </Link>
+        </div>
       </header>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.5rem' }}>
@@ -249,10 +342,10 @@ function GeoJSONManager({
                <div style={{ background: 'rgba(6, 182, 212, 0.15)', padding: '8px', borderRadius: '10px', color: 'var(--accent-cyan)', border: '1px solid var(--border-cyan)' }}>
                  <Upload size={20} />
                </div>
-               <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>1. Ingest New GeoJSON</h2>
+               <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>1. Ingest New Spatial Dataset</h2>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.813rem' }}>
-              Upload standard GeoJSON files containing feature geometries & properties.
+              Upload FlatGeobuf (.fgb) binary or standard GeoJSON (.geojson) dataset files.
             </p>
           </div>
 
@@ -297,32 +390,81 @@ function GeoJSONManager({
                <div style={{ background: 'rgba(139, 92, 246, 0.15)', padding: '8px', borderRadius: '10px', color: '#c084fc', border: '1px solid rgba(139, 92, 246, 0.3)' }}>
                  <Target size={20} />
                </div>
-               <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>2. Active Dataset Deployment</h2>
+               <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>2. Manage & Deploy Datasets</h2>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.813rem' }}>
-              Select the active GeoJSON dataset powering the live map and public portal.
+              Select active dataset for the portal or delete dataset files from database.
             </p>
           </div>
 
           <div style={{ marginBottom: '1.25rem', flex: 1 }}>
             <label style={{ display: 'block', marginBottom: '0.375rem', fontWeight: '700', fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>
-              Available Server Datasets
+              Available Database Datasets
             </label>
-            <select
-              value={selectedFile}
-              onChange={handleFileChange}
-              style={{ padding: '0.75rem', background: 'rgba(11, 15, 25, 0.8)', border: '1px solid var(--border-subtle)', borderRadius: '10px' }}
-            >
-              <option value="">Choose a GeoJSON file...</option>
-              {availableGeoJSONs.map((filename) => (
-                <option key={filename} value={filename}>
-                  {filename}
-                </option>
-              ))}
-            </select>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '180px', overflowY: 'auto', marginBottom: '1rem', paddingRight: '4px' }}>
+              {availableGeoJSONs.length === 0 ? (
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontStyle: 'italic', margin: 0 }}>No datasets found in database.</p>
+              ) : (
+                availableGeoJSONs.map((filename) => {
+                  const isActive = currentGeoDataFilename === filename;
+                  const isSelected = selectedFile === filename;
+                  return (
+                    <div 
+                      key={filename} 
+                      onClick={() => setSelectedFile(filename)}
+                      style={{
+                        padding: '0.625rem 0.75rem',
+                        borderRadius: '8px',
+                        background: isSelected ? 'rgba(6, 182, 212, 0.15)' : 'rgba(11, 15, 25, 0.6)',
+                        border: isSelected ? '1px solid var(--border-cyan)' : '1px solid var(--border-subtle)',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                        transition: 'var(--transition)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
+                        <Database size={14} style={{ color: isActive ? 'var(--accent-emerald)' : 'var(--accent-cyan)' }} />
+                        <span style={{ fontSize: '0.813rem', fontWeight: isSelected ? 700 : 500, color: 'var(--text-primary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                          {filename}
+                        </span>
+                        {isActive && (
+                          <span style={{ fontSize: '0.6rem', padding: '1px 6px', background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-emerald)', borderRadius: '4px', fontWeight: 800 }}>ACTIVE</span>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteSingleDataset(filename);
+                        }}
+                        style={{
+                          background: 'rgba(239, 68, 68, 0.15)',
+                          border: '1px solid rgba(239, 68, 68, 0.3)',
+                          color: '#f87171',
+                          padding: '4px 8px',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          fontSize: '0.7rem'
+                        }}
+                        title={`Delete ${filename} from database`}
+                      >
+                        <Trash2 size={12} />
+                        Delete
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
 
-          <button className="btn-secondary" onClick={handleSetActiveGeoJSON} style={{ width: '100%', padding: '0.875rem', borderRadius: '10px', marginBottom: '1.25rem' }}>
+          <button className="btn-secondary" onClick={handleSetActiveGeoJSON} style={{ width: '100%', padding: '0.875rem', borderRadius: '10px', marginBottom: '1.25rem' }} disabled={!selectedFile}>
             Deploy Selected Dataset
           </button>
 

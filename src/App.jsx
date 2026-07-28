@@ -129,30 +129,26 @@ function App() {
         console.warn("Backend active GeoJSON check note:", err);
       }
 
-      const targetFilename = savedActiveFilename || "gdf_projects.fgb";
-      
-      try {
-        const cachedJson = localStorage.getItem("activeSpatialDataContent_" + targetFilename);
-        if (cachedJson) {
-          const parsed = JSON.parse(cachedJson);
-          processGeoData(parsed, targetFilename);
-          return;
-        }
-      } catch (e) {}
-
-      try {
-        const data = await fetchSpatialData(`${window.location.origin}/${targetFilename}`);
-        processGeoData(data, targetFilename);
-        localStorage.setItem("activeGeoDataFilename", targetFilename);
-      } catch (fallbackErr) {
+      if (savedActiveFilename) {
         try {
-          const data = await fetchSpatialData(`${window.location.origin}/gdf_mtip_and_lrtp_projects.fgb`);
-          processGeoData(data, "gdf_mtip_and_lrtp_projects.fgb");
-          localStorage.setItem("activeGeoDataFilename", "gdf_mtip_and_lrtp_projects.fgb");
-        } catch (err2) {
-          console.error("Failed to fetch fallback spatial data:", err2);
-        }
+          const cachedJson = localStorage.getItem("activeSpatialDataContent_" + savedActiveFilename);
+          if (cachedJson) {
+            const parsed = JSON.parse(cachedJson);
+            processGeoData(parsed, savedActiveFilename);
+            return;
+          }
+        } catch (e) {}
+
+        try {
+          const data = await fetchSpatialData(`${window.location.origin}/${savedActiveFilename}`);
+          processGeoData(data, savedActiveFilename);
+          return;
+        } catch (err) {}
       }
+
+      // No active dataset in DB or cache
+      processGeoData({ type: "FeatureCollection", features: [] }, null);
+      localStorage.removeItem("activeGeoDataFilename");
     };
 
     loadData();
