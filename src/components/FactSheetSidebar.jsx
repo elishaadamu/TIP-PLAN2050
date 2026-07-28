@@ -235,7 +235,7 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
               style={{ width: '150px', height: '150px', objectFit: 'contain' }}
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=" + encodeURIComponent(window.location.href);
+                e.target.src = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=" + encodeURIComponent("https://input-v3.netlify.app/");
               }}
             />
           </div>

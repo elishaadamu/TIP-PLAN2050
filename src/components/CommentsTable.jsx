@@ -310,7 +310,7 @@ const CommentsTable = ({ comments = [], setComments }) => {
                 style={{ width: '220px', height: '220px', objectFit: 'contain' }}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(window.location.href);
+                  e.target.src = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent("https://input-v3.netlify.app/");
                 }}
               />
             </div>
