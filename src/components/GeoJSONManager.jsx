@@ -3,15 +3,26 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { Target, Upload, FileJson, Trash2, X, CheckCircle, Database, Server } from "lucide-react";
+import { fetchSpatialData, parseFgbBuffer } from "../utils/fgbLoader";
 import "./GeoJSONManager.css";
+
+const defaultPublicDatasets = [
+  "gdf_projects.fgb",
+  "gdf_mtip_and_lrtp_projects.fgb",
+  "mtip_27-30_projects.geojson",
+  "projects_new.geojson",
+  "projects.geojson"
+];
+
+const inMemorySpatialCache = new Map();
 
 function GeoJSONManager({
   setGeoData,
   currentGeoDataFilename,
   setCurrentGeoDataFilename,
 }) {
-  const [availableGeoJSONs, setAvailableGeoJSONs] = useState([]);
-  const [selectedFile, setSelectedFile] = useState("");
+  const [availableGeoJSONs, setAvailableGeoJSONs] = useState(defaultPublicDatasets);
+  const [selectedFile, setSelectedFile] = useState(currentGeoDataFilename || "gdf_mtip_and_lrtp_projects.fgb");
   const [fileToUpload, setFileToUpload] = useState(null);
 
   const fetchAvailableGeoJSONs = useCallback(async () => {
@@ -19,44 +30,50 @@ function GeoJSONManager({
       const response = await axios.get(
         "https://ecointeractive.onrender.com/api/geojson/list"
       );
-      setAvailableGeoJSONs(response.data);
+      const remoteList = response.data || [];
+      const merged = Array.from(new Set([...defaultPublicDatasets, ...remoteList, ...Array.from(inMemorySpatialCache.keys())]));
+      setAvailableGeoJSONs(merged);
     } catch (error) {
-      Swal.fire({
-        title: "Error",
-        text: "Failed to load available GeoJSON files.",
-        icon: "error",
-        background: "#111827",
-        color: "#f8fafc"
-      });
+      const merged = Array.from(new Set([...defaultPublicDatasets, ...Array.from(inMemorySpatialCache.keys())]));
+      setAvailableGeoJSONs(merged);
     }
   }, []);
 
   useEffect(() => {
     const fetchInitialGeoJSONData = async () => {
+      if (currentGeoDataFilename) {
+        setSelectedFile(currentGeoDataFilename);
+        return;
+      }
       try {
         const response = await axios.get(
           "https://ecointeractive.onrender.com/api/geojson/active"
         );
-        if (response.data.geojsonData === null) {
-          setGeoData({ type: "FeatureCollection", features: [] });
-          setCurrentGeoDataFilename(null);
-          setSelectedFile("");
-        } else {
+        if (response.data && response.data.geojsonData) {
           setGeoData(response.data.geojsonData);
           setCurrentGeoDataFilename(response.data.filename);
           setSelectedFile(response.data.filename);
+        } else {
+          const fgbData = await fetchSpatialData(`${window.location.origin}/gdf_mtip_and_lrtp_projects.fgb`);
+          setGeoData(fgbData);
+          setCurrentGeoDataFilename("gdf_mtip_and_lrtp_projects.fgb");
+          setSelectedFile("gdf_mtip_and_lrtp_projects.fgb");
         }
       } catch (error) {
-        console.error("Failed to load initial GeoJSON data:", error);
-        setGeoData({ type: "FeatureCollection", features: [] });
-        setCurrentGeoDataFilename(null);
-        setSelectedFile("");
+        try {
+          const fgbData = await fetchSpatialData(`${window.location.origin}/gdf_mtip_and_lrtp_projects.fgb`);
+          setGeoData(fgbData);
+          setCurrentGeoDataFilename("gdf_mtip_and_lrtp_projects.fgb");
+          setSelectedFile("gdf_mtip_and_lrtp_projects.fgb");
+        } catch (fgbErr) {
+          console.error("Failed to load initial FGB spatial data:", fgbErr);
+        }
       }
     };
 
     fetchInitialGeoJSONData();
     fetchAvailableGeoJSONs();
-  }, [setGeoData, setCurrentGeoDataFilename, fetchAvailableGeoJSONs]);
+  }, [setGeoData, setCurrentGeoDataFilename, fetchAvailableGeoJSONs, currentGeoDataFilename]);
 
   const handleFileChange = (e) => setSelectedFile(e.target.value);
 
@@ -64,7 +81,7 @@ function GeoJSONManager({
     if (!selectedFile) {
       Swal.fire({
         title: "Warning",
-        text: "Please select a GeoJSON file.",
+        text: "Please select a dataset file.",
         icon: "warning",
         background: "#111827",
         color: "#f8fafc"
@@ -73,28 +90,43 @@ function GeoJSONManager({
     }
 
     try {
-      await axios.post(
-        "https://ecointeractive.onrender.com/api/geojson/set-active",
-        { filename: selectedFile }
-      );
+      let spatialData;
+      if (inMemorySpatialCache.has(selectedFile)) {
+        spatialData = inMemorySpatialCache.get(selectedFile);
+      } else {
+        const url = selectedFile.startsWith("http") ? selectedFile : `${window.location.origin}/${selectedFile}`;
+        spatialData = await fetchSpatialData(url);
+      }
 
-      const response = await axios.get(
-        "https://ecointeractive.onrender.com/api/geojson/active"
-      );
-      setGeoData(response.data.geojsonData);
-      setCurrentGeoDataFilename(response.data.filename);
+      setGeoData(spatialData);
+      setCurrentGeoDataFilename(selectedFile);
+      localStorage.setItem("activeGeoDataFilename", selectedFile);
+      try {
+        localStorage.setItem("activeSpatialDataContent_" + selectedFile, JSON.stringify(spatialData));
+      } catch (e) {}
+
+      // Sync with backend API
+      try {
+        await axios.post(
+          "https://ecointeractive.onrender.com/api/geojson/set-active",
+          { filename: selectedFile, geojsonData: spatialData }
+        );
+      } catch (bgErr) {
+        console.warn("Backend sync note:", bgErr);
+      }
 
       Swal.fire({
         title: "Success",
-        text: `${selectedFile} is now deployed as the active dataset!`,
+        text: `${selectedFile} is now deployed as the active dataset (${spatialData.features.length} points)!`,
         icon: "success",
         background: "#111827",
         color: "#f8fafc"
       });
     } catch (error) {
+      console.error("Set active dataset error:", error);
       Swal.fire({
         title: "Error",
-        text: "Failed to set active GeoJSON file.",
+        text: `Failed to set active spatial dataset ${selectedFile}.`,
         icon: "error",
         background: "#111827",
         color: "#f8fafc"
@@ -116,29 +148,55 @@ function GeoJSONManager({
       return;
     }
 
-    const formData = new FormData();
-    formData.append("geojson", fileToUpload);
-
     try {
-      await axios.post(
-        "https://ecointeractive.onrender.com/api/geojson/upload",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+      const spatialData = await fetchSpatialData(fileToUpload);
+      const filename = fileToUpload.name;
+
+      inMemorySpatialCache.set(filename, spatialData);
+      setGeoData(spatialData);
+      setCurrentGeoDataFilename(filename);
+      localStorage.setItem("activeGeoDataFilename", filename);
+      try {
+        localStorage.setItem("activeSpatialDataContent_" + filename, JSON.stringify(spatialData));
+      } catch (e) {}
+
+      if (!availableGeoJSONs.includes(filename)) {
+        setAvailableGeoJSONs(prev => [filename, ...prev]);
+      }
+      setSelectedFile(filename);
 
       Swal.fire({
         title: "Success",
-        text: `${fileToUpload.name} uploaded successfully!`,
+        text: `${filename} uploaded & deployed as active dataset with ${spatialData.features.length} points!`,
         icon: "success",
         background: "#111827",
         color: "#f8fafc"
       });
+
       setFileToUpload(null);
-      fetchAvailableGeoJSONs();
+
+      // Send to backend API in background
+      try {
+        const formData = new FormData();
+        formData.append("geojson", fileToUpload);
+        await axios.post(
+          "https://ecointeractive.onrender.com/api/geojson/upload",
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+        await axios.post(
+          "https://ecointeractive.onrender.com/api/geojson/set-active",
+          { filename, geojsonData: spatialData }
+        );
+      } catch (bgErr) {
+        console.warn("Background server sync note:", bgErr);
+      }
+
     } catch (error) {
+      console.error("Upload error:", error);
       Swal.fire({
         title: "Error",
-        text: "Failed to upload GeoJSON file.",
+        text: "Failed to parse or upload spatial dataset file.",
         icon: "error",
         background: "#111827",
         color: "#f8fafc"
@@ -210,7 +268,7 @@ function GeoJSONManager({
             <input
               type="file"
               id="geo-upload"
-              accept=".geojson"
+              accept=".fgb,.geojson,.json"
               onChange={handleFileChangeForUpload}
               style={{ display: 'none' }}
             />
@@ -219,10 +277,10 @@ function GeoJSONManager({
                 <FileJson size={40} style={{ margin: '0 auto' }} />
               </div>
               <div style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '0.875rem' }}>
-                {fileToUpload ? fileToUpload.name : 'Click to Select GeoJSON File'}
+                {fileToUpload ? fileToUpload.name : 'Click to Select FlatGeobuf (.fgb) or GeoJSON File'}
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                Supports standard RFC 7946 GeoJSON format
+                Supports FlatGeobuf (.fgb) binary & standard GeoJSON formats
               </div>
             </label>
           </div>

@@ -7,6 +7,8 @@ import ProjectsTableIndex from "./components/ProjectsTableIndex";
 import { Search, ChevronLeft, ChevronRight, FileText, Database, Map, X, SlidersHorizontal, RefreshCw } from "lucide-react";
 import "./components/FormElements.css";
 
+import { fetchSpatialData } from "./utils/fgbLoader";
+
 // Lazy load heavy components
 const MapView = lazy(() => import("./components/MapView"));
 const AdminLogin = lazy(() => import("./components/AdminLogin"));
@@ -72,11 +74,11 @@ function App() {
         return keys.find(k => possibleNames.some(name => k.toLowerCase() === name.toLowerCase()));
       };
 
-      const scopeKey = findKey(['Scope', 'Work_Type', 'Category', 'Classification']) || keys[2] || "Scope";
-      const countyKey = findKey(['County', 'Jurisdiction', 'City', 'Location', 'District']) || keys[4] || "County";
-      const typeKey = findKey(['Type', 'Funding', 'Source', 'Program']) || keys[3] || "Type";
-      const upcKey = findKey(['UPC', 'ID', 'ProjectID', 'Reference']) || keys[0] || "UPC";
-      const descKey = findKey(['Description', 'Name', 'Project_Name', 'Title']) || keys[1] || "Description";
+      const scopeKey = findKey(['Scope', 'Work_Type', 'Category', 'Classification', 'improvement', 'project_type']) || keys[2] || "Scope";
+      const countyKey = findKey(['County', 'Jurisdiction', 'City', 'Location', 'District', 'locality']) || keys[4] || "County";
+      const typeKey = findKey(['Type', 'Funding', 'Source', 'Program', 'product', 'project_type']) || keys[3] || "Type";
+      const upcKey = findKey(['UPC', 'ID', 'ProjectID', 'Reference', 'project_id']) || keys[0] || "UPC";
+      const descKey = findKey(['Description', 'Name', 'Project_Name', 'Title', 'project_title']) || keys[1] || "Description";
 
       setPropertyKeys({
         scope: scopeKey,
@@ -112,28 +114,44 @@ function App() {
     };
 
     const loadData = async () => {
+      const savedActiveFilename = localStorage.getItem("activeGeoDataFilename");
+
       try {
         const response = await axios.get(
           "https://ecointeractive.onrender.com/api/geojson/active"
         );
-        if (response.data.geojsonData) {
+        if (response.data && response.data.geojsonData) {
           processGeoData(response.data.geojsonData, response.data.filename);
-        } else {
-          const fallbackResponse = await fetch(
-            `${window.location.origin}/projects_new.geojson`
-          );
-          const data = await fallbackResponse.json();
-          processGeoData(data, "projects_new.geojson");
+          localStorage.setItem("activeGeoDataFilename", response.data.filename);
+          return;
         }
       } catch (err) {
-        fetch(`${window.location.origin}/projects_new.geojson`)
-          .then((res) => res.json())
-          .then((data) => {
-            processGeoData(data, "projects_new.geojson");
-          })
-          .catch((fallbackErr) =>
-            console.error("Failed to fetch fallback GeoJSON data:", fallbackErr)
-          );
+        console.warn("Backend active GeoJSON check note:", err);
+      }
+
+      const targetFilename = savedActiveFilename || "gdf_projects.fgb";
+      
+      try {
+        const cachedJson = localStorage.getItem("activeSpatialDataContent_" + targetFilename);
+        if (cachedJson) {
+          const parsed = JSON.parse(cachedJson);
+          processGeoData(parsed, targetFilename);
+          return;
+        }
+      } catch (e) {}
+
+      try {
+        const data = await fetchSpatialData(`${window.location.origin}/${targetFilename}`);
+        processGeoData(data, targetFilename);
+        localStorage.setItem("activeGeoDataFilename", targetFilename);
+      } catch (fallbackErr) {
+        try {
+          const data = await fetchSpatialData(`${window.location.origin}/gdf_mtip_and_lrtp_projects.fgb`);
+          processGeoData(data, "gdf_mtip_and_lrtp_projects.fgb");
+          localStorage.setItem("activeGeoDataFilename", "gdf_mtip_and_lrtp_projects.fgb");
+        } catch (err2) {
+          console.error("Failed to fetch fallback spatial data:", err2);
+        }
       }
     };
 
