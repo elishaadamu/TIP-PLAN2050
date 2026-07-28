@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import { X, Download, Trash2, Search, MessageSquare, ShieldAlert, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, Download, Trash2, Search, MessageSquare, ShieldAlert, ChevronLeft, ChevronRight, QrCode } from "lucide-react";
 
 const CommentsTable = ({ comments = [], setComments }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showQrModal, setShowQrModal] = useState(false);
   const itemsPerPage = 8;
 
   const exportToCsv = (data, filename) => {
@@ -111,6 +112,10 @@ const CommentsTable = ({ comments = [], setComments }) => {
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <button className="btn-primary" onClick={() => setShowQrModal(true)} style={{ fontSize: '0.813rem', borderRadius: '8px', gap: '0.375rem' }}>
+             <QrCode size={16} />
+             Submit Comments QR
+          </button>
           <button className="btn-outline" onClick={handleExportAll} style={{ fontSize: '0.813rem', borderRadius: '8px' }}>
              <Download size={16} />
              Export CSV
@@ -237,6 +242,85 @@ const CommentsTable = ({ comments = [], setComments }) => {
           </div>
         )}
       </div>
+
+      {showQrModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 9999,
+          padding: '1rem'
+        }}>
+          <div className="glass-card animate-scale-up" style={{
+            background: '#0d1322',
+            border: '1px solid var(--border-cyan)',
+            borderRadius: '16px',
+            padding: '2rem',
+            maxWidth: '380px',
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: 'var(--shadow-neon-cyan)',
+            position: 'relative'
+          }}>
+            <button 
+              onClick={() => setShowQrModal(false)}
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                background: 'rgba(255,255,255,0.08)',
+                border: 'none',
+                color: 'var(--text-secondary)',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <X size={16} />
+            </button>
+
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '1rem', letterSpacing: '-0.02em' }}>
+              Submit your comments!
+            </h2>
+
+            <div style={{
+              background: '#ffffff',
+              padding: '16px',
+              borderRadius: '16px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '1rem',
+              boxShadow: '0 8px 30px rgba(6, 182, 212, 0.25)'
+            }}>
+              <img 
+                src="/qr-code.png" 
+                alt="Submit your comments QR Code" 
+                style={{ width: '220px', height: '220px', objectFit: 'contain' }}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(window.location.href);
+                }}
+              />
+            </div>
+
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5, margin: 0 }}>
+              Scan this QR code with your mobile camera to quickly open public testimony submission and share feedback on TIP-PLAN2050 projects.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

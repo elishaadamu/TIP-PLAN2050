@@ -1,5 +1,5 @@
 import React from "react";
-import { FileText, Info, Users, Calendar, Map, Database, Sparkles, ExternalLink, ShieldCheck, Clock } from "lucide-react";
+import { FileText, Info, Users, Calendar, Map, Database, Sparkles, ExternalLink, ShieldCheck, Clock, QrCode } from "lucide-react";
 
 function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
   return (
@@ -31,9 +31,6 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
               <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>
                 PROGRAM FACT SHEET
               </h2>
-              <span style={{ fontSize: '0.65rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '0.05em' }}>
-                FFY 2027–2030 MTIP OVERVIEW
-              </span>
             </div>
           </div>
 
@@ -68,6 +65,10 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
         </div>
       </header>
 
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.813rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        The Tri‑Cities Area Metropolitan Planning Organization (TCAMPO) directs regional transportation investments, multi-modal mobility, transit expansions, freight corridors, and roadway safety initiatives.
+      </p>
+
       {/* Cyber Metric Stats Row */}
       <div style={{
         display: 'grid',
@@ -83,9 +84,9 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', marginBottom: '0.25rem' }}>
             <Sparkles size={14} style={{ color: 'var(--accent-cyan)' }} />
-            <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>FY 2027 – 2030 MTIP</span>
+            <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>4-Year Plan</span>
           </div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>4-Year Plan</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>FY 2027 – 2030 MTIP</div>
 
         </div>
 
@@ -99,17 +100,14 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
             <ShieldCheck size={14} style={{ color: '#c084fc' }} />
             <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Long Range Plan (LRTP)</span>
           </div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>Vision 2050</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>PLAN2050</div>
         </div>
       </div>
 
       <section style={{ marginBottom: '1.5rem' }}>
         <h3 style={{ fontSize: '1.1rem', color: 'var(--accent-cyan)', marginBottom: '0.75rem', lineHeight: 1.3, fontWeight: 800 }}>
-          FFY 2027–30 MTIP & Conformity Assessment
+          Conformity Assessment
         </h3>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.813rem', lineHeight: 1.6 }}>
-          The Tri‑Cities Area Metropolitan Planning Organization (TCAMPO) directs regional transportation investments, multi-modal mobility, transit expansions, freight corridors, and roadway safety initiatives.
-        </p>
       </section>
 
       {/* Program Pillars */}
@@ -122,7 +120,7 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
             <Info size={16} style={{ color: 'var(--accent-cyan)' }} />
-            <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' }}>MTIP Program Focus</h4>
+            <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' }}>MTIP Focus</h4>
           </div>
           <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
             A prioritized list of federally funded transportation capital projects scheduled for execution over FY 2027–2030.
@@ -137,7 +135,7 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
             <Info size={16} style={{ color: 'var(--accent-purple)' }} />
-            <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' }}>LRTP 2050 Regional Vision</h4>
+            <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' }}>PLAN2050 Focus</h4>
           </div>
           <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
             Strategic framework steering multi-modal infrastructure and environmental sustainability goals through 2050.
@@ -198,6 +196,49 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
               </a>
             </p>
           </div>
+        </div>
+
+        {/* QR Code Comment Card */}
+        <div style={{
+          marginTop: '1.25rem',
+          padding: '1.25rem',
+          background: 'rgba(6, 182, 212, 0.06)',
+          border: '1px solid var(--border-cyan)',
+          borderRadius: '12px',
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0.75rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <QrCode size={18} style={{ color: 'var(--accent-cyan)' }} />
+            <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
+              Submit your comments!
+            </h3>
+          </div>
+          <div style={{
+            background: '#ffffff',
+            padding: '12px',
+            borderRadius: '12px',
+            boxShadow: 'var(--shadow-neon-cyan)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <img 
+              src="/qr-code.png" 
+              alt="Submit your comments QR Code" 
+              style={{ width: '150px', height: '150px', objectFit: 'contain' }}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=" + encodeURIComponent(window.location.href);
+              }}
+            />
+          </div>
+          <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+            Scan with your phone camera to submit official public testimony and feedback.
+          </p>
         </div>
       </section>
 
