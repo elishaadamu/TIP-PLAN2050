@@ -45,7 +45,6 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
     a.setAttribute("download", filename);
     a.click();
   };
-
   const handleExportAllProjects = () => {
     if (geoData && geoData.features) {
       exportToCsv(geoData.features, "mpo_projects_2027_2030.csv");

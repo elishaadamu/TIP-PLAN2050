@@ -84,9 +84,9 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', marginBottom: '0.25rem' }}>
             <Sparkles size={14} style={{ color: 'var(--accent-cyan)' }} />
-            <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>4-Year Plan</span>
+            <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>FY 2027 – 2030 MTIP</span>
           </div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>FY 2027 – 2030 MTIP</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>4-Year Plan</div>
 
         </div>
 
@@ -108,6 +108,9 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
         <h3 style={{ fontSize: '1.1rem', color: 'var(--accent-cyan)', marginBottom: '0.75rem', lineHeight: 1.3, fontWeight: 800 }}>
           Conformity Assessment
         </h3>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.813rem', lineHeight: 1.6 }}>
+          Conformity assessment is a process that ensures that the Metropolitan Transportation Improvement Program (MTIP) and PLAN2050 complies with the federal Clean Air Act. It ensures that planned transportation investments will not create or worsen air quality problems or delay attainment and maintenance of federal air quality standards.
+        </p>
       </section>
 
       {/* Program Pillars */}
@@ -188,11 +191,11 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
               Download official drafts:
               <br />
               <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-FFY27-30-TCAMPO-MTIP-03.06.2026.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-cyan)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
-                <span>Federal FY 2027-2030 MTIP (PDF)</span> <ExternalLink size={12} />
+                <span>PLAN2050 & FY2027-30 MTIP</span> <ExternalLink size={12} />
               </a>
               <br />
               <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-RCA-Richmond-Area-FY27-30-TIP-and-2045-LRTP-for-public-review-finalv3.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-purple)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
-                <span>Regional Conformity Report (PDF)</span> <ExternalLink size={12} />
+                <span>Regional Conformity Assessment (RCA)</span> <ExternalLink size={12} />
               </a>
             </p>
           </div>
@@ -226,9 +229,9 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            <img 
-              src="/qr-code.png" 
-              alt="Submit your comments QR Code" 
+            <img
+              src="/qr-code.png"
+              alt="Submit your comments QR Code"
               style={{ width: '150px', height: '150px', objectFit: 'contain' }}
               onError={(e) => {
                 e.target.onerror = null;
