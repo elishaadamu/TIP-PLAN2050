@@ -30,6 +30,15 @@ const getFeatureLatLng = (feature) => {
     }
   }
 
+  if (type === "MultiLineString" && Array.isArray(coordinates) && coordinates.length > 0 && Array.isArray(coordinates[0]) && coordinates[0].length > 0) {
+    const pt = coordinates[0][0];
+    if (Array.isArray(pt) && pt.length >= 2) {
+      const lng = Number(pt[0]);
+      const lat = Number(pt[1]);
+      if (!isNaN(lat) && !isNaN(lng)) return [lat, lng];
+    }
+  }
+
   if (type === "Polygon" && Array.isArray(coordinates) && coordinates.length > 0 && Array.isArray(coordinates[0])) {
     const pt = coordinates[0][0];
     if (Array.isArray(pt) && pt.length >= 2) {
