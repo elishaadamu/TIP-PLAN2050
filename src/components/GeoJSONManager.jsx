@@ -18,25 +18,14 @@ function GeoJSONManager({
   const [fileToUpload, setFileToUpload] = useState(null);
 
   const fetchAvailableGeoJSONs = useCallback(async () => {
-    const publicDatasets = [
-      "combined.fgb",
-      "combined.geojson",
-      "gdf_mtip_and_lrtp_projects.fgb",
-      "gdf_projects.fgb",
-      "mtip_27-30_projects.geojson",
-      "projects_new.geojson",
-      "projects.geojson"
-    ];
     try {
       const response = await axios.get(
         "https://ecointeractive.onrender.com/api/geojson/list"
       );
-      const remoteList = response.data || [];
-      const merged = Array.from(new Set([...publicDatasets, ...remoteList, ...Array.from(inMemorySpatialCache.keys())]));
-      setAvailableGeoJSONs(merged);
+      setAvailableGeoJSONs(response.data || []);
     } catch (error) {
-      const merged = Array.from(new Set([...publicDatasets, ...Array.from(inMemorySpatialCache.keys())]));
-      setAvailableGeoJSONs(merged);
+      console.error("Error fetching available datasets:", error);
+      setAvailableGeoJSONs([]);
     }
   }, []);
 
