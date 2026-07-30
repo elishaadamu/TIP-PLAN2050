@@ -33,7 +33,7 @@ function ProjectPopup({ project, addComment, comments = [], onClosePopup, isAdmi
               textTransform: 'uppercase',
               letterSpacing: '0.05em'
             }}>
-              UPC #{props.UPC || props.upc || props.ID || 'N/A'}
+              {props.ProjectID ? `PROJECT ID: ${props.ProjectID}` : props.UPC ? `UPC #${props.UPC}` : props.ID ? `ID: ${props.ID}` : 'PROJECT NODE'}
             </span>
             <h3 style={{ fontSize: '0.938rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, lineHeight: 1.3 }}>
               {props.Description || props.description || "Transportation Infrastructure Project"}
@@ -57,12 +57,12 @@ function ProjectPopup({ project, addComment, comments = [], onClosePopup, isAdmi
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '0.4rem 0.5rem',
-          maxHeight: '130px',
+          maxHeight: '150px',
           overflowY: 'auto'
         }}>
           {Object.entries(props).map(([key, value]) => {
             const k = key.toLowerCase();
-            if (k === 'description' || k === 'geom' || k === 'geometry' || k === 'upc') return null;
+            if (k === 'description' || k === 'geom' || k === 'geometry') return null;
             return (
               <div key={key} style={{ 
                 display: 'flex', 
@@ -104,7 +104,7 @@ function ProjectPopup({ project, addComment, comments = [], onClosePopup, isAdmi
                 overflowY: 'auto'
               }}>
                 {comments.map((c) => (
-                  <div key={c._id} className="comment-bubble" style={{ 
+                  <div key={c._id || c.timestamp} className="comment-bubble" style={{ 
                     background: 'rgba(13, 19, 34, 0.8)', 
                     padding: '0.5rem 0.625rem', 
                     borderRadius: '8px', 
@@ -112,7 +112,7 @@ function ProjectPopup({ project, addComment, comments = [], onClosePopup, isAdmi
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem', fontSize: '0.65rem' }}>
                       <span style={{ fontWeight: 700, color: 'var(--accent-cyan)' }}>{c.name || 'Anonymous Citizen'}</span>
-                      <span style={{ color: 'var(--text-muted)' }}>{new Date(c.createdAt || Date.now()).toLocaleDateString()}</span>
+                      <span style={{ color: 'var(--text-muted)' }}>{new Date(c.timestamp || c.createdAt || Date.now()).toLocaleDateString()}</span>
                     </div>
                     <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-primary)', lineHeight: 1.4 }}>{c.comment || c.text}</p>
                   </div>
@@ -131,7 +131,7 @@ function ProjectPopup({ project, addComment, comments = [], onClosePopup, isAdmi
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
                   <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>{comments.length}</div>
                   <div>
-                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)' }}>Comments Registered</div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)' }}>Feedback Submissions</div>
                     <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Verified Input Period Active</div>
                   </div>
                 </div>
@@ -170,7 +170,7 @@ function ProjectPopup({ project, addComment, comments = [], onClosePopup, isAdmi
               </button>
             </div>
             <CommentForm
-              projectId={props.UPC || props.upc || props.ID || props.id}
+              projectId={props.ProjectID || props.UPC || props.upc || props.ID || props.id}
               addComment={addComment}
               onClosePopup={() => {
                 onClosePopup();

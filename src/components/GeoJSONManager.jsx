@@ -74,32 +74,39 @@ function GeoJSONManager({
     }
 
     try {
-      let spatialData;
+      let spatialData = null;
+
+      // 1. Check in-memory spatial cache
       if (inMemorySpatialCache.has(selectedFile)) {
         spatialData = inMemorySpatialCache.get(selectedFile);
-      } else {
-        // First attempt: Fetch dataset directly from MongoDB API
+      }
+
+      // 2. Set active in backend database and fetch active dataset data from MongoDB
+      if (!spatialData) {
         try {
-          const apiRes = await axios.get(
-            `https://ecointeractive.onrender.com/api/geojson/get/${encodeURIComponent(selectedFile)}`
+          const setRes = await axios.post(
+            "https://ecointeractive.onrender.com/api/geojson/set-active",
+            { filename: selectedFile }
           );
-          if (apiRes.data && apiRes.data.geojsonData) {
-            spatialData = apiRes.data.geojsonData;
+          if (setRes.data && setRes.data.geojsonData) {
+            spatialData = setRes.data.geojsonData;
           }
-        } catch (apiErr) {
+        } catch (setErr) {}
+
+        if (!spatialData) {
           try {
             const activeRes = await axios.get("https://ecointeractive.onrender.com/api/geojson/active");
             if (activeRes.data && activeRes.data.filename === selectedFile && activeRes.data.geojsonData) {
               spatialData = activeRes.data.geojsonData;
             }
-          } catch (e) { }
+          } catch (activeErr) {}
         }
+      }
 
-        // Second attempt: Fetch static file from server
-        if (!spatialData) {
-          const url = selectedFile.startsWith("http") ? selectedFile : `${window.location.origin}/${selectedFile}`;
-          spatialData = await fetchSpatialData(url);
-        }
+      // 3. Fallback to fetching static file if not found in database
+      if (!spatialData) {
+        const url = selectedFile.startsWith("http") ? selectedFile : `${window.location.origin}/${selectedFile}`;
+        spatialData = await fetchSpatialData(url);
       }
 
       setGeoData(spatialData);
@@ -107,17 +114,15 @@ function GeoJSONManager({
       localStorage.setItem("activeGeoDataFilename", selectedFile);
       try {
         localStorage.setItem("activeSpatialDataContent_" + selectedFile, JSON.stringify(spatialData));
-      } catch (e) { }
+      } catch (e) {}
 
-      // Sync with backend API
+      // Ensure backend sync
       try {
         await axios.post(
           "https://ecointeractive.onrender.com/api/geojson/set-active",
           { filename: selectedFile, geojsonData: spatialData }
         );
-      } catch (bgErr) {
-        console.warn("Backend sync note:", bgErr);
-      }
+      } catch (bgErr) {}
 
       Swal.fire({
         title: "Success",

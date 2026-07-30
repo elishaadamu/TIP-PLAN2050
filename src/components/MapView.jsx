@@ -9,20 +9,64 @@ import icon from "leaflet/dist/images/marker-icon.png";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 
+const getFeatureLatLng = (feature) => {
+  if (!feature || !feature.geometry || !feature.geometry.coordinates) return null;
+  const { type, coordinates } = feature.geometry;
+
+  if (type === "Point" && Array.isArray(coordinates) && coordinates.length >= 2) {
+    const lng = Number(coordinates[0]);
+    const lat = Number(coordinates[1]);
+    if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
+      return [lat, lng];
+    }
+  }
+
+  if (type === "LineString" && Array.isArray(coordinates) && coordinates.length > 0) {
+    const pt = coordinates[0];
+    if (Array.isArray(pt) && pt.length >= 2) {
+      const lng = Number(pt[0]);
+      const lat = Number(pt[1]);
+      if (!isNaN(lat) && !isNaN(lng)) return [lat, lng];
+    }
+  }
+
+  if (type === "Polygon" && Array.isArray(coordinates) && coordinates.length > 0 && Array.isArray(coordinates[0])) {
+    const pt = coordinates[0][0];
+    if (Array.isArray(pt) && pt.length >= 2) {
+      const lng = Number(pt[0]);
+      const lat = Number(pt[1]);
+      if (!isNaN(lat) && !isNaN(lng)) return [lat, lng];
+    }
+  }
+
+  if (type === "MultiPolygon" && Array.isArray(coordinates) && coordinates.length > 0 && Array.isArray(coordinates[0]) && Array.isArray(coordinates[0][0])) {
+    const pt = coordinates[0][0][0];
+    if (Array.isArray(pt) && pt.length >= 2) {
+      const lng = Number(pt[0]);
+      const lat = Number(pt[1]);
+      if (!isNaN(lat) && !isNaN(lng)) return [lat, lng];
+    }
+  }
+
+  return null;
+};
+
 // Map focus and animation component
 function MapHighlightEffect({ project, setOpenPopupId, upcKey }) {
   const map = useMap();
   
   useEffect(() => {
-    if (project && project.geometry && project.geometry.coordinates) {
-      const [lng, lat] = project.geometry.coordinates;
-      map.flyTo([lat, lng], 14, {
-        duration: 1.5,
-        easeLinearity: 0.25
-      });
-      setTimeout(() => {
-        setOpenPopupId(project.properties[upcKey]);
-      }, 1500);
+    if (project) {
+      const latLng = getFeatureLatLng(project);
+      if (latLng) {
+        map.flyTo(latLng, 14, {
+          duration: 1.5,
+          easeLinearity: 0.25
+        });
+        setTimeout(() => {
+          setOpenPopupId(project.properties[upcKey]);
+        }, 1500);
+      }
     }
   }, [project, map, setOpenPopupId, upcKey]);
 
@@ -246,7 +290,11 @@ function MapView({
   const markers = useMemo(() => {
     if (!geoData?.features) return [];
 
-    return geoData.features.map((feature, i) => {
+    const validMarkers = [];
+    geoData.features.forEach((feature, i) => {
+      const latLng = getFeatureLatLng(feature);
+      if (!latLng) return;
+
       const isHighlighted = highlightedProject &&
         feature.properties[propertyKeys.upc] === highlightedProject.properties[propertyKeys.upc];
 
@@ -254,14 +302,17 @@ function MapView({
         (c) => String(c.projectId) === String(feature.properties[propertyKeys.upc])
       );
 
-      return {
+      validMarkers.push({
         feature,
         i,
+        latLng,
         isHighlighted,
         projectComments,
         color: getProjectColor(feature.properties[propertyKeys.scope]),
-      };
+      });
     });
+
+    return validMarkers;
   }, [geoData, highlightedProject, propertyKeys.upc, propertyKeys.scope, comments]);
 
   useEffect(() => {
@@ -270,12 +321,10 @@ function MapView({
       let hasCoordinates = false;
 
       geoData.features.forEach(feature => {
-        if (feature.geometry && feature.geometry.coordinates) {
-          const [lng, lat] = feature.geometry.coordinates;
-          if (!isNaN(lat) && !isNaN(lng)) {
-            leafletBounds.extend([lat, lng]);
-            hasCoordinates = true;
-          }
+        const latLng = getFeatureLatLng(feature);
+        if (latLng) {
+          leafletBounds.extend(latLng);
+          hasCoordinates = true;
         }
       });
 
@@ -285,6 +334,8 @@ function MapView({
           [leafletBounds.getNorthEast().lat, leafletBounds.getNorthEast().lng]
         ];
         setBounds(b);
+      } else {
+        setBounds([[37.0, -77.6], [37.4, -77.2]]);
       }
     } else {
       setBounds([[37.0, -77.6], [37.4, -77.2]]);
@@ -375,21 +426,16 @@ function MapView({
           featureCount={markers.length} 
         />
 
-        {markers.map(({ feature, i, isHighlighted, color }) => (
+        {markers.map(({ feature, i, latLng, isHighlighted, color }) => (
           <React.Fragment key={`marker-group-${i}`}>
             <Marker
               key={`pointer-${i}`}
-              position={[
-                feature.geometry.coordinates[1],
-                feature.geometry.coordinates[0],
-              ]}
+              position={latLng}
               icon={DefaultIcon}
               zIndexOffset={isHighlighted ? 3000 : 1000}
               eventHandlers={{
                 click: () => {
-                  const lat = feature.geometry.coordinates[1];
-                  const lng = feature.geometry.coordinates[0];
-                  panToCenterPopup(lat, lng);
+                  panToCenterPopup(latLng[0], latLng[1]);
                   setOpenPopupId(feature.properties[propertyKeys.upc]);
                   if (setHighlightedProject) setHighlightedProject(null);
                 },
@@ -401,17 +447,12 @@ function MapView({
             </Marker>
             <Marker
               key={`circle-${i}`}
-              position={[
-                feature.geometry.coordinates[1],
-                feature.geometry.coordinates[0],
-              ]}
+              position={latLng}
               icon={createCustomIcon(color, isHighlighted)}
               zIndexOffset={isHighlighted ? 2900 : 900}
               eventHandlers={{
                 click: () => {
-                  const lat = feature.geometry.coordinates[1];
-                  const lng = feature.geometry.coordinates[0];
-                  panToCenterPopup(lat, lng);
+                  panToCenterPopup(latLng[0], latLng[1]);
                   setOpenPopupId(feature.properties[propertyKeys.upc]);
                   if (setHighlightedProject) setHighlightedProject(null);
                 },

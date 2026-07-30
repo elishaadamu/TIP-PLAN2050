@@ -74,11 +74,11 @@ function App() {
         return keys.find(k => possibleNames.some(name => k.toLowerCase() === name.toLowerCase()));
       };
 
-      const scopeKey = findKey(['Scope', 'Work_Type', 'Category', 'Classification', 'improvement', 'project_type']) || keys[2] || "Scope";
-      const countyKey = findKey(['County', 'Jurisdiction', 'City', 'Location', 'District', 'locality']) || keys[4] || "County";
-      const typeKey = findKey(['Type', 'Funding', 'Source', 'Program', 'product', 'project_type']) || keys[3] || "Type";
-      const upcKey = findKey(['UPC', 'ID', 'ProjectID', 'Reference', 'project_id']) || keys[0] || "UPC";
-      const descKey = findKey(['Description', 'Name', 'Project_Name', 'Title', 'project_title']) || keys[1] || "Description";
+      const scopeKey = findKey(['Scope', 'Improvement Type', 'Work_Type', 'Category', 'Classification', 'improvement', 'project_type']) || keys[6] || keys[2] || "Scope";
+      const countyKey = findKey(['County', 'Jurisdiction', 'City', 'Location', 'District', 'locality']) || keys[1] || keys[4] || "County";
+      const typeKey = findKey(['Type', 'Functional Class', 'Funding', 'Source', 'Program', 'product', 'project_type']) || keys[9] || keys[3] || "Type";
+      const upcKey = findKey(['UPC', 'ProjectID', 'ID', 'Reference', 'project_id']) || keys[0] || "UPC";
+      const descKey = findKey(['Description', 'Name', 'Project_Name', 'Title', 'project_title']) || keys[3] || keys[1] || "Description";
 
       setPropertyKeys({
         scope: scopeKey,
