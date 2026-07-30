@@ -26,10 +26,14 @@ function App() {
   const [scopes, setScopes] = useState([]);
   const [counties, setCounties] = useState([]);
   const [types, setTypes] = useState([]);
+  const [mtipValues, setMtipValues] = useState([]);
+  const [clrpValues, setClrpValues] = useState([]);
   const [selectedUPC, setSelectedUPC] = useState("");
   const [selectedScope, setSelectedScope] = useState("All");
   const [selectedCounty, setSelectedCounty] = useState("All");
   const [selectedType, setSelectedType] = useState("All");
+  const [selectedMTIP, setSelectedMTIP] = useState("All");
+  const [selectedCLRP, setSelectedCLRP] = useState("All");
   const [selectedFundingLayer, setSelectedFundingLayer] = useState("All");
   const [fundingSources, setFundingSources] = useState([]);
   const [projectTitle, setProjectTitle] = useState([]);
@@ -79,6 +83,8 @@ function App() {
       const typeKey = findKey(['Type', 'Functional Class', 'Funding', 'Source', 'Program', 'product', 'project_type']) || keys[9] || keys[3] || "Type";
       const upcKey = findKey(['UPC', 'ProjectID', 'ID', 'Reference', 'project_id']) || keys[0] || "UPC";
       const descKey = findKey(['Description', 'Name', 'Project_Name', 'Title', 'project_title']) || keys[3] || keys[1] || "Description";
+      const mtipKey = findKey(['27-30 MTIP', 'MTIP']) || '27-30 MTIP';
+      const clrpKey = findKey(['2050 CLRP', 'CLRP']) || '2050 CLRP';
 
       setPropertyKeys({
         scope: scopeKey,
@@ -86,6 +92,8 @@ function App() {
         type: typeKey,
         upc: upcKey,
         description: descKey,
+        mtip: mtipKey,
+        clrp: clrpKey,
         allKeys: allKeys
       });
 
@@ -103,6 +111,16 @@ function App() {
         ...new Set(data.features.map((f) => f.properties[typeKey])),
       ].filter(Boolean);
       setTypes(["All", ...uniqueTypes.sort()]);
+
+      const uniqueMTIP = [
+        ...new Set(data.features.map((f) => f.properties[mtipKey])),
+      ].filter(v => v != null && String(v).trim() !== '');
+      setMtipValues(["All", ...uniqueMTIP.sort()]);
+
+      const uniqueCLRP = [
+        ...new Set(data.features.map((f) => f.properties[clrpKey])),
+      ].filter(v => v != null && String(v).trim() !== '');
+      setClrpValues(["All", ...uniqueCLRP.sort()]);
 
       const sources = [
         ...new Set(data.features.map((f) => f.properties[typeKey])),
@@ -207,6 +225,8 @@ function App() {
     setSelectedScope("All");
     setSelectedCounty("All");
     setSelectedType("All");
+    setSelectedMTIP("All");
+    setSelectedCLRP("All");
     setSelectedUPC("");
     setSelectedFundingLayer("All");
   };
@@ -231,17 +251,25 @@ function App() {
           selectedType === "All" ||
           String(feature.properties[propertyKeys.type]) === selectedType;
 
+        const matchesMTIP =
+          selectedMTIP === "All" ||
+          String(feature.properties[propertyKeys.mtip]) === selectedMTIP;
+
+        const matchesCLRP =
+          selectedCLRP === "All" ||
+          String(feature.properties[propertyKeys.clrp]) === selectedCLRP;
+
         const matchesFundingLayer =
           selectedFundingLayer === "All" ||
           String(feature.properties[propertyKeys.type]) === selectedFundingLayer;
 
-        return matchesSearch && matchesScope && matchesCounty && matchesType && matchesFundingLayer;
+        return matchesSearch && matchesScope && matchesCounty && matchesType && matchesMTIP && matchesCLRP && matchesFundingLayer;
       }),
     };
-  }, [geoData, selectedUPC, selectedScope, selectedCounty, selectedType, selectedFundingLayer, propertyKeys]);
+  }, [geoData, selectedUPC, selectedScope, selectedCounty, selectedType, selectedMTIP, selectedCLRP, selectedFundingLayer, propertyKeys]);
 
   const isLoading = !geoData;
-  const isFiltered = selectedScope !== "All" || selectedCounty !== "All" || selectedType !== "All" || selectedUPC !== "";
+  const isFiltered = selectedScope !== "All" || selectedCounty !== "All" || selectedType !== "All" || selectedMTIP !== "All" || selectedCLRP !== "All" || selectedUPC !== "";
 
   return (
     <div
@@ -451,6 +479,44 @@ function App() {
                               ) : (
                                 types.map((type) => (
                                   <option key={type} value={type}>{type}</option>
+                                ))
+                              )}
+                            </select>
+                          </div>
+
+                          <div className="filter-control">
+                            <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                              27-30 MTIP
+                            </label>
+                            <select
+                              value={selectedMTIP}
+                              onChange={(e) => setSelectedMTIP(e.target.value)}
+                              disabled={isLoading}
+                            >
+                              {isLoading ? (
+                                <option>Loading...</option>
+                              ) : (
+                                mtipValues.map((val) => (
+                                  <option key={val} value={val}>{val}</option>
+                                ))
+                              )}
+                            </select>
+                          </div>
+
+                          <div className="filter-control">
+                            <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                              2050 CLRP
+                            </label>
+                            <select
+                              value={selectedCLRP}
+                              onChange={(e) => setSelectedCLRP(e.target.value)}
+                              disabled={isLoading}
+                            >
+                              {isLoading ? (
+                                <option>Loading...</option>
+                              ) : (
+                                clrpValues.map((val) => (
+                                  <option key={val} value={val}>{val}</option>
                                 ))
                               )}
                             </select>
