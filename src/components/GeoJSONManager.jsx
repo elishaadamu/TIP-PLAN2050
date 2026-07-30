@@ -18,15 +18,24 @@ function GeoJSONManager({
   const [fileToUpload, setFileToUpload] = useState(null);
 
   const fetchAvailableGeoJSONs = useCallback(async () => {
+    const publicDatasets = [
+      "combined.fgb",
+      "combined.geojson",
+      "gdf_mtip_and_lrtp_projects.fgb",
+      "gdf_projects.fgb",
+      "mtip_27-30_projects.geojson",
+      "projects_new.geojson",
+      "projects.geojson"
+    ];
     try {
       const response = await axios.get(
         "https://ecointeractive.onrender.com/api/geojson/list"
       );
       const remoteList = response.data || [];
-      const merged = Array.from(new Set([...remoteList, ...Array.from(inMemorySpatialCache.keys())]));
+      const merged = Array.from(new Set([...publicDatasets, ...remoteList, ...Array.from(inMemorySpatialCache.keys())]));
       setAvailableGeoJSONs(merged);
     } catch (error) {
-      const merged = Array.from(new Set([...Array.from(inMemorySpatialCache.keys())]));
+      const merged = Array.from(new Set([...publicDatasets, ...Array.from(inMemorySpatialCache.keys())]));
       setAvailableGeoJSONs(merged);
     }
   }, []);
@@ -80,8 +89,28 @@ function GeoJSONManager({
       if (inMemorySpatialCache.has(selectedFile)) {
         spatialData = inMemorySpatialCache.get(selectedFile);
       } else {
-        const url = selectedFile.startsWith("http") ? selectedFile : `${window.location.origin}/${selectedFile}`;
-        spatialData = await fetchSpatialData(url);
+        // First attempt: Fetch dataset directly from MongoDB API
+        try {
+          const apiRes = await axios.get(
+            `https://ecointeractive.onrender.com/api/geojson/get/${encodeURIComponent(selectedFile)}`
+          );
+          if (apiRes.data && apiRes.data.geojsonData) {
+            spatialData = apiRes.data.geojsonData;
+          }
+        } catch (apiErr) {
+          try {
+            const activeRes = await axios.get("https://ecointeractive.onrender.com/api/geojson/active");
+            if (activeRes.data && activeRes.data.filename === selectedFile && activeRes.data.geojsonData) {
+              spatialData = activeRes.data.geojsonData;
+            }
+          } catch (e) { }
+        }
+
+        // Second attempt: Fetch static file from server
+        if (!spatialData) {
+          const url = selectedFile.startsWith("http") ? selectedFile : `${window.location.origin}/${selectedFile}`;
+          spatialData = await fetchSpatialData(url);
+        }
       }
 
       setGeoData(spatialData);
@@ -89,7 +118,7 @@ function GeoJSONManager({
       localStorage.setItem("activeGeoDataFilename", selectedFile);
       try {
         localStorage.setItem("activeSpatialDataContent_" + selectedFile, JSON.stringify(spatialData));
-      } catch (e) {}
+      } catch (e) { }
 
       // Sync with backend API
       try {
@@ -112,7 +141,7 @@ function GeoJSONManager({
       console.error("Set active dataset error:", error);
       Swal.fire({
         title: "Error",
-        text: `Failed to set active spatial dataset ${selectedFile}.`,
+        text: `Failed to set active spatial dataset ${selectedFile}: ${error.message}`,
         icon: "error",
         background: "#111827",
         color: "#f8fafc"
@@ -144,7 +173,7 @@ function GeoJSONManager({
       localStorage.setItem("activeGeoDataFilename", filename);
       try {
         localStorage.setItem("activeSpatialDataContent_" + filename, JSON.stringify(spatialData));
-      } catch (e) {}
+      } catch (e) { }
 
       if (!availableGeoJSONs.includes(filename)) {
         setAvailableGeoJSONs(prev => [filename, ...prev]);
@@ -226,7 +255,7 @@ function GeoJSONManager({
               setCurrentGeoDataFilename(nextFile);
               setSelectedFile(nextFile);
               localStorage.setItem("activeGeoDataFilename", nextFile);
-            } catch (e) {}
+            } catch (e) { }
           } else {
             setGeoData({ type: "FeatureCollection", features: [] });
             setCurrentGeoDataFilename(null);
@@ -288,10 +317,10 @@ function GeoJSONManager({
   };
 
   return (
-    <div className="geojson-manager animate-slide-up" style={{ 
-      padding: 'clamp(1rem, 4vw, 2.5rem)', 
-      maxWidth: '1200px', 
-      margin: '0 auto', 
+    <div className="geojson-manager animate-slide-up" style={{
+      padding: 'clamp(1rem, 4vw, 2.5rem)',
+      maxWidth: '1200px',
+      margin: '0 auto',
       width: '100%',
       position: 'relative'
     }}>
@@ -304,21 +333,21 @@ function GeoJSONManager({
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.938rem' }}>Upload, deploy, manage, and delete regional GIS datasets.</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <button 
-            onClick={handleDeleteAllDatasets} 
-            className="btn-outline" 
+          <button
+            onClick={handleDeleteAllDatasets}
+            className="btn-outline"
             style={{ color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.4)', background: 'rgba(239, 68, 68, 0.1)', fontSize: '0.813rem', borderRadius: '8px', gap: '0.375rem' }}
           >
             <Trash2 size={16} />
             Purge All Datasets
           </button>
-          <Link 
-            to="/" 
-            className="btn-ghost" 
-            style={{ 
-              width: '38px', 
-              height: '38px', 
-              borderRadius: '50%', 
+          <Link
+            to="/"
+            className="btn-ghost"
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '50%',
               padding: 0,
               display: 'flex',
               alignItems: 'center',
@@ -334,25 +363,25 @@ function GeoJSONManager({
       </header>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.5rem' }}>
-        
+
         {/* Upload Interface Card */}
         <div className="glass-card" style={{ padding: '1.5rem', background: 'rgba(17, 24, 39, 0.9)' }}>
           <div style={{ marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-               <div style={{ background: 'rgba(6, 182, 212, 0.15)', padding: '8px', borderRadius: '10px', color: 'var(--accent-cyan)', border: '1px solid var(--border-cyan)' }}>
-                 <Upload size={20} />
-               </div>
-               <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>1. Ingest New Spatial Dataset</h2>
+              <div style={{ background: 'rgba(6, 182, 212, 0.15)', padding: '8px', borderRadius: '10px', color: 'var(--accent-cyan)', border: '1px solid var(--border-cyan)' }}>
+                <Upload size={20} />
+              </div>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>1. Ingest New Spatial Dataset</h2>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.813rem' }}>
               Upload FlatGeobuf (.fgb) binary or standard GeoJSON (.geojson) dataset files.
             </p>
           </div>
 
-          <div style={{ 
-            border: '2px dashed var(--border-cyan)', 
-            borderRadius: '12px', 
-            padding: '2rem 1.5rem', 
+          <div style={{
+            border: '2px dashed var(--border-cyan)',
+            borderRadius: '12px',
+            padding: '2rem 1.5rem',
             textAlign: 'center',
             marginBottom: '1.25rem',
             background: 'rgba(11, 15, 25, 0.6)',
@@ -387,10 +416,10 @@ function GeoJSONManager({
         <div className="glass-card" style={{ padding: '1.5rem', background: 'rgba(17, 24, 39, 0.9)', display: 'flex', flexDirection: 'column' }}>
           <div style={{ marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-               <div style={{ background: 'rgba(139, 92, 246, 0.15)', padding: '8px', borderRadius: '10px', color: '#c084fc', border: '1px solid rgba(139, 92, 246, 0.3)' }}>
-                 <Target size={20} />
-               </div>
-               <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>2. Manage & Deploy Datasets</h2>
+              <div style={{ background: 'rgba(139, 92, 246, 0.15)', padding: '8px', borderRadius: '10px', color: '#c084fc', border: '1px solid rgba(139, 92, 246, 0.3)' }}>
+                <Target size={20} />
+              </div>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>2. Manage & Deploy Datasets</h2>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.813rem' }}>
               Select active dataset for the portal or delete dataset files from database.
@@ -410,8 +439,8 @@ function GeoJSONManager({
                   const isActive = currentGeoDataFilename === filename;
                   const isSelected = selectedFile === filename;
                   return (
-                    <div 
-                      key={filename} 
+                    <div
+                      key={filename}
                       onClick={() => setSelectedFile(filename)}
                       style={{
                         padding: '0.625rem 0.75rem',
@@ -469,10 +498,10 @@ function GeoJSONManager({
           </button>
 
           {currentGeoDataFilename && (
-            <div style={{ 
-              padding: '0.875rem 1rem', 
-              background: 'rgba(16, 185, 129, 0.08)', 
-              borderRadius: '10px', 
+            <div style={{
+              padding: '0.875rem 1rem',
+              background: 'rgba(16, 185, 129, 0.08)',
+              borderRadius: '10px',
               border: '1px solid rgba(16, 185, 129, 0.3)',
               display: 'flex',
               justifyContent: 'space-between',

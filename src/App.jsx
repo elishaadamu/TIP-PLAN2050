@@ -137,13 +137,23 @@ function App() {
             processGeoData(parsed, savedActiveFilename);
             return;
           }
-        } catch (e) {}
+        } catch (e) { }
+
+        try {
+          const apiRes = await axios.get(
+            `https://ecointeractive.onrender.com/api/geojson/get/${encodeURIComponent(savedActiveFilename)}`
+          );
+          if (apiRes.data && apiRes.data.geojsonData) {
+            processGeoData(apiRes.data.geojsonData, savedActiveFilename);
+            return;
+          }
+        } catch (e) { }
 
         try {
           const data = await fetchSpatialData(`${window.location.origin}/${savedActiveFilename}`);
           processGeoData(data, savedActiveFilename);
           return;
-        } catch (err) {}
+        } catch (err) { }
       }
 
       // No active dataset in DB or cache
@@ -311,12 +321,12 @@ function App() {
             <Route
               path="/"
               element={
-              <div
-                className="app-content_3_col"
-                style={{ position: 'relative' }}
-              >
+                <div
+                  className="app-content_3_col"
+                  style={{ position: 'relative' }}
+                >
                   {/* Backdrop for mobile overlays */}
-                  <div 
+                  <div
                     className={`sidebar-backdrop ${(isSidebarOpen || isFactSheetOpen) ? "" : "hidden"}`}
                     onClick={() => {
                       setIsSidebarOpen(false);
@@ -324,184 +334,184 @@ function App() {
                     }}
                   />
                   {/* Sidebar 1: Fact Sheet */}
-                <div style={{ position: 'relative', display: 'flex', height: '100%' }} className={isFactSheetOpen ? "open" : "closed"}>
-                  <FactSheetSidebar 
-                    isOpen={isFactSheetOpen} 
-                    onClose={() => setIsFactSheetOpen(false)} 
-                    onOpenFilters={() => {
-                      setIsSidebarOpen(true);
-                    }}
-                  />
-                  <button 
-                    className="sidebar-tab" 
-                    onClick={() => setIsFactSheetOpen(!isFactSheetOpen)}
-                    title={isFactSheetOpen ? "Hide Fact Sheet" : "Show Fact Sheet"}
-                  >
-                    {isFactSheetOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
-                  </button>
-                </div>
-
-                {/* Sidebar 2: Project Filter & Inventory */}
-                <div style={{ position: 'relative', display: 'flex', height: '100%' }} className={isSidebarOpen ? "open" : "closed"}>
-                  <aside 
-                   className={`asidebar ${isSidebarOpen ? "open" : "closed"}`}
-                   style={{
-                     padding: isSidebarOpen ? '1.5rem' : '0'
-                   }}
-                  >
-                    {/* Close button for mobile/tablet */}
-                    <button 
-                      className="sidebar-close-btn mobile-only"
-                      onClick={() => setIsSidebarOpen(false)}
-                      aria-label="Close Sidebar"
+                  <div style={{ position: 'relative', display: 'flex', height: '100%' }} className={isFactSheetOpen ? "open" : "closed"}>
+                    <FactSheetSidebar
+                      isOpen={isFactSheetOpen}
+                      onClose={() => setIsFactSheetOpen(false)}
+                      onOpenFilters={() => {
+                        setIsSidebarOpen(true);
+                      }}
+                    />
+                    <button
+                      className="sidebar-tab"
+                      onClick={() => setIsFactSheetOpen(!isFactSheetOpen)}
+                      title={isFactSheetOpen ? "Hide Fact Sheet" : "Show Fact Sheet"}
                     >
-                      X
+                      {isFactSheetOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
                     </button>
+                  </div>
 
-                    {/* Filter Widget Group */}
-                    <div className="sidebar-group glass-card" style={{ padding: '1.25rem', borderRadius: '14px' }}>
-                      <header className="explorer-section-title" style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: '1rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
-                          <div style={{ background: 'rgba(6, 182, 212, 0.15)', padding: '6px', borderRadius: '8px', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <SlidersHorizontal size={14} />
+                  {/* Sidebar 2: Project Filter & Inventory */}
+                  <div style={{ position: 'relative', display: 'flex', height: '100%' }} className={isSidebarOpen ? "open" : "closed"}>
+                    <aside
+                      className={`asidebar ${isSidebarOpen ? "open" : "closed"}`}
+                      style={{
+                        padding: isSidebarOpen ? '1.5rem' : '0'
+                      }}
+                    >
+                      {/* Close button for mobile/tablet */}
+                      <button
+                        className="sidebar-close-btn mobile-only"
+                        onClick={() => setIsSidebarOpen(false)}
+                        aria-label="Close Sidebar"
+                      >
+                        X
+                      </button>
+
+                      {/* Filter Widget Group */}
+                      <div className="sidebar-group glass-card" style={{ padding: '1.25rem', borderRadius: '14px' }}>
+                        <header className="explorer-section-title" style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: '1rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
+                            <div style={{ background: 'rgba(6, 182, 212, 0.15)', padding: '6px', borderRadius: '8px', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <SlidersHorizontal size={14} />
+                            </div>
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 800 }}>Spatial Filters</span>
                           </div>
-                          <span style={{ color: 'var(--text-primary)', fontWeight: 800 }}>Spatial Filters</span>
-                        </div>
-                        {isFiltered && (
-                          <button
-                            onClick={handleResetFilters}
-                            title="Reset all filters"
-                            style={{
-                              background: 'rgba(239, 68, 68, 0.15)',
-                              border: '1px solid rgba(239, 68, 68, 0.3)',
-                              color: '#f87171',
-                              fontSize: '0.68rem',
-                              padding: '0.25rem 0.5rem',
-                              borderRadius: '6px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '4px'
-                            }}
-                          >
-                            <RefreshCw size={10} /> Reset
-                          </button>
-                        )}
-                      </header>
+                          {isFiltered && (
+                            <button
+                              onClick={handleResetFilters}
+                              title="Reset all filters"
+                              style={{
+                                background: 'rgba(239, 68, 68, 0.15)',
+                                border: '1px solid rgba(239, 68, 68, 0.3)',
+                                color: '#f87171',
+                                fontSize: '0.68rem',
+                                padding: '0.25rem 0.5rem',
+                                borderRadius: '6px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px'
+                              }}
+                            >
+                              <RefreshCw size={10} /> Reset
+                            </button>
+                          )}
+                        </header>
 
-                      <div className="filter-grid" style={{ gap: '0.875rem' }}>
-                        <div className="filter-control">
-                          <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
-                            {propertyKeys.scope}
-                          </label>
-                          <select
-                            value={selectedScope}
-                            onChange={(e) => setSelectedScope(e.target.value)}
-                            disabled={isLoading}
-                          >
-                            {isLoading ? (
-                              <option>Loading Scopes...</option>
-                            ) : (
-                              scopes.map((scope) => (
-                                <option key={scope} value={scope}>{scope}</option>
-                              ))
-                            )}
-                          </select>
-                        </div>
- 
-                        <div className="filter-control">
-                          <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
-                            {propertyKeys.county}
-                          </label>
-                          <select
-                            value={selectedCounty}
-                            onChange={(e) => setSelectedCounty(e.target.value)}
-                            disabled={isLoading}
-                          >
-                            {isLoading ? (
-                              <option>Loading Counties...</option>
-                            ) : (
-                              counties.map((county) => (
-                                <option key={county} value={county}>{county}</option>
-                              ))
-                            )}
-                          </select>
-                        </div>
- 
-                        <div className="filter-control">
-                          <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
-                            {propertyKeys.type}
-                          </label>
-                          <select
-                            value={selectedType}
-                            onChange={(e) => setSelectedType(e.target.value)}
-                            disabled={isLoading}
-                          >
-                            {isLoading ? (
-                              <option>Loading Type...</option>
-                            ) : (
-                              types.map((type) => (
-                                <option key={type} value={type}>{type}</option>
-                              ))
-                            )}
-                          </select>
-                        </div>
- 
-                        <div className="filter-control">
-                          <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
-                            Quick Search (UPC / Title)
-                          </label>
-                          <div style={{ position: 'relative' }}>
-                            <input
-                              type="text"
-                              className="search-input"
-                              value={selectedUPC}
-                              onChange={(e) => setSelectedUPC(e.target.value)}
-                              placeholder={isLoading ? "Loading projects..." : "Search UPC or keyword..."}
+                        <div className="filter-grid" style={{ gap: '0.875rem' }}>
+                          <div className="filter-control">
+                            <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                              {propertyKeys.scope}
+                            </label>
+                            <select
+                              value={selectedScope}
+                              onChange={(e) => setSelectedScope(e.target.value)}
                               disabled={isLoading}
-                              style={{ paddingRight: '2.5rem' }}
-                            />
-                            <span style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
-                              <Search size={14} />
-                            </span>
+                            >
+                              {isLoading ? (
+                                <option>Loading Scopes...</option>
+                              ) : (
+                                scopes.map((scope) => (
+                                  <option key={scope} value={scope}>{scope}</option>
+                                ))
+                              )}
+                            </select>
+                          </div>
+
+                          <div className="filter-control">
+                            <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                              {propertyKeys.county}
+                            </label>
+                            <select
+                              value={selectedCounty}
+                              onChange={(e) => setSelectedCounty(e.target.value)}
+                              disabled={isLoading}
+                            >
+                              {isLoading ? (
+                                <option>Loading Counties...</option>
+                              ) : (
+                                counties.map((county) => (
+                                  <option key={county} value={county}>{county}</option>
+                                ))
+                              )}
+                            </select>
+                          </div>
+
+                          <div className="filter-control">
+                            <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                              {propertyKeys.type}
+                            </label>
+                            <select
+                              value={selectedType}
+                              onChange={(e) => setSelectedType(e.target.value)}
+                              disabled={isLoading}
+                            >
+                              {isLoading ? (
+                                <option>Loading Type...</option>
+                              ) : (
+                                types.map((type) => (
+                                  <option key={type} value={type}>{type}</option>
+                                ))
+                              )}
+                            </select>
+                          </div>
+
+                          <div className="filter-control">
+                            <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                              Quick Search (UPC / Title)
+                            </label>
+                            <div style={{ position: 'relative' }}>
+                              <input
+                                type="text"
+                                className="search-input"
+                                value={selectedUPC}
+                                onChange={(e) => setSelectedUPC(e.target.value)}
+                                placeholder={isLoading ? "Loading projects..." : "Search UPC or keyword..."}
+                                disabled={isLoading}
+                                style={{ paddingRight: '2.5rem' }}
+                              />
+                              <span style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                                <Search size={14} />
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Projects Table Index */}
-                    <div className="sidebar-group glass-card" style={{ padding: '1.25rem', borderRadius: '14px' }}>
-                        <ProjectsTableIndex 
-                          geoData={filteredGeoData} 
-                          allHeaders={propertyKeys.allKeys} 
+                      {/* Projects Table Index */}
+                      <div className="sidebar-group glass-card" style={{ padding: '1.25rem', borderRadius: '14px' }}>
+                        <ProjectsTableIndex
+                          geoData={filteredGeoData}
+                          allHeaders={propertyKeys.allKeys}
                           onProjectClick={handleProjectClick}
                           comments={comments}
                           upcKey={propertyKeys.upc}
                           isAdmin={isAdmin}
                           isLoading={isLoading}
                         />
-                    </div>
-                  </aside>
-                  <button 
-                    className="sidebar-tab" 
-                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    style={{ right: '-24px' }}
-                    title={isSidebarOpen ? "Hide Inventory" : "Show Inventory"}
-                  >
-                    {isSidebarOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
-                  </button>
-                </div>
+                      </div>
+                    </aside>
+                    <button
+                      className="sidebar-tab"
+                      onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                      style={{ right: '-24px' }}
+                      title={isSidebarOpen ? "Hide Inventory" : "Show Inventory"}
+                    >
+                      {isSidebarOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+                    </button>
+                  </div>
 
-                {/* Main Content Map Container */}
-                <main
-                  className="main-content-wrapper"
-                  style={{
-                    flex: 1,
-                    minWidth: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: '100%'
-                  }}
-                >
+                  {/* Main Content Map Container */}
+                  <main
+                    className="main-content-wrapper"
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: '100%'
+                    }}
+                  >
                     <div style={{ flex: 1, position: 'relative' }}>
                       <MapView
                         addComment={addComment}
@@ -520,21 +530,21 @@ function App() {
                         isFactSheetOpen={isFactSheetOpen}
                         isLoading={isLoading}
                       />
-                  </div>
-                  
-                  {/* Floating Toggle Button (Mobile) */}
-                  <button
-                    className="sidebar-toggle-btn"
-                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    aria-label="Toggle Project Menu"
-                  >
-                    {isSidebarOpen ? <X size={22} /> : <Map size={22} />}
-                  </button>
-                </main>
-              </div>
-          }
-        />
-        </Routes>
+                    </div>
+
+                    {/* Floating Toggle Button (Mobile) */}
+                    <button
+                      className="sidebar-toggle-btn"
+                      onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                      aria-label="Toggle Project Menu"
+                    >
+                      {isSidebarOpen ? <X size={22} /> : <Map size={22} />}
+                    </button>
+                  </main>
+                </div>
+              }
+            />
+          </Routes>
         </Suspense>
       </main>
     </div>

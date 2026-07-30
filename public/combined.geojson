@@ -1,0 +1,1671 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 0,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.229487,
+          37.12632
+        ]
+      },
+      "properties": {
+        "UPC": 115413,
+        "County": "Prince George",
+        "Scope": "Safety",
+        "Description": "#SMART20 - Intersection Improvements at Route 460 & Queen St",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 1,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.35172,
+          37.17577
+        ]
+      },
+      "properties": {
+        "UPC": 127921,
+        "County": "Petersburg",
+        "Scope": "Safety",
+        "Description": "#SMART26 I-95 AT RIVES RD EXIT ROUNDABOUTS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 2,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.351706,
+          37.175744
+        ]
+      },
+      "properties": {
+        "UPC": -29857,
+        "County": "Petersburg",
+        "Scope": "Reconstruction w/o Added Capacity",
+        "Description": "I-95 & RIVES RD - INTERCHANGE IMPROVEMENTS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.365992,
+          37.182039
+        ]
+      },
+      "properties": {
+        "UPC": 101039,
+        "County": "Petersburg",
+        "Scope": "Safety",
+        "Description": "SOUTH CRATER ROAD AREA - SIGNAL COORDINATION",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.365331,
+          37.204726
+        ]
+      },
+      "properties": {
+        "UPC": -29102,
+        "County": "Prince George",
+        "Scope": "Bridge Rehab w/o Added Capacity",
+        "Description": "#SGR25VB INTERSTATE 95 NBL OVER NS RAILWAY (STR. 21149) - DE",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.351482,
+          37.223587
+        ]
+      },
+      "properties": {
+        "UPC": 117838,
+        "County": "Petersburg",
+        "Scope": "Reconstruction w/ Added Capacity",
+        "Description": "US ARMY PROJ FT PICKETT/DSCR/FT LEE -- RICHMOND",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 6,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.31335,
+          37.213937
+        ]
+      },
+      "properties": {
+        "UPC": 111635,
+        "County": "Prince George",
+        "Scope": "Safety",
+        "Description": "#SMART18 - RT 106 & RT 630 INTERSECTION SAFETY PROJECT ",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 7,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.293662,
+          37.221082
+        ]
+      },
+      "properties": {
+        "UPC": 116961,
+        "County": "Prince George",
+        "Scope": "Resurfacing",
+        "Description": "#SGR21VP F21 SGR Plant Mix Interstate PM4S-964-F21",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 8,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.282901,
+          37.259544
+        ]
+      },
+      "properties": {
+        "UPC": 123762,
+        "County": "Prince George",
+        "Scope": "Safety",
+        "Description": "#SMART24 - ROUNDABOUT AT MIDDLE RD AND PRINCE GEORGE DRIVE",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 9,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.295172,
+          37.280361
+        ]
+      },
+      "properties": {
+        "UPC": 110840,
+        "County": "Hopewell",
+        "Scope": "Safety",
+        "Description": "RTE 156 - INTERSECTION IMPROVEMENTS AT BERRY ST",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 10,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.295172,
+          37.280361
+        ]
+      },
+      "properties": {
+        "UPC": 110846,
+        "County": "Hopewell",
+        "Scope": "Safety",
+        "Description": "RTE 156 - INTERSECTION IMPROVEMENTS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 11,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.293312,
+          37.308073
+        ]
+      },
+      "properties": {
+        "UPC": 122203,
+        "County": "Hopewell",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "#SMART24 - W RANDOLPH ROAD SHARED USE PATH",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 12,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.313126,
+          37.289952
+        ]
+      },
+      "properties": {
+        "UPC": 110842,
+        "County": "Hopewell",
+        "Scope": "Safety",
+        "Description": "SOUTH MESA DR  - IMPROVE PEDESTRIAN ACCOMMODATIONS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 13,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.3162619809889,
+          37.287320420864056
+        ]
+      },
+      "properties": {
+        "UPC": 90018,
+        "County": "Hopewell",
+        "Scope": "Reconstruction w/o Added Capacity",
+        "Description": "Cedar Level Rd. (PE and CN)",
+        "Type": "Long-Range Projects"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 14,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.326689,
+          37.333087
+        ]
+      },
+      "properties": {
+        "UPC": 124677,
+        "County": "Chesterfield",
+        "Scope": "Bridge Replacement w/o Added Capacity",
+        "Description": "#SGR23VB - RTE 746 ENON CHURCH RD (FED 5341) CR",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 15,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.32554853105799,
+          37.3387988611912
+        ]
+      },
+      "properties": {
+        "UPC": 112660,
+        "County": "Chesterfield",
+        "Scope": "Reconstruction w/ Added Capacity",
+        "Description": "N. Enon Church Road Widening",
+        "Type": "Long-Range Projects"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 16,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.327856,
+          37.329974
+        ]
+      },
+      "properties": {
+        "UPC": 115783,
+        "County": "Chesterfield",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "Rivermont Road Sidewalk",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 17,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.354209,
+          37.324581
+        ]
+      },
+      "properties": {
+        "UPC": 118951,
+        "County": "Chesterfield",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "Enon Church Road at Bermuda Orchard Road - Ped Improvements",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 18,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.351688,
+          37.324364
+        ]
+      },
+      "properties": {
+        "UPC": 124274,
+        "County": "Chesterfield",
+        "Scope": "Safety",
+        "Description": "ENON CHURCH RD (DODD PARK-RIVERVIEW DR) BIKE/PED IMPROVEMENT",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 19,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.31781945537155,
+          37.27420087527292
+        ]
+      },
+      "properties": {
+        "County": "Hopewell",
+        "Scope": "Widening",
+        "Description": "Cedar Level Road Southern Segment",
+        "Type": "Long-Range Projects"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 20,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.31972184399994,
+          37.27978175904739
+        ]
+      },
+      "properties": {
+        "UPC": 1436,
+        "County": "Hopewell",
+        "Scope": "Reconstruction w/ Added Capacity",
+        "Description": "Cedar Level Rd. (PE and RW)",
+        "Type": "Long-Range Projects"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 21,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.302333,
+          37.283162
+        ]
+      },
+      "properties": {
+        "UPC": 127925,
+        "County": "Hopewell",
+        "Scope": "Safety",
+        "Description": "#SMART26 WINSTON CHURCHILL DRIVE CORRIDOR IMPROVEMENTS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 22,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.308861,
+          37.273383
+        ]
+      },
+      "properties": {
+        "UPC": 123291,
+        "County": "Hopewell",
+        "Scope": "Safety",
+        "Description": "COURTHOUSE ROAD PEDESTRIAN IMPROVEMENTS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 23,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.314479,
+          37.271612
+        ]
+      },
+      "properties": {
+        "UPC": 109265,
+        "County": "Hopewell",
+        "Scope": "New Construction Roadway",
+        "Description": "ASHLAND STREET IMPROVEMENTS - PHASE I  ",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 24,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.325518,
+          37.262676
+        ]
+      },
+      "properties": {
+        "UPC": 126157,
+        "County": "Hopewell",
+        "Scope": "Other",
+        "Description": "I-295-A EXIT 9 EV CHARGING STATION INSTALLATION",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 25,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.326935,
+          37.260191
+        ]
+      },
+      "properties": {
+        "UPC": 125653,
+        "County": "Hopewell",
+        "Scope": "Safety",
+        "Description": "RT 36/OAKLAWN BLVD SIGNALIZATION IMPROVEMENTS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 26,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.333413,
+          37.255751
+        ]
+      },
+      "properties": {
+        "UPC": 107926,
+        "County": "Prince George",
+        "Scope": "Reconstruction w/o Added Capacity",
+        "Description": "RTE 36 - IMPROVEMENT AT FT LEE ENTRANCE",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 27,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.333413,
+          37.255751
+        ]
+      },
+      "properties": {
+        "UPC": 104697,
+        "County": "Prince George",
+        "Scope": "Reconstruction w/o Added Capacity",
+        "Description": "RTE 36 - IMPROVEMENTS AT FT. LEE ENTRANCE",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 28,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.315534,
+          37.24581
+        ]
+      },
+      "properties": {
+        "UPC": 111704,
+        "County": "Prince George",
+        "Scope": "Reconstruction w/o Added Capacity",
+        "Description": "ROUNDABOUT AT MIDDLE RD & JEFFERSON PARK RD",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 29,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.381037,
+          37.244976
+        ]
+      },
+      "properties": {
+        "UPC": 107533,
+        "County": "Colonial Heights",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "TAP - APPOMATTOX RIVER TRAIL - Phase 5",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 30,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.38790784119792,
+          37.25506505429085
+        ]
+      },
+      "properties": {
+        "County": "Colonial Heights",
+        "Scope": "Widening",
+        "Description": "Temple Ave - Conduit To ECL Widening",
+        "Type": "Long-Range Projects"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 31,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.398809,
+          37.257585
+        ]
+      },
+      "properties": {
+        "UPC": 85623,
+        "County": "Colonial Heights",
+        "Scope": "Safety",
+        "Description": "I95/TEMPLE AVE - INTERCHANGE IMPR (FED ID 20145, 20146)",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 32,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.398347,
+          37.24903
+        ]
+      },
+      "properties": {
+        "UPC": 122282,
+        "County": "Colonial Heights",
+        "Scope": "Safety",
+        "Description": "SRTS PHASE III MIDDLE SCHOOL SIDEWALKS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 33,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.394659,
+          37.242652
+        ]
+      },
+      "properties": {
+        "UPC": 120440,
+        "County": "Colonial Heights",
+        "Scope": "Safety",
+        "Description": "#I95CIP - I-95 SB - EXIT 53 - EXTEND ACCELERATION LANE",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 34,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.387866,
+          37.242105
+        ]
+      },
+      "properties": {
+        "UPC": 126141,
+        "County": "Colonial Heights",
+        "Scope": "Other",
+        "Description": "I-95-B EXIT 53 EV CHARGING STATION INSTALLATION",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 35,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.401059,
+          37.238828
+        ]
+      },
+      "properties": {
+        "UPC": 124714,
+        "County": "Petersburg",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "#SMART24 - ART RT1 TO COLONIAL HEIGHTS AND I-95",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 36,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.405527,
+          37.234117
+        ]
+      },
+      "properties": {
+        "UPC": 123580,
+        "County": "Petersburg",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "#SMART24 - ART OLD TOWNE PETERSBURG (GROVE AVE TO RIVER RD)",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 37,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.411297,
+          37.233989
+        ]
+      },
+      "properties": {
+        "UPC": 124715,
+        "County": "Colonial Heights",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "#SMART24 - APPOMATTOX RIVER GREENWAY TRAIL PHASE 6",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 38,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.405317,
+          37.237591
+        ]
+      },
+      "properties": {
+        "UPC": 121417,
+        "County": "Chesterfield",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "#SMART24 - APPOMATTOX GREENWAY TRAIL BOULEVARD SPUR",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 39,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.41315075150914,
+          37.243074585505354
+        ]
+      },
+      "properties": {
+        "UPC": 101287,
+        "County": "Colonial Heights",
+        "Scope": "Reconstruction w/o Added Capacity",
+        "Description": "Dupuy Ave - Minor Widening",
+        "Type": "Long-Range Projects"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 40,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.416914,
+          37.251791
+        ]
+      },
+      "properties": {
+        "UPC": 121409,
+        "County": "Colonial Heights",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "#FLT (W. WESTOVER - FAIRFAX)",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 41,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.417773,
+          37.246685
+        ]
+      },
+      "properties": {
+        "UPC": 118966,
+        "County": "Chesterfield",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "#FLT - Dupuy Road to Westover Avenue",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 42,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.410814,
+          37.24983
+        ]
+      },
+      "properties": {
+        "UPC": 100501,
+        "County": "Colonial Heights",
+        "Scope": "Safety",
+        "Description": "Route 1 and Westover Avenue intersection",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 43,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.411342,
+          37.258313
+        ]
+      },
+      "properties": {
+        "UPC": 109264,
+        "County": "Colonial Heights",
+        "Scope": "Safety",
+        "Description": "TEMPLE  AVE  AND ROUTE 1 SIGNAL REPLACEMENT",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 44,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.411535,
+          37.262377
+        ]
+      },
+      "properties": {
+        "UPC": 124601,
+        "County": "Colonial Heights",
+        "Scope": "Safety",
+        "Description": "BOULEVARD MODERNIZATION (TEMPLE AVE TO ESSEX ROAD)",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 45,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.415525,
+          37.268916
+        ]
+      },
+      "properties": {
+        "UPC": 101288,
+        "County": "Colonial Heights",
+        "Scope": "Reconstruction w/o Added Capacity",
+        "Description": "LAKEVIEW AVE - MINOR WIDENING",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 46,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.430776,
+          37.267577
+        ]
+      },
+      "properties": {
+        "UPC": 109229,
+        "County": "Chesterfield",
+        "Scope": "Safety",
+        "Description": "LAKEVIEW RD AND BRANDERS BRIDGE RD INTERSECTION IMPROVEMENTS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 47,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.412277,
+          37.281186
+        ]
+      },
+      "properties": {
+        "UPC": 121680,
+        "County": "Colonial Heights",
+        "Scope": "Resurfacing",
+        "Description": "#SGR23LP - Us Hwy 1 ",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 48,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.40859,
+          37.273382
+        ]
+      },
+      "properties": {
+        "UPC": 106188,
+        "County": "Colonial Heights",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "NORTH ES - SIDEWALKS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 49,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.411759,
+          37.285479
+        ]
+      },
+      "properties": {
+        "UPC": 124340,
+        "County": "Chesterfield",
+        "Scope": "Safety",
+        "Description": "RTE 1 (WHITEHOUSE RD - HARROWGATE RD)SIDEWALK/PED CROSSING",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 50,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.390308,
+          37.267742
+        ]
+      },
+      "properties": {
+        "UPC": 118071,
+        "County": "Colonial Heights",
+        "Scope": "Safety",
+        "Description": "Colonial Heights High School Sidewalks",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 51,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.426058,
+          37.302976
+        ]
+      },
+      "properties": {
+        "UPC": 108887,
+        "County": "Chesterfield",
+        "Scope": "Safety",
+        "Description": "#SMART18 - HARROWGATE ROAD/COUGAR TRAIL - PEDESTRIAN IMPROVE",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 52,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.408954,
+          37.305449
+        ]
+      },
+      "properties": {
+        "UPC": 125348,
+        "County": "Chesterfield",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "WOODS EDGE RD/RTE 1 PEDESTRIAN CROSSING",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 53,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.40565061054812,
+          37.305279222902996
+        ]
+      },
+      "properties": {
+        "County": "Chesterfield",
+        "Scope": "Widening",
+        "Description": "Woods Edge Rd. Widening",
+        "Type": "Long-Range Projects"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 54,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.48394059499998,
+          37.261297744000046
+        ]
+      },
+      "properties": {
+        "UPC": 101028,
+        "County": "Chesterfield",
+        "Scope": "Safety",
+        "Description": "Route 600 - Roundabout",
+        "Type": "Long-Range Projects"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 55,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.440566,
+          37.234585
+        ]
+      },
+      "properties": {
+        "UPC": 124337,
+        "County": "Chesterfield",
+        "Scope": "Safety",
+        "Description": "RIVER ROAD (BRICKHOUSE DR - LIBRARY) TRAIL",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 56,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.507557,
+          37.193833
+        ]
+      },
+      "properties": {
+        "UPC": 126143,
+        "County": "Dinwiddie",
+        "Scope": "Other",
+        "Description": "I-85-B EXIT 61 EV CHARGING STATION INSTALLATION",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 57,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.463033,
+          37.199143
+        ]
+      },
+      "properties": {
+        "UPC": 120439,
+        "County": "Petersburg",
+        "Scope": "Other",
+        "Description": "#OTHERINT - I-85 - SIGNS AND MARKINGS US 1",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 58,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.441801,
+          37.200274
+        ]
+      },
+      "properties": {
+        "UPC": 120458,
+        "County": "Prince George",
+        "Scope": "Safety",
+        "Description": "#OTHERINT - I-85 - CMS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 59,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.472472,
+          37.218709
+        ]
+      },
+      "properties": {
+        "UPC": 115407,
+        "County": "Dinwiddie",
+        "Scope": "Safety",
+        "Description": "#SMART20 - Route 600/ Route 601 Roundabout",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 60,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.421629,
+          37.2284
+        ]
+      },
+      "properties": {
+        "UPC": 118949,
+        "County": "Petersburg",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "Appomattox River Trail (ART) - Western Extension",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 61,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.416821,
+          37.232073
+        ]
+      },
+      "properties": {
+        "UPC": 123581,
+        "County": "Petersburg",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "#SMART24 - FLT/ART TRAILHEAD/PARKING LOT",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 62,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.410739,
+          37.232141
+        ]
+      },
+      "properties": {
+        "UPC": -30760,
+        "County": "Petersburg",
+        "Scope": "Facilities for Pedestrians and Bicycles",
+        "Description": "APPOMATTOX RIVER TRAIL - GROVE AVE (SQUAW TO PETER JONES)",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 63,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.403318,
+          37.227783
+        ]
+      },
+      "properties": {
+        "UPC": 121281,
+        "County": "Petersburg",
+        "Scope": "Resurfacing",
+        "Description": "#SGR23LP - W WASHINGTON STREET",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 64,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.395482,
+          37.228372
+        ]
+      },
+      "properties": {
+        "UPC": 122214,
+        "County": "Petersburg",
+        "Scope": "Bridge Rehab w/o Added Capacity",
+        "Description": "#BF - RICHMOND YEAR 1 DECK & SUPERSTRUCTURE - STR 21167",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 65,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.403068,
+          37.22709
+        ]
+      },
+      "properties": {
+        "UPC": 121280,
+        "County": "Petersburg",
+        "Scope": "Resurfacing",
+        "Description": "#SGR23LP - S Sycamore St ",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 66,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.393231,
+          37.224925
+        ]
+      },
+      "properties": {
+        "UPC": 124573,
+        "County": "Petersburg",
+        "Scope": "Bridge Rehab w/o Added Capacity",
+        "Description": "#BF - RICHMOND DECK AND SUPERSTRUCTURE - #5",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 67,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.393231,
+          37.224925
+        ]
+      },
+      "properties": {
+        "UPC": 124570,
+        "County": "Petersburg",
+        "Scope": "Bridge Replacement w/o Added Capacity",
+        "Description": "#BF - RICHMOND DECK AND SUPERSTRUCTURE - #3",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 68,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.39108,
+          37.22129
+        ]
+      },
+      "properties": {
+        "UPC": 128132,
+        "County": "Petersburg",
+        "Scope": "Safety",
+        "Description": "#SMART26 I-85/95 INTERCHANGE IMPROVEMENTS",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 69,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.38398,
+          37.216185
+        ]
+      },
+      "properties": {
+        "UPC": 113386,
+        "County": "Petersburg",
+        "Scope": "Bridge Rehab w/o Added Capacity",
+        "Description": "#SGR19VB - BR DECK REPLACMENT SB I-95 OVER RT 301 & EB 460",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 70,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.378475,
+          37.215447
+        ]
+      },
+      "properties": {
+        "UPC": 121278,
+        "County": "Petersburg",
+        "Scope": "Resurfacing",
+        "Description": "#SGR23LP - US Route 460 Business (Winfield Road)",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 71,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.384643,
+          37.208771
+        ]
+      },
+      "properties": {
+        "UPC": 121279,
+        "County": "Petersburg",
+        "Scope": "Resurfacing",
+        "Description": "#SGR23LP - S Crater Rd ",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 72,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.39802,
+          37.213798
+        ]
+      },
+      "properties": {
+        "UPC": 113481,
+        "County": "Petersburg",
+        "Scope": "Bridge Rehab w/o Added Capacity",
+        "Description": "#SGR19LB�- Sycamore St over Lieutenant Run - Rehab culvert",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 73,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.435522,
+          37.202055
+        ]
+      },
+      "properties": {
+        "UPC": 113390,
+        "County": "Petersburg",
+        "Scope": "Bridge Rehab w/o Added Capacity",
+        "Description": "#SGR19VB - REPLACE SUPERSTRUCTURE FORT LEE ROAD OVER I-85",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 74,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.476298,
+          37.167106
+        ]
+      },
+      "properties": {
+        "UPC": 109230,
+        "County": "Dinwiddie",
+        "Scope": "Safety",
+        "Description": "ROUTE 670 (DUNCAN ROAD) CURVE REALIGNMENT",
+        "Type": "MTIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 0,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.26950909131384,
+          37.26495941838963
+        ]
+      },
+      "properties": {
+        "project_id": "P4",
+        "project_title": "Project 4",
+        "cost": 115000,
+        "project_type": "Bike/Ped",
+        "improvement": "New Construction",
+        "locality": "Hopewell",
+        "product": "PLAN2050"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 1,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.28092064597173,
+          37.263335577743376
+        ]
+      },
+      "properties": {
+        "project_id": "P8",
+        "project_title": "Project 8",
+        "cost": 260000,
+        "project_type": "Roadway",
+        "improvement": "Transit Upgrade",
+        "locality": "Hopewell",
+        "product": "TIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 2,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.2898042340491,
+          37.27003836175366
+        ]
+      },
+      "properties": {
+        "project_id": "P5",
+        "project_title": "Project 5",
+        "cost": 380000,
+        "project_type": "Bike/Ped",
+        "improvement": "Resurfacing",
+        "locality": "Hopewell",
+        "product": "TIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.26131174168069,
+          37.280116260106475
+        ]
+      },
+      "properties": {
+        "project_id": "P7",
+        "project_title": "Project 7",
+        "cost": 295000,
+        "project_type": "Roadway",
+        "improvement": "Rehabilitation",
+        "locality": "Hopewell",
+        "product": "PLAN2050"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.26816886820427,
+          37.28456036267961
+        ]
+      },
+      "properties": {
+        "project_id": "P10",
+        "project_title": "Project 10",
+        "cost": 170000,
+        "project_type": "Bike/Ped",
+        "improvement": "Resurfacing",
+        "locality": "Hopewell",
+        "product": "TIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.31496032128436,
+          37.309123956853156
+        ]
+      },
+      "properties": {
+        "project_id": "P2",
+        "project_title": "Project 2",
+        "cost": 440000,
+        "project_type": "Bike/Ped",
+        "improvement": "New Construction",
+        "locality": "Hopewell",
+        "product": "TIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 6,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.32676684580395,
+          37.30285151155254
+        ]
+      },
+      "properties": {
+        "project_id": "P6",
+        "project_title": "Project 6",
+        "cost": 255000,
+        "project_type": "Roadway",
+        "improvement": "New Construction",
+        "locality": "Hopewell",
+        "product": "PLAN2050"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 7,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.33373442644375,
+          37.2841813108532
+        ]
+      },
+      "properties": {
+        "project_id": "P3",
+        "project_title": "Project 3",
+        "cost": 300000,
+        "project_type": "Roadway",
+        "improvement": "Rehabilitation",
+        "locality": "Hopewell",
+        "product": "TIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 8,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.31776938593052,
+          37.285607338564574
+        ]
+      },
+      "properties": {
+        "project_id": "P1",
+        "project_title": "Project 1",
+        "cost": 200000,
+        "project_type": "Transit",
+        "improvement": "Transit Upgrade",
+        "locality": "Hopewell",
+        "product": "TIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 9,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.3048973013493,
+          37.274110311278136
+        ]
+      },
+      "properties": {
+        "project_id": "P9",
+        "project_title": "Project 9",
+        "cost": 485000,
+        "project_type": "Roadway",
+        "improvement": "New Construction",
+        "locality": "Hopewell",
+        "product": "TIP"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "UPC": "DRPT1009",
+        "Description": "Acquisition of Accessible Vehicles",
+        "Scope": "Transit: Vehicles",
+        "Type": "TIP",
+        "Jurisdiction": "Petersburg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.403167,
+          37.23013202
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "UPC": "PAT0001",
+        "Description": "Operating Assistance",
+        "Scope": "Transit: Operating",
+        "Type": "TIP",
+        "Jurisdiction": "Petersburg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.403167,
+          37.23013202
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "UPC": "PAT1001",
+        "Description": "Revenue Vehicles- Replacement",
+        "Scope": "Transit: Vehicles",
+        "Type": "TIP",
+        "Jurisdiction": "Petersburg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.403167,
+          37.23013202
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "UPC": "PAT4001",
+        "Description": "Design and Construct Maintenance Facility",
+        "Scope": "Transit: Engineering",
+        "Type": "TIP",
+        "Jurisdiction": "Petersburg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.4139,
+          37.21476
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "UPC": "PAT5001",
+        "Description": "Support Vehicles- Replacement",
+        "Scope": "Transit: Vehicles",
+        "Type": "TIP",
+        "Jurisdiction": "Petersburg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.403167,
+          37.23013202
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "UPC": "PAT6001",
+        "Description": "ADP Hardware- Replacement",
+        "Scope": "Transit: System Preservation",
+        "Type": "TIP",
+        "Jurisdiction": "Petersburg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.403167,
+          37.23013202
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "UPC": "PAT7001",
+        "Description": "ADP Software",
+        "Scope": "Transit: System Preservation",
+        "Type": "TIP",
+        "Jurisdiction": "Petersburg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.403167,
+          37.23013202
+        ]
+      }
+    }
+  ]
+}
