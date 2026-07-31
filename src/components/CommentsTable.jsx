@@ -88,17 +88,17 @@ const CommentsTable = ({ comments = [], setComments }) => {
   const currentComments = filteredComments.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-    <div className="comments-view animate-slide-up" style={{ 
-      padding: 'clamp(1rem, 4vw, 2.5rem)', 
-      maxWidth: '1200px', 
-      margin: '0 auto', 
+    <div className="comments-view animate-slide-up" style={{
+      padding: 'clamp(1rem, 4vw, 2.5rem)',
+      maxWidth: '1200px',
+      margin: '0 auto',
       width: '100%',
       position: 'relative'
     }}>
-      <header style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'flex-start', 
+      <header style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
         marginBottom: '2rem',
         flexWrap: 'wrap',
         gap: '1rem'
@@ -113,24 +113,24 @@ const CommentsTable = ({ comments = [], setComments }) => {
 
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
           <button className="btn-primary" onClick={() => setShowQrModal(true)} style={{ fontSize: '0.813rem', borderRadius: '8px', gap: '0.375rem' }}>
-             <QrCode size={16} />
-             Submit Comments QR
+            <QrCode size={16} />
+            Submit Comments QR
           </button>
           <button className="btn-outline" onClick={handleExportAll} style={{ fontSize: '0.813rem', borderRadius: '8px' }}>
-             <Download size={16} />
-             Export CSV
+            <Download size={16} />
+            Export CSV
           </button>
           <button className="btn-outline" onClick={handleDeleteAllComments} style={{ color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.4)', background: 'rgba(239, 68, 68, 0.1)', fontSize: '0.813rem', borderRadius: '8px' }}>
-             <Trash2 size={16} />
-             Purge All
+            <Trash2 size={16} />
+            Purge All
           </button>
-          <Link 
-            to="/" 
-            className="btn-ghost" 
-            style={{ 
-              width: '38px', 
-              height: '38px', 
-              borderRadius: '50%', 
+          <Link
+            to="/"
+            className="btn-ghost"
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '50%',
               padding: 0,
               display: 'flex',
               alignItems: 'center',
@@ -148,7 +148,7 @@ const CommentsTable = ({ comments = [], setComments }) => {
       {/* Search Input Bar */}
       <div style={{ marginBottom: '1.25rem', position: 'relative', maxWidth: '400px' }}>
         <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-        <input 
+        <input
           type="text"
           placeholder="Filter feedback by UPC, comment, or name..."
           value={searchTerm}
@@ -173,11 +173,11 @@ const CommentsTable = ({ comments = [], setComments }) => {
                 currentComments.map((comment, index) => (
                   <tr key={comment._id || index} style={{ borderBottom: '1px solid var(--border-subtle)', transition: 'var(--transition)' }} className="inventory-row">
                     <td style={{ padding: '1rem 1.25rem' }}>
-                      <span style={{ 
-                        background: 'rgba(6, 182, 212, 0.15)', 
-                        color: 'var(--accent-cyan)', 
+                      <span style={{
+                        background: 'rgba(6, 182, 212, 0.15)',
+                        color: 'var(--accent-cyan)',
                         border: '1px solid var(--border-cyan)',
-                        padding: '0.2rem 0.5rem', 
+                        padding: '0.2rem 0.5rem',
                         borderRadius: '6px',
                         fontSize: '0.75rem',
                         fontWeight: '700'
@@ -210,12 +210,12 @@ const CommentsTable = ({ comments = [], setComments }) => {
         </div>
 
         {totalPages > 1 && (
-          <div style={{ 
-            padding: '1rem 1.25rem', 
-            borderTop: '1px solid var(--border-subtle)', 
-            display: 'flex', 
+          <div style={{
+            padding: '1rem 1.25rem',
+            borderTop: '1px solid var(--border-subtle)',
+            display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center', 
+            alignItems: 'center',
             background: 'rgba(11, 15, 25, 0.6)'
           }}>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -269,7 +269,7 @@ const CommentsTable = ({ comments = [], setComments }) => {
             boxShadow: 'var(--shadow-neon-cyan)',
             position: 'relative'
           }}>
-            <button 
+            <button
               onClick={() => setShowQrModal(false)}
               style={{
                 position: 'absolute',
@@ -294,29 +294,36 @@ const CommentsTable = ({ comments = [], setComments }) => {
               Submit your comments!
             </h2>
 
-            <div style={{
-              background: '#ffffff',
-              padding: '16px',
-              borderRadius: '16px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '1rem',
-              boxShadow: '0 8px 30px rgba(6, 182, 212, 0.25)'
-            }}>
-              <img 
-                src="/qr-code.png" 
-                alt="Submit your comments QR Code" 
+            <a
+              href="https://input-v2.netlify.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                background: '#ffffff',
+                padding: '16px',
+                borderRadius: '16px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '1rem',
+                boxShadow: '0 8px 30px rgba(6, 182, 212, 0.25)',
+                cursor: 'pointer'
+              }}
+              title="Click to open https://input-v2.netlify.app/"
+            >
+              <img
+                src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https%3A%2F%2Finput-v2.netlify.app%2F"
+                alt="Submit your comments QR Code"
                 style={{ width: '220px', height: '220px', objectFit: 'contain' }}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent("https://input-v3.netlify.app/");
+                  e.target.src = "/qr-code.png";
                 }}
               />
-            </div>
+            </a>
 
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5, margin: 0 }}>
-              Scan this QR code with your mobile camera to quickly open public testimony submission and share feedback on TIP-PLAN2050 projects.
+              Scan this QR code with your mobile camera or visit <a href="https://input-v2.netlify.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-cyan)', textDecoration: 'underline' }}>input-v2.netlify.app</a> to quickly open public testimony submission and share feedback on TIP-PLAN2050 projects.
             </p>
           </div>
         </div>

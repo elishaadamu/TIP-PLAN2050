@@ -190,11 +190,7 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
             <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
               Download official drafts:
               <br />
-              <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-FFY27-30-TCAMPO-MTIP-03.06.2026.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-cyan)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
-                <span>PLAN2050 & FY2027-30 MTIP</span> <ExternalLink size={12} />
-              </a>
-              <br />
-              <a href="https://craterpdc.org/wp-content/uploads/2026/03/Draft-RCA-Richmond-Area-FY27-30-TIP-and-2045-LRTP-for-public-review-finalv3.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-purple)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
+              <a href="https://craterpdc.org/wp-content/uploads/2026/07/3_Draft-RCA-Richmond-Area-Amended-FY27-30-TIP-and-2050-LRTP.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-purple)', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
                 <span>Regional Conformity Assessment (RCA)</span> <ExternalLink size={12} />
               </a>
             </p>
@@ -227,21 +223,26 @@ function FactSheetSidebar({ isOpen, onClose, onOpenFilters }) {
             boxShadow: 'var(--shadow-neon-cyan)',
             display: 'inline-flex',
             alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+            justifyContent: 'center',
+            cursor: 'pointer'
+          }}
+            title="Click to open Interactive Comment Portal"
+          >
             <img
-              src="/qr-code.png"
+              src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https%3A%2F%2Finput-v2.netlify.app%2F"
               alt="Submit your comments QR Code"
               style={{ width: '150px', height: '150px', objectFit: 'contain' }}
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=" + encodeURIComponent("https://input-v3.netlify.app/");
+                e.target.src = "/qr-code.png";
               }}
             />
           </div>
-          <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-            Scan with your phone camera to submit official public testimony and feedback.
-          </p>
+          <span
+            style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}
+          >
+            Interactive Comment Portal
+          </span>
         </div>
       </section>
 
