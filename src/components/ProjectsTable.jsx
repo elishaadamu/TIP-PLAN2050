@@ -62,12 +62,27 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
   const currentProjects = filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
 
   const getCommentCount = (projectId) => {
-    if (!comments) return 0;
-    return comments.filter(c => String(c.projectId) === String(projectId)).length;
+    if (!comments || !projectId) return 0;
+    const cleanId = String(projectId).replace(/\.0$/, '');
+    return comments.filter(c => {
+      const pid = String(c.projectId).replace(/\.0$/, '');
+      return pid === cleanId || String(c.projectId) === String(projectId);
+    }).length;
   };
 
   const headers = projects.length > 0
-    ? [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback"]
+    ? (() => {
+        const rawKeys = Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {}))));
+        const upcIdx = rawKeys.findIndex(k => ['upc', 'projectid', 'id', 'reference', 'project_id'].includes(k.toLowerCase()));
+        let orderedKeys = [...rawKeys];
+        if (upcIdx > -1) {
+          const foundUpc = orderedKeys.splice(upcIdx, 1)[0];
+          orderedKeys.unshift(foundUpc);
+        } else {
+          orderedKeys.unshift("UPC");
+        }
+        return [...orderedKeys, "Feedback"];
+      })()
     : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -155,40 +170,56 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
             </thead>
             <tbody>
               {currentProjects.length > 0 ? (
-                currentProjects.map((feature, index) => (
-                  <tr
-                    key={(feature.properties.UPC || feature.properties.ID || index) + "-" + index}
-                    style={{ borderBottom: '1px solid var(--border-subtle)', transition: 'var(--transition)', cursor: 'pointer' }}
-                    onClick={() => onProjectClick && onProjectClick(feature)}
-                    className="inventory-row"
-                  >
-                    {headers.map((header) => (
-                      <td
-                        key={header}
-                        style={{ padding: "0.875rem 1rem", color: "var(--text-primary)" }}
-                      >
-                        {header === "Feedback"
-                          ? (
-                            <span style={{
-                              background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.04)',
-                              color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)',
-                              border: getCommentCount(feature.properties[upcKey]) > 0 ? '1px solid var(--border-cyan)' : '1px solid var(--border-subtle)',
-                              padding: '0.25rem 0.5rem',
-                              borderRadius: '6px',
-                              fontSize: '0.7rem',
-                              fontWeight: '700'
-                            }}>
-                              {getCommentCount(feature.properties[upcKey])} Submissions
-                            </span>
-                          )
-                          : (
-                            <div style={{ maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                              {String(feature.properties[header] ?? "—")}
-                            </div>
-                          )
+                currentProjects.map((feature, index) => {
+                  const featureUpc = feature.properties?.[upcKey] || feature.properties?.UPC || feature.properties?.upc || feature.properties?.ProjectID || feature.properties?.ID || "";
+                  const cleanUpc = String(featureUpc).replace(/\.0$/, '');
+
+                  return (
+                    <tr
+                      key={(cleanUpc || index) + "-" + index}
+                      style={{ borderBottom: '1px solid var(--border-subtle)', transition: 'var(--transition)', cursor: 'pointer' }}
+                      onClick={() => onProjectClick && onProjectClick(feature)}
+                      className="inventory-row"
+                    >
+                      {headers.map((header) => {
+                        if (header === "Feedback") {
+                          const count = getCommentCount(cleanUpc) || getCommentCount(featureUpc);
+                          return (
+                            <td key={header} style={{ padding: "0.875rem 1rem" }}>
+                              <span style={{
+                                background: count > 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.04)',
+                                color: count > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)',
+                                border: count > 0 ? '1px solid var(--border-cyan)' : '1px solid var(--border-subtle)',
+                                padding: '0.25rem 0.5rem',
+                                borderRadius: '6px',
+                                fontSize: '0.7rem',
+                                fontWeight: '700'
+                              }}>
+                                {count} Submissions
+                              </span>
+                            </td>
+                          );
                         }
-                      </td>
-                    ))}
+
+                        const isUpcCol = header.toLowerCase() === 'upc' || header === upcKey;
+                        const cellVal = feature.properties?.[header] ?? (isUpcCol ? (cleanUpc || "—") : "—");
+                        const displayVal = isUpcCol && cellVal !== "—" ? String(cellVal).replace(/\.0$/, '') : String(cellVal);
+
+                        return (
+                          <td key={header} style={{ padding: "0.875rem 1rem", color: "var(--text-primary)" }}>
+                            <div style={{
+                              maxWidth: '280px',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              color: isUpcCol ? 'var(--accent-cyan)' : 'var(--text-primary)',
+                              fontWeight: isUpcCol ? 700 : 500
+                            }}>
+                              {displayVal}
+                            </div>
+                          </td>
+                        );
+                      })}
                     <td style={{ padding: "0.875rem 1rem", textAlign: "right" }}>
                       <button
                         className="btn-outline"

@@ -65,9 +65,23 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
   }, [projects, currentPage]);
 
   const headers = useMemo(() => {
-    if (isLoading) return ["Project Registry", "Status", "Feedback"];
+    if (isLoading) return ["UPC", "Project Registry", "Status", "Feedback"];
     if (projects.length === 0) return [];
-    return [...Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {})))), "Feedback"];
+
+    const rawKeys = Array.from(new Set(projects.flatMap(f => Object.keys(f.properties || {}))));
+    
+    // Locate existing UPC key variation or ensure UPC is the first column
+    const upcIdx = rawKeys.findIndex(k => ['upc', 'projectid', 'id', 'reference', 'project_id'].includes(k.toLowerCase()));
+    let orderedKeys = [...rawKeys];
+    
+    if (upcIdx > -1) {
+      const foundUpc = orderedKeys.splice(upcIdx, 1)[0];
+      orderedKeys.unshift(foundUpc);
+    } else {
+      orderedKeys.unshift("UPC");
+    }
+
+    return [...orderedKeys, "Feedback"];
   }, [projects, isLoading]);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -149,53 +163,63 @@ const ProjectsTableIndex = memo(({ geoData, allHeaders, onProjectClick, comments
                   </td>
                 </tr>
               ) : (
-                currentProjects.map((feature, index) => (
-                  <tr
-                    key={(feature.properties.UPC || feature.properties.ID || feature.properties.id || index) + "-" + index}
-                    style={{
-                      borderBottom: '1px solid var(--border-subtle)',
-                      transition: 'var(--transition)',
-                      cursor: 'pointer'
-                    }}
-                    className="inventory-row"
-                    onClick={() => onProjectClick && onProjectClick(feature)}
-                  >
-                    {headers.map((header) => (
-                      <td
-                        key={header}
-                        style={{ padding: "0.875rem 1rem" }}
-                      >
-                        {header === "Feedback"
-                          ? (
-                            <span style={{
-                              background: getCommentCount(feature.properties[upcKey]) > 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.04)',
-                              color: getCommentCount(feature.properties[upcKey]) > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)',
-                              border: getCommentCount(feature.properties[upcKey]) > 0 ? '1px solid var(--border-cyan)' : '1px solid var(--border-subtle)',
-                              padding: '0.2rem 0.5rem',
-                              borderRadius: '6px',
-                              fontSize: '0.7rem',
-                              fontWeight: '700'
-                            }}>
-                              {getCommentCount(feature.properties[upcKey])} Submissions
-                            </span>
-                          )
-                          : (
+                currentProjects.map((feature, index) => {
+                  const featureUpc = feature.properties?.[upcKey] || feature.properties?.UPC || feature.properties?.upc || feature.properties?.ProjectID || feature.properties?.ID || "";
+                  const cleanUpc = String(featureUpc).replace(/\.0$/, '');
+
+                  return (
+                    <tr
+                      key={(cleanUpc || index) + "-" + index}
+                      style={{
+                        borderBottom: '1px solid var(--border-subtle)',
+                        transition: 'var(--transition)',
+                        cursor: 'pointer'
+                      }}
+                      className="inventory-row"
+                      onClick={() => onProjectClick && onProjectClick(feature)}
+                    >
+                      {headers.map((header) => {
+                        if (header === "Feedback") {
+                          const count = getCommentCount(cleanUpc) || getCommentCount(featureUpc);
+                          return (
+                            <td key={header} style={{ padding: "0.875rem 1rem" }}>
+                              <span style={{
+                                background: count > 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.04)',
+                                color: count > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)',
+                                border: count > 0 ? '1px solid var(--border-cyan)' : '1px solid var(--border-subtle)',
+                                padding: '0.2rem 0.5rem',
+                                borderRadius: '6px',
+                                fontSize: '0.7rem',
+                                fontWeight: '700'
+                              }}>
+                                {count} Submissions
+                              </span>
+                            </td>
+                          );
+                        }
+
+                        const isUpcCol = header.toLowerCase() === 'upc' || header === upcKey;
+                        const cellVal = feature.properties?.[header] ?? (isUpcCol ? (cleanUpc || "—") : "—");
+                        const displayVal = isUpcCol && cellVal !== "—" ? String(cellVal).replace(/\.0$/, '') : String(cellVal);
+
+                        return (
+                          <td key={header} style={{ padding: "0.875rem 1rem" }}>
                             <div style={{
                               maxWidth: '180px',
                               overflow: 'hidden',
                               textOverflow: 'ellipsis',
                               whiteSpace: 'nowrap',
-                              color: 'var(--text-primary)',
-                              fontWeight: 500
+                              color: isUpcCol ? 'var(--accent-cyan)' : 'var(--text-primary)',
+                              fontWeight: isUpcCol ? 700 : 500
                             }}>
-                              {String(feature.properties[header] ?? "—")}
+                              {displayVal}
                             </div>
-                          )
-                        }
-                      </td>
-                    ))}
-                  </tr>
-                ))
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

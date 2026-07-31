@@ -71,8 +71,8 @@ function App() {
 
       if (!data.features || data.features.length === 0) return;
 
-      const allKeys = Array.from(new Set(data.features.flatMap(f => Object.keys(f.properties || {}))));
-      const keys = allKeys;
+      const rawAllKeys = Array.from(new Set(data.features.flatMap(f => Object.keys(f.properties || {}))));
+      const keys = rawAllKeys;
 
       const findKey = (possibleNames) => {
         return keys.find(k => possibleNames.some(name => k.toLowerCase() === name.toLowerCase()));
@@ -86,6 +86,15 @@ function App() {
       const mtipKey = findKey(['27-30 MTIP', 'MTIP']) || '27-30 MTIP';
       const clrpKey = findKey(['2050 CLRP', 'CLRP']) || '2050 CLRP';
 
+      const upcIdx = rawAllKeys.findIndex(k => ['upc', 'projectid', 'id', 'reference', 'project_id'].includes(k.toLowerCase()));
+      let orderedAllKeys = [...rawAllKeys];
+      if (upcIdx > -1) {
+        const foundUpc = orderedAllKeys.splice(upcIdx, 1)[0];
+        orderedAllKeys.unshift(foundUpc);
+      } else {
+        orderedAllKeys.unshift("UPC");
+      }
+
       setPropertyKeys({
         scope: scopeKey,
         county: countyKey,
@@ -94,7 +103,7 @@ function App() {
         description: descKey,
         mtip: mtipKey,
         clrp: clrpKey,
-        allKeys: allKeys
+        allKeys: orderedAllKeys
       });
 
       const uniqueScopes = [
@@ -479,44 +488,6 @@ function App() {
                               ) : (
                                 types.map((type) => (
                                   <option key={type} value={type}>{type}</option>
-                                ))
-                              )}
-                            </select>
-                          </div>
-
-                          <div className="filter-control">
-                            <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
-                              27-30 MTIP
-                            </label>
-                            <select
-                              value={selectedMTIP}
-                              onChange={(e) => setSelectedMTIP(e.target.value)}
-                              disabled={isLoading}
-                            >
-                              {isLoading ? (
-                                <option>Loading...</option>
-                              ) : (
-                                mtipValues.map((val) => (
-                                  <option key={val} value={val}>{val}</option>
-                                ))
-                              )}
-                            </select>
-                          </div>
-
-                          <div className="filter-control">
-                            <label style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
-                              2050 CLRP
-                            </label>
-                            <select
-                              value={selectedCLRP}
-                              onChange={(e) => setSelectedCLRP(e.target.value)}
-                              disabled={isLoading}
-                            >
-                              {isLoading ? (
-                                <option>Loading...</option>
-                              ) : (
-                                clrpValues.map((val) => (
-                                  <option key={val} value={val}>{val}</option>
                                 ))
                               )}
                             </select>
