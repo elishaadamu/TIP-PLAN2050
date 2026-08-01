@@ -157,6 +157,17 @@ function GeoJSONManager({
       return;
     }
 
+    if (!fileToUpload.name.toLowerCase().endsWith(".fgb")) {
+      Swal.fire({
+        title: "Invalid File Format",
+        text: "Only FlatGeobuf (.fgb) binary files are allowed.",
+        icon: "error",
+        background: "#111827",
+        color: "#f8fafc"
+      });
+      return;
+    }
+
     try {
       const spatialData = await fetchSpatialData(fileToUpload);
       const filename = fileToUpload.name;
@@ -368,7 +379,7 @@ function GeoJSONManager({
               <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>1. Ingest New Spatial Dataset</h2>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.813rem' }}>
-              Upload FlatGeobuf (.fgb) binary or standard GeoJSON (.geojson) dataset files.
+              Upload FlatGeobuf (.fgb) binary dataset files.
             </p>
           </div>
 
@@ -384,7 +395,7 @@ function GeoJSONManager({
             <input
               type="file"
               id="geo-upload"
-              accept=".fgb,.geojson,.json"
+              accept=".fgb"
               onChange={handleFileChangeForUpload}
               style={{ display: 'none' }}
             />
@@ -393,10 +404,10 @@ function GeoJSONManager({
                 <FileJson size={40} style={{ margin: '0 auto' }} />
               </div>
               <div style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '0.875rem' }}>
-                {fileToUpload ? fileToUpload.name : 'Click to Select FlatGeobuf (.fgb) or GeoJSON File'}
+                {fileToUpload ? fileToUpload.name : 'Click to Select FlatGeobuf (.fgb) File'}
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                Supports FlatGeobuf (.fgb) binary & standard GeoJSON formats
+                Supports FlatGeobuf (.fgb) binary format only
               </div>
             </label>
           </div>

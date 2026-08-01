@@ -43,7 +43,7 @@ export async function parseFgbBuffer(arrayBuffer) {
 }
 
 /**
- * Fetches or parses spatial data from a File, Blob, or URL string (.fgb or .geojson).
+ * Fetches or parses spatial data from a File, Blob, or URL string (.fgb).
  * @param {string|File|Blob} target 
  * @returns {Promise<{type: "FeatureCollection", features: Array}>}
  */
@@ -51,26 +51,19 @@ export async function fetchSpatialData(target) {
   if (!target) throw new Error("No spatial dataset provided");
 
   if (typeof File !== "undefined" && (target instanceof File || target instanceof Blob)) {
-    const isFgb = target.name ? target.name.toLowerCase().endsWith(".fgb") : true;
-    const buffer = await target.arrayBuffer();
-    if (isFgb) {
-      try {
-        return await parseFgbBuffer(buffer);
-      } catch (err) {
-        try {
-          const text = new TextDecoder().decode(buffer);
-          return JSON.parse(text);
-        } catch (e) {
-          throw err;
-        }
-      }
-    } else {
-      const text = new TextDecoder().decode(buffer);
-      return JSON.parse(text);
+    if (target.name && !target.name.toLowerCase().endsWith(".fgb")) {
+      throw new Error("Only FlatGeobuf (.fgb) binary files are supported.");
     }
+    const buffer = await target.arrayBuffer();
+    return await parseFgbBuffer(buffer);
   }
 
   const url = String(target);
+  const cleanUrl = url.split("?")[0].split("#")[0];
+  if (!cleanUrl.toLowerCase().endsWith(".fgb")) {
+    throw new Error(`Only FlatGeobuf (.fgb) files can be fetched. Provided URL: ${url}`);
+  }
+
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`Failed to fetch spatial file from ${url}: ${res.statusText}`);
@@ -81,11 +74,7 @@ export async function fetchSpatialData(target) {
     throw new Error(`File at ${url} was not found on server (received HTML page).`);
   }
 
-  if (url.toLowerCase().includes(".fgb")) {
-    const buffer = await res.arrayBuffer();
-    return await parseFgbBuffer(buffer);
-  } else {
-    return await res.json();
-  }
+  const buffer = await res.arrayBuffer();
+  return await parseFgbBuffer(buffer);
 }
 

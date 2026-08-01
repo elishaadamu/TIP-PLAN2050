@@ -231,8 +231,9 @@ const ProjectsTable = ({ geoData, headers: explicitHeaders, onProjectClick, comm
                       </button>
                     </td>
                   </tr>
-                ))
-              ) : (
+                );
+              })
+            ) : (
                 <tr>
                   <td colSpan={headers.length + 1} style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }}>
                     No infrastructure project matching current query.

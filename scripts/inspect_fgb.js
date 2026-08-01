@@ -10,7 +10,6 @@ const __dirname = path.dirname(__filename);
 async function inspectDataset() {
   let geojson = null;
   const fgbPath = path.join(__dirname, '..', 'public', 'combined.fgb');
-  const geojsonPath = path.join(__dirname, '..', 'public', 'combined.geojson');
 
   // 1. Try local combined.fgb
   if (fs.existsSync(fgbPath)) {
@@ -24,12 +23,7 @@ async function inspectDataset() {
     }
     geojson = { type: 'FeatureCollection', features };
   } 
-  // 2. Try local combined.geojson
-  else if (fs.existsSync(geojsonPath)) {
-    console.log(`Loading local GeoJSON file: ${geojsonPath}`);
-    geojson = JSON.parse(fs.readFileSync(geojsonPath, 'utf8'));
-  } 
-  // 3. Try fetching from MongoDB API
+  // 2. Try fetching from MongoDB API
   else {
     console.log(`Local file not found, fetching combined.fgb from MongoDB API...`);
     try {

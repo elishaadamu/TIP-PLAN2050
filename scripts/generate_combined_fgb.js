@@ -9,11 +9,9 @@ const publicDir = path.join(__dirname, '..', 'public');
 
 async function buildCombinedFgb() {
   const files = [
+    'combined.fgb',
     'gdf_mtip_and_lrtp_projects.fgb',
-    'gdf_projects.fgb',
-    'mtip_27-30_projects.geojson',
-    'projects_new.geojson',
-    'projects.geojson'
+    'gdf_projects.fgb'
   ];
 
   let combinedFeatures = [];
@@ -33,10 +31,6 @@ async function buildCombinedFgb() {
       for await (const feature of iter) {
         features.push(feature);
       }
-    } else if (file.endsWith('.geojson') || file.endsWith('.json')) {
-      const text = fs.readFileSync(filePath, 'utf8');
-      const data = JSON.parse(text);
-      features = data.features || [];
     }
 
     console.log(`  -> Found ${features.length} features in ${file}`);
@@ -53,15 +47,15 @@ async function buildCombinedFgb() {
 
   console.log(`\nTotal unique features combined: ${combinedFeatures.length}`);
 
+  if (combinedFeatures.length === 0) {
+    console.log("No features found to serialize into FlatGeobuf binary.");
+    return;
+  }
+
   const combinedGeoJSON = {
     type: 'FeatureCollection',
     features: combinedFeatures
   };
-
-  // Write combined.geojson
-  const geojsonPath = path.join(publicDir, 'combined.geojson');
-  fs.writeFileSync(geojsonPath, JSON.stringify(combinedGeoJSON, null, 2));
-  console.log(`Saved ${geojsonPath}`);
 
   // Serialize to FlatGeobuf binary
   try {
