@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZENDEL CREATIVES – A Collective of Extraordinary Event Artisans</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --teal: #2eb191;
+            --teal-light: #4bd8b4;
+            --teal-dark: #1f856c;
+            --magenta: #b92f8d;
+            --magenta-light: #d844a9;
+            --magenta-dark: #91226e;
+            --bg-main: #ffffff;
+            --bg-card: #ffffff;
+            --bg-alt: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --border-highlight: #d844a9;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+            --shadow-btn: 0 8px 20px rgba(185, 47, 141, 0.25);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* STRICT SCOPING & RESET */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        .serif-font {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Utility classes */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section-padding {
+            padding: 90px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 850px;
+            margin: 0 auto 60px;
+        }
+
+        .section-subtitle {
+            display: inline-block;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--teal);
+            font-weight: 600;
+            margin-bottom: 12px;
+            position: relative;
+            padding: 0 15px;
+        }
+
+        .section-subtitle::before, .section-subtitle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 2px;
+            background: var(--teal);
+        }
+        .section-subtitle::before { left: -10px; }
+        .section-subtitle::after { right: -10px; }
+
+        .section-title {
+            font-size: 2.8rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 18px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-description {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--magenta) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            text-transform: uppercase;
+        }
+
+        .btn-teal {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(46, 177, 145, 0.25);
+        }
+
+        .btn-teal:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(46, 177, 145, 0.4);
+            background: linear-gradient(135deg, var(--teal-light) 0%, var(--teal) 100%);
+            color: #ffffff;
+        }
+
+        .btn-magenta {
+            background: linear-gradient(135deg, var(--magenta) 0%, var(--magenta-dark) 100%);
+            color: #ffffff;
+            box-shadow: var(--shadow-btn);
+        }
+
+        .btn-magenta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(185, 47, 141, 0.4);
+            background: linear-gradient(135deg, var(--magenta-light) 0%, var(--magenta) 100%);
+            color: #ffffff;
+        }
+
+        .btn-outline {
+            background: #ffffff;
+            border-color: var(--border-color);
+            color: var(--text-main);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--teal);
+            background: rgba(46, 177, 145, 0.05);
+            color: var(--teal);
+            transform: translateY(-3px);
+        }
+
+        /* HERO SECTION */
+        .hero-section {
+            position: relative;
+            min-height: 65vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 0 80px;
+            background-color: #1e293b;
+            background-image: linear-gradient(to right, rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.65)), 
+                        url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1600&q=80');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            overflow: hidden;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.85) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 950px;
+            margin: 0 auto;
+            color: #ffffff;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 24px;
+            border-radius: 50px;
+            background: rgba(46, 177, 145, 0.2);
+            border: 1px solid var(--teal);
+            color: var(--teal-light);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            backdrop-filter: blur(8px);
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4.2rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            color: #ffffff !important;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        .hero-subtitle {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            color: #e2e8f0;
+            font-weight: 300;
+            margin-bottom: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-tagline {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-style: italic;
+            color: #cbd5e1;
+            margin-bottom: 35px;
+        }
+
+        .hero-text {
+            font-size: 1.15rem;
+            color: #cbd5e1;
+            max-width: 850px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        .hero-cta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* ABOUT US SECTION */
+        .about-section {
+            position: relative;
+            background: var(--bg-alt);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: stretch;
+            margin-bottom: 50px;
+        }
+
+        .about-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 45px;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(to right, var(--teal), var(--magenta));
+        }
+
+        .about-card h3 {
+            font-size: 2rem;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .about-card .card-subtitle {
+            font-size: 1.2rem;
+            color: var(--teal);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .philosophy-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .philosophy-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 14px;
+            font-size: 1.05rem;
+            color: var(--text-main);
+        }
+
+        .philosophy-item i {
+            color: var(--magenta);
+            font-size: 1.1rem;
+            margin-top: 4px;
+        }
+
+        .promise-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 45px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .promise-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--magenta), var(--teal));
+        }
+
+        .promise-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            color: var(--text-main);
+            margin-bottom: 15px;
+        }
+
+        .promise-text {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto 20px;
+            line-height: 1.8;
+        }
+
+        .promise-motto {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--magenta);
+            font-weight: 700;
+        }
+
+        /* THE COLLECTIVE (DOMAINS) */
+        .collective-section {
+            background: var(--bg-main);
+        }
+
+        .collective-intro-text {
+            text-align: center;
+            font-size: 1.15rem;
+            color: var(--teal);
+            font-weight: 600;
+            margin: -30px auto 40px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .collective-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+        }
+
+        .category-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 35px 30px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--teal);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .category-icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            background: rgba(46, 177, 145, 0.1);
+            border: 1px solid rgba(46, 177, 145, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--teal);
+            font-size: 1.6rem;
+            margin-bottom: 22px;
+            transition: var(--transition);
+        }
+
+        .category-card:nth-child(even) .category-icon-box {
+            background: rgba(185, 47, 141, 0.1);
+            border-color: rgba(185, 47, 141, 0.25);
+            color: var(--magenta);
+        }
+
+        .category-card:hover .category-icon-box {
+            transform: scale(1.1);
+            background: var(--teal);
+            color: #ffffff;
+        }
+
+        .category-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .category-desc {
+            font-size: 0.98rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* DEDICATED SECTION: THE ZENDEL CREATIVES TEAM */
+        .team-section {
+            background: var(--bg-alt);
+            position: relative;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .team-filter-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+        }
+
+        .filter-btn {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, var(--teal), var(--teal-light));
+            border-color: var(--teal);
+            color: #ffffff;
+            box-shadow: var(--shadow-md);
+        }
+
+        .pillar-group {
+            margin-bottom: 70px;
+        }
+
+        .pillar-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .pillar-badge {
+            background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+            color: #ffffff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+
+        .pillar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            color: var(--text-main);
+        }
+
+        .pillar-sub {
+            color: var(--magenta);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .artisan-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-md);
+        }
+
+        .artisan-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--magenta-light);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .artisan-img-wrapper {
+            position: relative;
+            height: 320px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .artisan-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .artisan-card:hover .artisan-img {
+            transform: scale(1.08);
+        }
+
+        .artisan-category-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .artisan-info {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .artisan-name {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .artisan-role {
+            color: var(--magenta);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .artisan-bio {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .artisan-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
+
+        .artisan-tag {
+            font-size: 0.75rem;
+            background: var(--bg-alt);
+            color: var(--text-main);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .artisan-btn {
+            width: 100%;
+            padding: 10px 0;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            color: var(--teal);
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .artisan-btn:hover {
+            background: var(--teal);
+            color: #ffffff;
+            border-color: var(--teal);
+        }
+
+        /* FOR OUR ARTISANS / JOIN US */
+        .artisan-join-section {
+            position: relative;
+            background: var(--bg-main);
+        }
+
+        .join-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .join-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(to right, var(--teal), var(--magenta));
+        }
+
+        .join-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-style: italic;
+            color: var(--magenta);
+            font-weight: 600;
+            margin: 25px 0 35px;
+        }
+
+        /* PORTFOLIO SECTION */
+        .portfolio-section {
+            background: var(--bg-alt);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            height: 300px;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+        }
+
+        .portfolio-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.3) 60%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+            opacity: 0.9;
+            transition: var(--transition);
+        }
+
+        .portfolio-item:hover .portfolio-img {
+            transform: scale(1.1);
+        }
+
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.5) 100%);
+        }
+
+        .portfolio-cat {
+            color: var(--teal-light);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .portfolio-title {
+            font-size: 1.4rem;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        /* CONTACT SECTION */
+        .contact-section {
+            background: var(--bg-main);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-form {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 45px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px 18px;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(46, 177, 145, 0.15);
+        }
+
+        /* MODAL DIALOGS */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            max-width: 750px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+            padding: 40px;
+            transform: scale(0.95);
+            transition: var(--transition);
+            color: var(--text-main);
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f1f5f9;
+            border: none;
+            color: #0f172a;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: var(--magenta);
+            color: #ffffff;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .hero-title { font-size: 3.5rem; }
+            .about-grid, .contact-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.8rem; }
+            .hero-subtitle { font-size: 1.25rem; }
+            .section-title { font-size: 2.2rem; }
+            .join-wrapper { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="home">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <div class="hero-badge">
+                <i class="fa-solid fa-star"></i> Premier Luxury Collective
+            </div>
+            <h1 class="hero-title">ZENDEL CREATIVES</h1>
+            <p class="hero-subtitle">A Collective of Extraordinary Event Artisans</p>
+            <p class="hero-tagline">"Where artistry meets elegance. Where every detail becomes a masterpiece."</p>
+            
+            <p class="hero-text">
+                Zendel Creatives is an exclusive collective of premier event artisans, bringing together visionary talent across luxury event planning, makeup artistry, photography, videography, couture fashion, cocktails mixology, bespoke décor, catering, entertainment, media, and beyond.
+                <br><br>
+                We curate extraordinary experiences where creativity, precision, and sophistication come together to transform meaningful moments into timeless celebrations.
+                <br><br>
+                <strong style="color: #ffffff;">Welcome to a world where every detail is designed with intention.</strong>
+            </p>
+
+            <div class="hero-cta">
+                <a href="#team" class="btn btn-teal"><i class="fa-solid fa-users"></i> Explore The Team</a>
+                <a href="#artisans" class="btn btn-magenta"><i class="fa-solid fa-gem"></i> Join The Collective</a>
+                <a href="#contact" class="btn btn-outline"><i class="fa-solid fa-envelope"></i> Inquire Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT US SECTION (Vision, Philosophy & Promise) -->
+    <section class="section-padding about-section" id="about">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">About Us</span>
+                <h2 class="section-title">Our Vision, Philosophy & Promise</h2>
+            </div>
+
+            <div class="about-grid">
+                <!-- Our Vision -->
+                <div class="about-card">
+                    <h3>Our Vision</h3>
+                    <div class="card-subtitle">Creating Moments Beyond Imagination</div>
+                    <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.8; margin-bottom: 15px;">
+                        At Zendel Creatives, we believe luxury is not defined by excess—it is defined by excellence, emotion, and meticulous attention to detail.
+                    </p>
+                    <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.8; margin-bottom: 15px;">
+                        Our collective unites exceptional creatives who share one purpose: to craft immersive experiences that reflect elegance, individuality, and unforgettable style.
+                    </p>
+                    <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.8;">
+                        From intimate celebrations to grand occasions, every project is approached as a work of art—carefully designed, flawlessly executed, and beautifully remembered.
+                    </p>
+                </div>
+
+                <!-- Our Philosophy -->
+                <div class="about-card">
+                    <h3>Our Philosophy</h3>
+                    <div class="card-subtitle">Excellence Through Collaboration</div>
+                    <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.8;">
+                        At Zendel Creatives, collaboration is more than a partnership—it is a shared commitment to perfection.
+                    </p>
+                    <p style="color: var(--text-main); font-weight: 600; margin-top: 15px;">
+                        Every artisan within our collective represents a standard of excellence where:
+                    </p>
+                    <ul class="philosophy-list">
+                        <li class="philosophy-item"><i class="fa-solid fa-circle-check"></i> <span><strong>Creativity is intentional</strong></span></li>
+                        <li class="philosophy-item"><i class="fa-solid fa-circle-check"></i> <span><strong>Quality is uncompromising</strong></span></li>
+                        <li class="philosophy-item"><i class="fa-solid fa-circle-check"></i> <span><strong>Execution is flawless</strong></span></li>
+                        <li class="philosophy-item"><i class="fa-solid fa-circle-check"></i> <span><strong>Every detail has purpose</strong></span></li>
+                        <li class="philosophy-item"><i class="fa-solid fa-circle-check"></i> <span><strong>Every experience tells a story</strong></span></li>
+                    </ul>
+                    <p style="color: var(--teal); font-weight: 600; margin-top: auto;">
+                        Together, we create celebrations that are not only seen, but felt.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Our Promise -->
+            <div class="promise-banner">
+                <span class="section-subtitle">Our Promise</span>
+                <h3 class="promise-title">Transforming Moments Into Timeless Memories</h3>
+                <p class="promise-text">
+                    Every celebration carries a story. Our role is to bring that story to life through creativity, craftsmanship, and unforgettable execution.
+                    <br><br>
+                    Together, we create extraordinary experiences where elegance meets imagination.
+                </p>
+                <div class="promise-motto">
+                    Zendel Creatives &bull; Curating luxury. Celebrating artistry. Creating timeless moments.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THE COLLECTIVE SECTION -->
+    <section class="section-padding collective-section" id="collective">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">The Collective</span>
+                <h2 class="section-title">A Network of Premier Creative Excellence</h2>
+                <p class="section-description">
+                    Zendel Creatives brings together a carefully selected community of exceptional artisans and specialists, each contributing their expertise to create seamless, immersive, and unforgettable luxury experiences.
+                </p>
+            </div>
+
+            <div class="collective-intro-text">
+                Our collective includes:
+            </div>
+
+            <div class="collective-grid">
+                <!-- 1. Event Planning & Creative Direction -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+                    <h3 class="category-title">Event Planning & Creative Direction</h3>
+                    <p class="category-desc">Visionary planners and creative directors who transform concepts into flawlessly executed experiences.</p>
+                </div>
+
+                <!-- 2. Makeup Artistry -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h3 class="category-title">Makeup Artistry</h3>
+                    <p class="category-desc">Elite beauty professionals creating refined, timeless looks tailored to each individual and occasion.</p>
+                </div>
+
+                <!-- 3. Photography & Videography -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-camera-retro"></i></div>
+                    <h3 class="category-title">Photography & Videography</h3>
+                    <p class="category-desc">Visual storytellers capturing the emotion, atmosphere, and unforgettable details of every celebration.</p>
+                </div>
+
+                <!-- 4. Hairstyling & Beauty Design -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-scissors"></i></div>
+                    <h3 class="category-title">Hairstyling & Beauty Design</h3>
+                    <p class="category-desc">Creative specialists delivering elegant and sophisticated styling that completes every vision.</p>
+                </div>
+
+                <!-- 5. Couture Fashion & Styling -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-vest-patches"></i></div>
+                    <h3 class="category-title">Couture Fashion & Styling</h3>
+                    <p class="category-desc">Designers and stylists creating bespoke looks that reflect individuality, elegance, and luxury.</p>
+                </div>
+
+                <!-- 6. Bespoke Décor & Event Design -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-couch"></i></div>
+                    <h3 class="category-title">Bespoke Décor & Event Design</h3>
+                    <p class="category-desc">Creative designers transforming venues into immersive environments where every detail reflects the occasion’s unique story.</p>
+                </div>
+
+                <!-- 7. Luxury Catering & Culinary Experiences -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-utensils"></i></div>
+                    <h3 class="category-title">Luxury Catering & Culinary Experiences</h3>
+                    <p class="category-desc">Exceptional culinary artisans delivering memorable dining experiences through exquisite presentation and service.</p>
+                </div>
+
+                <!-- 8. Cocktail Mixology & Beverage Experiences -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-martini-glass-citrus"></i></div>
+                    <h3 class="category-title">Cocktail Mixology & Beverage Experiences</h3>
+                    <p class="category-desc">Expert mixologists creating bespoke cocktail experiences, signature drinks, and elevated beverage concepts designed to enhance the atmosphere and delight guests.</p>
+                </div>
+
+                <!-- 9. Entertainment & Event Experiences -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-music"></i></div>
+                    <h3 class="category-title">Entertainment & Event Experiences</h3>
+                    <p class="category-desc">Hosts, DJs, performers, and experience creators who bring energy, emotion, and unforgettable moments to every celebration.</p>
+                </div>
+
+                <!-- 10. Event Ushers & Guest Experience Specialists -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3 class="category-title">Event Ushers & Guest Experience Specialists</h3>
+                    <p class="category-desc">Professional hospitality teams ensuring guests receive a warm, seamless, and refined experience from arrival to departure.</p>
+                </div>
+
+                <!-- 11. Event Security & Safety Personnel -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3 class="category-title">Event Security & Safety Personnel</h3>
+                    <p class="category-desc">Highly trained security professionals providing discreet protection, guest safety, and peace of mind while maintaining the elegance and sophistication of every event.</p>
+                </div>
+
+                <!-- 12. Media & Brand Presence -->
+                <div class="category-card">
+                    <div class="category-icon-box"><i class="fa-solid fa-bullhorn"></i></div>
+                    <h3 class="category-title">Media & Brand Presence</h3>
+                    <p class="category-desc">Creative media professionals capturing, promoting, and amplifying exceptional moments through strategic storytelling and visual content.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEDICATED SECTION: THE ZENDEL CREATIVES TEAM -->
+    <section class="section-padding team-section" id="team">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Showcase</span>
+                <h2 class="section-title gradient-text">The Zendel Creatives Team</h2>
+                <p style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-style: italic; color: var(--magenta); margin-top: 5px;">
+                    Every detail. Every interaction. Every moment.
+                </p>
+                <p class="section-description" style="margin-top: 15px;">
+                    This is where individual profiles will be posted in the order below:
+                </p>
+            </div>
+
+            <!-- Filter Bar for ordered team pillars -->
+            <div class="team-filter-bar">
+                <button class="filter-btn active" data-filter="all">All Pillars</button>
+                <button class="filter-btn" data-filter="pillar-1">Creative Vision</button>
+                <button class="filter-btn" data-filter="pillar-2">Beauty & Presentation</button>
+                <button class="filter-btn" data-filter="pillar-3">Memories & Storytelling</button>
+                <button class="filter-btn" data-filter="pillar-4">Hospitality & Atmosphere</button>
+                <button class="filter-btn" data-filter="pillar-5">Guest Care & Protection</button>
+            </div>
+
+            <!-- Pillar 1: Creative Vision -->
+            <div class="pillar-group" data-pillar="pillar-1">
+                <div class="pillar-header">
+                    <span class="pillar-badge">Pillar I</span>
+                    <h3 class="pillar-title">Creative Vision</h3>
+                    <span class="pillar-sub">&rarr; Event Planning</span>
+                </div>
+                <div class="team-grid">
+                    <!-- Artisan 1 -->
+                    <div class="artisan-card">
+                        <div class="artisan-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" alt="Eleanor Vance" class="artisan-img">
+                            <span class="artisan-category-tag">Event Planning</span>
+                        </div>
+                        <div class="artisan-info">
+                            <h4 class="artisan-name">Eleanor Vance</h4>
+                            <div class="artisan-role">Lead Creative Director & Principal Planner</div>
+                            <p class="artisan-bio">Specializing in high-profile luxury galas and bespoke destination celebrations with meticulous attention to detail.</p>
+                            <div class="artisan-tags">
+                                <span class="artisan-tag">Luxury Galas</span>
+                                <span class="artisan-tag">Concept Design</span>
+                            </div>
+                            <button class="artisan-btn" onclick="openProfileModal('Eleanor Vance', 'Lead Creative Director', 'Event Planning', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80', 'With over 12 years curating international galas and royal weddings, Eleanor transforms architectural space into emotional narratives.')">VIEW PROFILE <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pillar 2: Beauty & Presentation -->
+            <div class="pillar-group" data-pillar="pillar-2">
+                <div class="pillar-header">
+                    <span class="pillar-badge" style="background: linear-gradient(135deg, var(--magenta), var(--magenta-dark)); color: #fff;">Pillar II</span>
+                    <h3 class="pillar-title">Beauty & Presentation</h3>
+                    <span class="pillar-sub">&rarr; Makeup, Hair, Couture, Fashion, Styling, Decor</span>
+                </div>
+                <div class="team-grid">
+                    <!-- Artisan 2 -->
+                    <div class="artisan-card">
+                        <div class="artisan-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80" alt="Chloe Sterling" class="artisan-img">
+                            <span class="artisan-category-tag">Makeup Artistry</span>
+                        </div>
+                        <div class="artisan-info">
+                            <h4 class="artisan-name">Chloe Sterling</h4>
+                            <div class="artisan-role">Master Makeup Artist & Beauty Stylist</div>
+                            <p class="artisan-bio">Creating timeless, camera-ready bridal makeup and editorial red-carpet glam for high-profile clients.</p>
+                            <div class="artisan-tags">
+                                <span class="artisan-tag">Bridal Glam</span>
+                                <span class="artisan-tag">HD Camera Ready</span>
+                            </div>
+                            <button class="artisan-btn" onclick="openProfileModal('Chloe Sterling', 'Master Makeup Artist', 'Makeup Artistry', 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=800&q=80', 'Chloe brings runway precision to individual beauty, ensuring every client glows under ambient and professional stage lighting.')">VIEW PROFILE <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Artisan 3 -->
+                    <div class="artisan-card">
+                        <div class="artisan-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=600&q=80" alt="Marcus DuPont" class="artisan-img">
+                            <span class="artisan-category-tag">Couture Fashion</span>
+                        </div>
+                        <div class="artisan-info">
+                            <h4 class="artisan-name">Marcus DuPont</h4>
+                            <div class="artisan-role">Bespoke Couture Designer & Stylist</div>
+                            <p class="artisan-bio">Crafting custom evening garments, tailored tuxedos, and opulent runway silhouettes designed specifically for key event hosts.</p>
+                            <div class="artisan-tags">
+                                <span class="artisan-tag">Bespoke Garments</span>
+                                <span class="artisan-tag">Wardrobe Styling</span>
+                            </div>
+                            <button class="artisan-btn" onclick="openProfileModal('Marcus DuPont', 'Bespoke Couture Designer', 'Couture Fashion', 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=800&q=80', 'Paris-trained couture designer Marcus turns luxury fabrics into wearable art tailored for unforgettable event presence.')">VIEW PROFILE <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Artisan 4 -->
+                    <div class="artisan-card">
+                        <div class="artisan-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80" alt="Aria Thorne" class="artisan-img">
+                            <span class="artisan-category-tag">Bespoke Décor</span>
+                        </div>
+                        <div class="artisan-info">
+                            <h4 class="artisan-name">Aria Thorne</h4>
+                            <div class="artisan-role">Floral Architect & Environmental Decorator</div>
+                            <p class="artisan-bio">Transforming historic ballrooms and outdoor estates into magical floral wonderlands and custom spatial setups.</p>
+                            <div class="artisan-tags">
+                                <span class="artisan-tag">Floral Architecture</span>
+                                <span class="artisan-tag">Spatial Design</span>
+                            </div>
+                            <button class="artisan-btn" onclick="openProfileModal('Aria Thorne', 'Floral Architect & Decorator', 'Bespoke Décor', 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80', 'Aria creates immersive floral installations and mood lighting that captivate guests from the moment they step into the room.')">VIEW PROFILE <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pillar 3: Memories & Storytelling -->
+            <div class="pillar-group" data-pillar="pillar-3">
+                <div class="pillar-header">
+                    <span class="pillar-badge">Pillar III</span>
+                    <h3 class="pillar-title">Memories & Storytelling</h3>
+                    <span class="pillar-sub">&rarr; Photography, Video, Media</span>
+                </div>
+                <div class="team-grid">
+                    <!-- Artisan 5 -->
+                    <div class="artisan-card">
+                        <div class="artisan-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=600&q=80" alt="Julian Reyes" class="artisan-img">
+                            <span class="artisan-category-tag">Photography & Video</span>
+                        </div>
+                        <div class="artisan-info">
+                            <h4 class="artisan-name">Julian Reyes</h4>
+                            <div class="artisan-role">Cinematic Director & Lead Photographer</div>
+                            <p class="artisan-bio">Capturing raw emotion, grand scale architecture, and intimate candid moments in 4K resolution.</p>
+                            <div class="artisan-tags">
+                                <span class="artisan-tag">4K Film</span>
+                                <span class="artisan-tag">Editorial Photo</span>
+                            </div>
+                            <button class="artisan-btn" onclick="openProfileModal('Julian Reyes', 'Cinematic Director', 'Photography & Video', 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=800&q=80', 'Julian specializes in documentary-style luxury event films and high-fashion editorial event photography.')">VIEW PROFILE <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Artisan 6 -->
+                    <div class="artisan-card">
+                        <div class="artisan-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&w=600&q=80" alt="Sienna Miller" class="artisan-img">
+                            <span class="artisan-category-tag">Media & PR</span>
+                        </div>
+                        <div class="artisan-info">
+                            <h4 class="artisan-name">Sienna Miller</h4>
+                            <div class="artisan-role">Media Host & Red Carpet Broadcast Specialist</div>
+                            <p class="artisan-bio">Conducting magnetic celebrity red-carpet interviews and broadcasting event highlights across luxury media networks.</p>
+                            <div class="artisan-tags">
+                                <span class="artisan-tag">Red Carpet</span>
+                                <span class="artisan-tag">Press Coverage</span>
+                            </div>
+                            <button class="artisan-btn" onclick="openProfileModal('Sienna Miller', 'Media Host', 'Media & Brand Presence', 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&w=800&q=80', 'Sienna brings poise, warmth, and high-impact media presence to elevate your event visibility across press and social channels.')">VIEW PROFILE <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pillar 4: Hospitality & Atmosphere -->
+            <div class="pillar-group" data-pillar="pillar-4">
+                <div class="pillar-header">
+                    <span class="pillar-badge" style="background: linear-gradient(135deg, var(--teal-light), var(--teal)); color: #fff;">Pillar IV</span>
+                    <h3 class="pillar-title">Hospitality & Atmosphere</h3>
+                    <span class="pillar-sub">&rarr; Catering, Mixology, Entertainment, Hosting</span>
+                </div>
+                <div class="team-grid">
+                    <!-- Artisan 7 -->
+                    <div class="artisan-card">
+                        <div class="artisan-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80" alt="Antoine Laurent" class="artisan-img">
+                            <span class="artisan-category-tag">Mixology & Catering</span>
+                        </div>
+                        <div class="artisan-info">
+                            <h4 class="artisan-name">Antoine Laurent</h4>
+                            <div class="artisan-role">Master Mixologist & Beverage Designer</div>
+                            <p class="artisan-bio">Creating bespoke molecular cocktails, custom spirit pairings, and mesmerizing bar theater setups.</p>
+                            <div class="artisan-tags">
+                                <span class="artisan-tag">Craft Mixology</span>
+                                <span class="artisan-tag">Signature Spirits</span>
+                            </div>
+                            <button class="artisan-btn" onclick="openProfileModal('Antoine Laurent', 'Master Mixologist', 'Cocktail Mixology', 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80', 'Antoine designs custom cocktail menus infused with botanical elixirs, tailored to reflect the event aesthetic.')">VIEW PROFILE <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Artisan 8 -->
+                    <div class="artisan-card">
+                        <div class="artisan-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=600&q=80" alt="David Sterling" class="artisan-img">
+                            <span class="artisan-category-tag">Entertainment & Host</span>
+                        </div>
+                        <div class="artisan-info">
+                            <h4 class="artisan-name">David Sterling</h4>
+                            <div class="artisan-role">Master of Ceremonies & Gala Host</div>
+                            <p class="artisan-bio">Commanding the stage with charisma, maintaining seamless event timing, and elevating crowd energy.</p>
+                            <div class="artisan-tags">
+                                <span class="artisan-tag">Gala MC</span>
+                                <span class="artisan-tag">Stage Performance</span>
+                            </div>
+                            <button class="artisan-btn" onclick="openProfileModal('David Sterling', 'Gala Host & MC', 'Entertainment & Hosting', 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80', 'With flawless articulation and magnetic stage presence, David ensures your event timeline flows effortlessly.')">VIEW PROFILE <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pillar 5: Guest Care & Protection -->
+            <div class="pillar-group" data-pillar="pillar-5">
+                <div class="pillar-header">
+                    <span class="pillar-badge">Pillar V</span>
+                    <h3 class="pillar-title">Guest Care & Protection</h3>
+                    <span class="pillar-sub">&rarr; Ushers, Concierge, Security</span>
+                </div>
+                <div class="team-grid">
+                    <!-- Artisan 9 -->
+                    <div class="artisan-card">
+                        <div class="artisan-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="Gabriel Santos" class="artisan-img">
+                            <span class="artisan-category-tag">Ushers & Protection</span>
+                        </div>
+                        <div class="artisan-info">
+                            <h4 class="artisan-name">Gabriel Santos</h4>
+                            <div class="artisan-role">VIP Guest Experience & Security Director</div>
+                            <p class="artisan-bio">Overseeing discreet VIP protection, guest concierge seating, and refined hospitality management.</p>
+                            <div class="artisan-tags">
+                                <span class="artisan-tag">VIP Concierge</span>
+                                <span class="artisan-tag">Discreet Safety</span>
+                            </div>
+                            <button class="artisan-btn" onclick="openProfileModal('Gabriel Santos', 'VIP Security Director', 'Guest Care & Protection', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80', 'Gabriel leads our protocol teams to ensure guest arrivals, seating, and privacy are managed with effortless sophistication.')">VIEW PROFILE <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOR OUR ARTISANS SECTION -->
+    <section class="section-padding artisan-join-section" id="artisans">
+        <div class="container">
+            <div class="join-wrapper">
+                <span class="section-subtitle">For Our Artisans</span>
+                <h2 class="section-title">Join an Exclusive Creative Community</h2>
+                
+                <p class="section-description" style="margin-top: 20px;">
+                    Zendel Creatives is built for exceptional talent that values quality, professionalism, and innovation.
+                </p>
+                
+                <p class="section-description" style="margin-top: 15px;">
+                    By becoming part of our collective, you gain the opportunity to collaborate with like-minded creatives, participate in premium events, and contribute to experiences that represent the highest standards of luxury.
+                </p>
+                
+                <div class="join-quote">
+                    "You are not simply providing a service—you are helping shape a movement."
+                </div>
+
+                <div>
+                    <button class="btn btn-magenta" onclick="openApplyModal()"><i class="fa-solid fa-paper-plane"></i> Click here to JOIN US</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTFOLIO SECTION -->
+    <section class="section-padding portfolio-section" id="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Portfolio</span>
+                <h2 class="section-title">Gallery of Past Experiences</h2>
+                <p class="section-description">
+                    A glimpse into the extraordinary moments, luxury galas, and bespoke celebrations curated by Zendel Creatives.
+                </p>
+            </div>
+
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80" alt="Royal Wedding Gala" class="portfolio-img">
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-cat">Event Planning & Decor</span>
+                        <h3 class="portfolio-title">Grand Palace Wedding Gala</h3>
+                    </div>
+                </div>
+
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80" alt="Molecular Mixology Soirée" class="portfolio-img">
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-cat">Cocktail Mixology</span>
+                        <h3 class="portfolio-title">Bespoke Botanical Lounge</h3>
+                    </div>
+                </div>
+
+                <div class="portfolio-item">
+                    <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=800&q=80" alt="Fashion Runway Glam" class="portfolio-img">
+                    <div class="portfolio-overlay">
+                        <span class="portfolio-cat">Makeup & Couture</span>
+                        <h3 class="portfolio-title">Haute Couture Fashion Night</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section class="section-padding contact-section" id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <span class="section-subtitle">Contact</span>
+                    <h2 class="section-title gradient-text" style="font-size: 3rem;">Luxury Enquiry Form</h2>
+                    <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 30px; line-height: 1.8;">
+                        Are you planning a grand gala, intimate luxury celebration, or seeking elite creative artisans for your next occasion? Connect directly with the Zendel team.
+                    </p>
+                    
+                    <div style="margin-bottom: 25px; display: flex; align-items: center; gap: 15px;">
+                        <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.3); display: flex; align-items: center; justify-content: center; color: #25D366; font-size: 1.4rem;">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Instant Consultation</div>
+                            <a href="https://wa.me/447713136911" target="_blank" style="font-size: 1.1rem; color: var(--text-main); font-weight: 600; text-decoration: underline;">Chat on WhatsApp (+44 7713 136911)</a>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(46, 177, 145, 0.1); border: 1px solid rgba(46, 177, 145, 0.3); display: flex; align-items: center; justify-content: center; color: var(--teal); font-size: 1.3rem;">
+                            <i class="fa-solid fa-gem"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Zendel Creatives Collective</div>
+                            <div style="font-size: 1rem; color: var(--text-main); font-weight: 600;">Excellence through collaboration.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="contact-form" id="contactForm" onsubmit="handleContactSubmit(event)">
+                    <h3 class="serif-font" style="font-size: 2rem; color: var(--text-main); margin-bottom: 25px;">Luxury Enquiry Form</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Your Full Name</label>
+                        <input type="text" class="form-input" placeholder="e.g. Lady Katherine Vance" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" placeholder="name@domain.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Event Category / Interest</label>
+                        <select class="form-select" required>
+                            <option value="">Select event category...</option>
+                            <option value="planning">Event Planning & Creative Direction</option>
+                            <option value="beauty">Beauty & Makeup Artistry</option>
+                            <option value="photography">Photography & Videography</option>
+                            <option value="mixology">Cocktail Mixology & Beverage</option>
+                            <option value="team">Full Artisan Team Curation</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Your Message & Details</label>
+                        <textarea class="form-textarea" rows="4" placeholder="Tell us about your celebration, date, location, and vision..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-teal" style="width: 100%;">SEND ENQUIRY <i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROFILE MODAL -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-container">
+            <button class="modal-close" onclick="closeProfileModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div style="display: flex; gap: 30px; flex-wrap: wrap; align-items: center;" id="modalContent">
+                <!-- Injected via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- VENDOR JOIN APPLICATION MODAL -->
+    <div class="modal-overlay" id="applyModal">
+        <div class="modal-container" style="max-width: 650px;">
+            <button class="modal-close" onclick="closeApplyModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="serif-font" style="font-size: 2.2rem; color: var(--text-main); margin-bottom: 10px; text-align: center;">Join The Zendel Collective</h3>
+            <p style="color: var(--text-muted); text-align: center; margin-bottom: 30px; font-size: 0.95rem;">
+                Submit your portfolio to become part of our exclusive network of luxury artisans.
+            </p>
+            <form onsubmit="handleApplySubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name / Brand Name</label>
+                    <input type="text" class="form-input" placeholder="e.g. Atelier Beau Beauty" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Artisan Mastery Category</label>
+                    <select class="form-select" required>
+                        <option value="">Select your discipline...</option>
+                        <option value="planning">Event Planning & Creative Direction</option>
+                        <option value="makeup">Makeup Artistry & Hair</option>
+                        <option value="couture">Couture Fashion & Styling</option>
+                        <option value="photography">Photography & Videography</option>
+                        <option value="decor">Bespoke Décor & Event Design</option>
+                        <option value="mixology">Cocktail Mixology & Beverage</option>
+                        <option value="catering">Luxury Catering & Culinary</option>
+                        <option value="hosting">Entertainment, MC & Hosting</option>
+                        <option value="hospitality">Event Ushers & Guest Care</option>
+                        <option value="security">Security & Safety Personnel</option>
+                        <option value="media">Media & Brand Presence</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Portfolio Website / Social Link</label>
+                    <input type="url" class="form-input" placeholder="https://instagram.com/yourbrand" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Short Bio & Statement of Excellence</label>
+                    <textarea class="form-textarea" rows="3" placeholder="Describe your craft, years of experience, and luxury events handled..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-teal" style="width: 100%;">SUBMIT APPLICATION <i class="fa-solid fa-check"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Team Category Filtering
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const pillarGroups = document.querySelectorAll('.pillar-group');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+                pillarGroups.forEach(group => {
+                    if (filter === 'all' || group.getAttribute('data-pillar') === filter) {
+                        group.style.display = 'block';
+                    } else {
+                        group.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Profile Modal Logic
+        function openProfileModal(name, role, category, imgUrl, bioText) {
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <div style="flex: 1; min-width: 250px;">
+                    <img src="${imgUrl}" alt="${name}" style="width: 100%; height: 350px; object-fit: cover; border-radius: 16px; border: 1px solid var(--border-color);">
+                </div>
+                <div style="flex: 1.5; min-width: 280px;">
+                    <span style="background: rgba(46,177,145,0.15); color: var(--teal); font-size: 0.75rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; text-transform: uppercase;">${category}</span>
+                    <h3 style="font-size: 2.2rem; font-family: 'Outfit', sans-serif; color: var(--text-main); margin: 10px 0 5px;">${name}</h3>
+                    <div style="color: var(--magenta); font-weight: 600; font-size: 1rem; margin-bottom: 20px;">${role}</div>
+                    <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.7; margin-bottom: 25px;">${bioText}</p>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <a href="https://wa.me/447713136911" target="_blank" class="btn btn-teal" style="padding: 10px 20px; font-size: 0.85rem;"><i class="fa-brands fa-whatsapp"></i> Book Artisan</a>
+                        <button onclick="closeProfileModal()" class="btn btn-outline" style="padding: 10px 20px; font-size: 0.85rem;">Close</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+
+        // Apply Modal Logic
+        function openApplyModal() {
+            document.getElementById('applyModal').classList.add('active');
+        }
+
+        function closeApplyModal() {
+            document.getElementById('applyModal').classList.remove('active');
+        }
+
+        // Form Submission Handler Simulations
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            alert('Thank you for reaching out to Zendel Creatives. Our luxury concierge team will get in touch with you shortly.');
+            document.getElementById('contactForm').reset();
+        }
+
+        function handleApplySubmit(e) {
+            e.preventDefault();
+            alert('Your application to join the Zendel Creatives Collective has been submitted successfully! Our vetting team will review your portfolio.');
+            closeApplyModal();
+        }
+    </script>
+</body>
+</html>
