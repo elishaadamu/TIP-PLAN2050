@@ -351,9 +351,32 @@ function MapView({
     }
   }, [geoData]);
 
-  const tileUrl = mapTileStyle === 'dark' 
-    ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-    : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+  const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY;
+
+  const getTileConfig = (style) => {
+    if (cartoApiKey) {
+      return {
+        url: style === 'dark'
+          ? `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?api_key=${cartoApiKey}`
+          : `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?api_key=${cartoApiKey}`,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+      };
+    }
+
+    if (style === 'dark') {
+      return {
+        url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+        attribution: '&copy; <a href="https://www.esri.com/">Esri</a> &copy; OpenStreetMap contributors'
+      };
+    }
+
+    return {
+      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    };
+  };
+
+  const tileConfig = getTileConfig(mapTileStyle);
 
   if (isLoading || !bounds || !geoData) {
     return (
@@ -364,8 +387,8 @@ function MapView({
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer
-            url={tileUrl}
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            url={tileConfig.url}
+            attribution={tileConfig.attribution}
           />
         </MapContainer>
         <div className="map-loading-overlay glass-panel" style={{
@@ -408,8 +431,9 @@ function MapView({
         onMoveStart={() => setHighlightedProject && setHighlightedProject(null)}
       >
         <TileLayer
-          url={tileUrl}
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          key={tileConfig.url}
+          url={tileConfig.url}
+          attribution={tileConfig.attribution}
           maxNativeZoom={19}
           maxZoom={18}
           minZoom={10}
