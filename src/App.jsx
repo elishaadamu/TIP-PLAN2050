@@ -56,7 +56,7 @@ function App() {
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          "https://ecointeractive.onrender.com/api/comments"
+          "https://ecointeractive-hqom.onrender.com/api/comments"
         );
         setComments(response.data);
       } catch (err) {
