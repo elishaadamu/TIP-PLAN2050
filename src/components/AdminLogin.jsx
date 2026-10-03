@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail, ArrowLeft, Loader2, ShieldCheck } from "lucide-react";
+import { API_BASE_URL } from "../config/api";
 
 const AdminLogin = ({ setIsAdmin, navigate }) => {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ const AdminLogin = ({ setIsAdmin, navigate }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://ecointeractive.onrender.com/api/login",
+        `${API_BASE_URL}/api/login`,
         { email, password }
       );
       if (response.data.message === "Login successful!") {

@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { Target, Upload, FileJson, Trash2, X, CheckCircle, Database, Server } from "lucide-react";
 import { fetchSpatialData, parseFgbBuffer } from "../utils/fgbLoader";
+import { API_BASE_URL } from "../config/api";
 import "./GeoJSONManager.css";
 
 const inMemorySpatialCache = new Map();
@@ -20,7 +21,7 @@ function GeoJSONManager({
   const fetchAvailableGeoJSONs = useCallback(async () => {
     try {
       const response = await axios.get(
-        "https://ecointeractive.onrender.com/api/geojson/list"
+        `${API_BASE_URL}/api/geojson/list`
       );
       setAvailableGeoJSONs(response.data || []);
     } catch (error) {
@@ -37,7 +38,7 @@ function GeoJSONManager({
       }
       try {
         const response = await axios.get(
-          "https://ecointeractive.onrender.com/api/geojson/active"
+          `${API_BASE_URL}/api/geojson/active`
         );
         if (response.data && response.data.geojsonData) {
           setGeoData(response.data.geojsonData);
@@ -85,7 +86,7 @@ function GeoJSONManager({
       if (!spatialData) {
         try {
           const setRes = await axios.post(
-            "https://ecointeractive.onrender.com/api/geojson/set-active",
+            `${API_BASE_URL}/api/geojson/set-active`,
             { filename: selectedFile }
           );
           if (setRes.data && setRes.data.geojsonData) {
@@ -95,7 +96,7 @@ function GeoJSONManager({
 
         if (!spatialData) {
           try {
-            const activeRes = await axios.get("https://ecointeractive.onrender.com/api/geojson/active");
+            const activeRes = await axios.get(`${API_BASE_URL}/api/geojson/active`);
             if (activeRes.data && activeRes.data.filename === selectedFile && activeRes.data.geojsonData) {
               spatialData = activeRes.data.geojsonData;
             }
@@ -119,7 +120,7 @@ function GeoJSONManager({
       // Ensure backend sync
       try {
         await axios.post(
-          "https://ecointeractive.onrender.com/api/geojson/set-active",
+          `${API_BASE_URL}/api/geojson/set-active`,
           { filename: selectedFile, geojsonData: spatialData }
         );
       } catch (bgErr) {}
@@ -200,12 +201,12 @@ function GeoJSONManager({
         const formData = new FormData();
         formData.append("geojson", fileToUpload);
         await axios.post(
-          "https://ecointeractive.onrender.com/api/geojson/upload",
+          `${API_BASE_URL}/api/geojson/upload`,
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
         await axios.post(
-          "https://ecointeractive.onrender.com/api/geojson/set-active",
+          `${API_BASE_URL}/api/geojson/set-active`,
           { filename, geojsonData: spatialData }
         );
       } catch (bgErr) {
@@ -239,7 +240,7 @@ function GeoJSONManager({
       if (result.isConfirmed) {
         // Try backend delete
         try {
-          await axios.delete(`https://ecointeractive.onrender.com/api/geojson/delete/${encodeURIComponent(filenameToDelete)}`);
+          await axios.delete(`${API_BASE_URL}/api/geojson/delete/${encodeURIComponent(filenameToDelete)}`);
         } catch (apiErr) {
           console.warn("Backend single dataset delete note (proceeding with local deletion):", apiErr);
         }
@@ -297,7 +298,7 @@ function GeoJSONManager({
       if (result.isConfirmed) {
         // Try backend purge
         try {
-          await axios.delete("https://ecointeractive.onrender.com/api/geojson/delete-all");
+          await axios.delete(`${API_BASE_URL}/api/geojson/delete-all`);
         } catch (apiErr) {
           console.warn("Backend purge datasets note (proceeding with local purge):", apiErr);
         }

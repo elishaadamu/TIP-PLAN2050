@@ -3,6 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { X, Download, Trash2, Search, MessageSquare, ShieldAlert, ChevronLeft, ChevronRight, QrCode } from "lucide-react";
+import { API_BASE_URL } from "../config/api";
 
 const CommentsTable = ({ comments = [], setComments }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,7 +52,7 @@ const CommentsTable = ({ comments = [], setComments }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete("https://ecointeractive.onrender.com/api/comments");
+          await axios.delete(`${API_BASE_URL}/api/comments`);
           setComments([]);
           Swal.fire({
             title: "Purged!",

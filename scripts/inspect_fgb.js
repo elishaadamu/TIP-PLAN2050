@@ -27,11 +27,11 @@ async function inspectDataset() {
   else {
     console.log(`Local file not found, fetching combined.fgb from MongoDB API...`);
     try {
-      const res = await axios.get('https://ecointeractive.onrender.com/api/geojson/get/combined.fgb');
+      const res = await axios.get('https://ecointeractive-hqom.onrender.com/api/geojson/get/combined.fgb');
       geojson = res.data.geojsonData;
     } catch (e) {
       try {
-        const activeRes = await axios.get('https://ecointeractive.onrender.com/api/geojson/active');
+        const activeRes = await axios.get('https://ecointeractive-hqom.onrender.com/api/geojson/active');
         geojson = activeRes.data.geojsonData;
       } catch (err2) {
         console.error("Could not fetch dataset from DB or local filesystem.");

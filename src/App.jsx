@@ -8,6 +8,7 @@ import { Search, ChevronLeft, ChevronRight, FileText, Database, Map, X, SlidersH
 import "./components/FormElements.css";
 
 import { fetchSpatialData } from "./utils/fgbLoader";
+import { API_BASE_URL } from "./config/api";
 
 // Lazy load heavy components
 const MapView = lazy(() => import("./components/MapView"));
@@ -56,7 +57,7 @@ function App() {
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          "https://ecointeractive-hqom.onrender.com/api/comments"
+          `${API_BASE_URL}/api/comments`
         );
         setComments(response.data);
       } catch (err) {
@@ -145,7 +146,7 @@ function App() {
 
       try {
         const response = await axios.get(
-          "https://ecointeractive.onrender.com/api/geojson/active"
+          `${API_BASE_URL}/api/geojson/active`
         );
         if (response.data && response.data.geojsonData) {
           processGeoData(response.data.geojsonData, response.data.filename);
@@ -168,7 +169,7 @@ function App() {
 
         try {
           const apiRes = await axios.get(
-            `https://ecointeractive.onrender.com/api/geojson/get/${encodeURIComponent(savedActiveFilename)}`
+            `${API_BASE_URL}/api/geojson/get/${encodeURIComponent(savedActiveFilename)}`
           );
           if (apiRes.data && apiRes.data.geojsonData) {
             processGeoData(apiRes.data.geojsonData, savedActiveFilename);
@@ -194,7 +195,7 @@ function App() {
   const addComment = async (comment) => {
     try {
       const response = await axios.post(
-        "https://ecointeractive.onrender.com/api/comments",
+        `${API_BASE_URL}/api/comments`,
         comment
       );
       setComments(prev => [...prev, response.data]);
